@@ -66,7 +66,7 @@
               <!-- Legenda -->
               <div
                 class="flex justify-between items-center mt-4 text-sm md:text-lg w-full bg-base rounded-xl p-4 h-full">
-                <ul id="legend-Report" class="flex flex-col gap-y-4 w-full">
+                <ul id="legend-Report-Income" class="flex flex-col gap-y-4 w-full">
                     <li class="flex justify-between items-center w-full text-sm font-semibold text-dark mb-1">
                         <div class="inline-flex items-center gap-2">
                             <span class="inline-block w-3 h-3 rounded-full"></span>

@@ -179,7 +179,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Event: Filter button (bulanan, mingguan, dll)
+    // Filter (bulanan, mingguan, dll)
     document.querySelectorAll("[data-filter]").forEach((button) => {
         button.addEventListener("click", function () {
             const filter = this.getAttribute("data-filter");
@@ -188,36 +188,6 @@ document.addEventListener("DOMContentLoaded", function () {
             window.location.href = url.toString();
         });
     });
-
-    // Event: Ganti tanggal
-    const dateFilter = document.getElementById("dateFilter");
-    if (dateFilter) {
-        dateFilter.addEventListener("change", function () {
-            const url = new URL(window.location.href);
-            url.searchParams.set("date", this.value);
-            window.location.href = url.toString();
-        });
-    }
-
-    // Tampilkan waktu lokal real-time
-    function updateWaktu() {
-        const sekarang = new Date();
-        const options = {
-            weekday: "long",
-            day: "numeric",
-            month: "long",
-            year: "numeric",
-            timeZone: "Asia/Jakarta",
-        };
-
-        const elemenTanggal = document.getElementById("tanggal-terpilih");
-        if (elemenTanggal) {
-            elemenTanggal.textContent = sekarang.toLocaleDateString(
-                "id-ID",
-                options
-            );
-        }
-    }
 
     updateWaktu();
     setInterval(updateWaktu, 1000);
@@ -293,37 +263,25 @@ document.addEventListener("DOMContentLoaded", () => {
         containerId,
         dataCategoriesAttr,
         dataValuesAttr,
-        chartLabel,
         colors,
-        legendDashboardId,
         legendReportId
     ) {
         const container = document.getElementById(containerId);
         if (!container) return;
 
-        const rawCategories = container.getAttribute(dataCategoriesAttr);
-        const rawValues = container.getAttribute(dataValuesAttr);
-
         let categories = [];
         let values = [];
 
-        if (!rawCategories || !rawValues) {
-            categories = ["Belum Ada Data"];
-            values = [1];
-        } else {
-            try {
-                categories = JSON.parse(rawCategories);
-                values = JSON.parse(rawValues);
-
-                if (values.length === 0 || values.every((v) => v === 0)) {
-                    categories = ["Belum Ada Data"];
-                    values = [1];
-                }
-            } catch (e) {
-                console.error("JSON parse error:", e);
+        try {
+            categories = JSON.parse(container.getAttribute(dataCategoriesAttr));
+            values = JSON.parse(container.getAttribute(dataValuesAttr));
+            if (!values.length || values.every((v) => v === 0)) {
                 categories = ["Belum Ada Data"];
                 values = [1];
             }
+        } catch {
+            categories = ["Belum Ada Data"];
+            values = [1];
         }
 
         const options = {
@@ -336,65 +294,31 @@ document.addEventListener("DOMContentLoaded", () => {
             colors: colors,
             dataLabels: {
                 enabled: true,
-                formatter: function (val) {
-                    return val.toFixed(1) + "%";
-                },
+                formatter: (val) => val.toFixed(1) + "%",
             },
             legend: { show: false },
             tooltip: {
                 y: {
-                    formatter: function (value) {
-                        return "Rp " + value.toLocaleString("id-ID");
-                    },
+                    formatter: (value) => "Rp " + value.toLocaleString("id-ID"),
                 },
             },
         };
 
-        // Render ApexChart
-        container.innerHTML = ""; // Bersihin isi kontainer dulu
+        container.innerHTML = "";
         const chart = new ApexCharts(container, options);
         chart.render();
 
-        // Legend Dashboard (Kiri)
-        if (legendDashboardId) {
-            const legendDashboard = document.getElementById(legendDashboardId);
-            if (legendDashboard) {
-                legendDashboard.innerHTML = "";
-                categories.forEach((cat, i) => {
-                    const li = document.createElement("li");
-                    li.className =
-                        "flex items-center transition hover:scale-105 mb-1 space-x-2";
-
-                    const colorBox = document.createElement("span");
-                    colorBox.className = "w-3 h-3 rounded-full inline-block";
-                    colorBox.style.backgroundColor = colors[i % colors.length];
-
-                    const labelNode = document.createElement("p");
-                    labelNode.textContent = cat;
-                    labelNode.className = "text-sm text-dark";
-
-                    li.appendChild(colorBox);
-                    li.appendChild(labelNode);
-                    legendDashboard.appendChild(li);
-                });
-            }
-        }
-
-        // Legend Report (Kanan)
         if (legendReportId) {
             const legendReport = document.getElementById(legendReportId);
             if (legendReport) {
                 legendReport.innerHTML = "";
-                const totalValue = values.reduce((a, b) => a + b, 0) || 1;
 
                 categories.forEach((cat, i) => {
-                    const value = values[i];
-                    const percentage = ((value / totalValue) * 100).toFixed(2);
                     const color = colors[i % colors.length];
 
                     const li = document.createElement("li");
                     li.className =
-                        "flex justify-between items-center w-full text-sm font-semibold text-dark mb-1";
+                        "flex items-center w-full text-sm font-semibold text-dark mb-1 justify-between";
 
                     const left = document.createElement("div");
                     left.className = "inline-flex items-center gap-2";
@@ -408,12 +332,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     left.appendChild(colorBox);
                     left.appendChild(labelSpan);
-
-                    const nominal = document.createElement("p");
-                    nominal.textContent = "Rp " + value.toLocaleString("id-ID");
-
                     li.appendChild(left);
-                    li.appendChild(nominal);
+
+                    // legend dashboard
+                    if (legendReportId === "legend-Report-Combined") {
+                        legendReport.className =
+                            "flex flex-wrap gap-x-6 gap-y-2 space-x-4 text-sm font-semibold text-dark mb-1";
+                        li.className =
+                            "flex items-center transition hover:scale-105 mb-1 space-x-2";
+                    } else {
+                        // legend Report
+                        const nominal = document.createElement("p");
+                        nominal.textContent =
+                            "Rp " + values[i].toLocaleString("id-ID");
+                        li.appendChild(nominal);
+                    }
 
                     legendReport.appendChild(li);
                 });
@@ -421,25 +354,60 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Income Chart
+    // Warna combined chart income dan outcome
+    const combinedColors = [
+        "#285539",
+        "#88cf0f",
+        "#00bfa6",
+        "#ff9f1c",
+        "#2979ff",
+        "#ff4081", // income
+        "#f87171",
+        "#ef4444",
+        "#991b1b",
+        "#fb923c",
+        "#dc2626",
+        "#7f1d1d", // outcome
+    ];
+
+    const incomeColors = [
+        "#285539",
+        "#88cf0f",
+        "#00bfa6",
+        "#ff9f1c",
+        "#2979ff",
+        "#ff4081",
+    ];
+    const outcomeColors = [
+        "#f87171",
+        "#ff9f1c",
+        "#ff4081",
+        "#2979ff",
+        "#ef4444",
+        "#991b1b",
+    ];
+
+    createDonutChart(
+        "pie-chart-Combined",
+        "data-categories-combined",
+        "data-values-combined",
+        combinedColors,
+        "legend-Report-Combined"
+    );
+
     createDonutChart(
         "pie-chart-Income",
         "data-categories",
         "data-values",
-        "Total Pemasukan",
-        ["#285539", "#88cf0f", "#00bfa6", "#ff9f1c", "#2979ff", "#ff4081"],
-        "legend-Dashboard",
-        "legend-Report"
+        incomeColors,
+        "legend-Report-Income"
     );
 
-    // Outcome Chart
     createDonutChart(
         "pie-chart-Outcome",
         "data-categories-out",
         "data-values-out",
-        "Total Pengeluaran",
-        ["#f87171", "#ff9f1c", "#ff4081", "#2979ff", "#ef4444", "#991b1b"],
-        null,
+        outcomeColors,
         "legend-Report-Outcome"
     );
 });

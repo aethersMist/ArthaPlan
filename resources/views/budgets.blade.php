@@ -132,8 +132,8 @@
                     <div class="flex justify-start items-center text-light text-sm  space-x-2">
                         <p class="text-sm lg:text-lg">Status</p>
                         <span class="font-semibold {{ $Sisa == 0 && $totalOutcome > $totalBudgetAmount ? 'text-danger' : 'text-accent' }}">
-                            {{ $statusAnggaran }} 
-                            </span>
+                            {{ $statusAnggaran }} ({{ $persenSisa }}%)
+                        </span>
                     </div>
                     <div class="flex items-start gap-1 font-bold">
                         <span class="text-sm lg:text-lg">Rp</span>

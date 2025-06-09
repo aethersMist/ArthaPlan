@@ -73,22 +73,20 @@
                 <x-secondary-button class="flex justify-center items-center h-8 w-8 rounded-full">
                     <i class="fa fa-chart-pie fa-md"></i>
                 </x-secondary-button>
-                <h2 class="text-lg font-semibold">Laporan</h2>
+                <h2 class="text-lg font-semibold">Laporan Transaksi</h2>
             </a>
 
             <!-- Chart dan Legenda -->
             <div class="space-y-4 lg:space-y-0 lg:flex gap-4 items-center justify-center">
             <!-- Donut Chart -->
             <div class="flex items-center justify-center w-full lg:w-1/2">
-                <div id="pie-chart-Income"
-                    data-categories='@json($categoriesIncome)'
-                    data-values='@json($valuesIncome)'>
+                <div id="pie-chart-Combined" data-categories-combined='{!! $combinedCategories !!}' data-values-combined='{!! $combinedValues !!}'>
                 </div>
-                </div>
+            </div>
 
             <!-- Legenda -->
             <div class="flex justify-center items-center mt-4 text-sm md:text-lg w-full bg-base  border-2 border-primary rounded-xl p-4 h-full">
-                <ul id="legend-Dashboard" class="flex flex-wrap gap-x-6 gap-y-2 space-x-4">
+                <ul id="legend-Report-Combined" class="flex flex-wrap gap-x-6 gap-y-2 space-x-4">
                     <li class="flex items-center transition hover:scale-105 mb-1 space-x-2">
                         <span class="inline-block w-3 h-3 rounded-full"></span>
                     </li>
@@ -193,13 +191,13 @@
                 <div class="w-full lg:w-3/5 space-y-4 text-md sm:text-sm lg:text-lg">
                     <div class="flex justify-between items-center">
                     <p class="lightspace-nowrap">Anggaran</p>
-                    <p class="text-right">Rp {{ number_format($totalBudgetAmount, 2, ',', '.') }}</p>
+                    <p class="text-right">Rp {{ number_format($totalBudgetTrans, 2, ',', '.') }}</p>
                     </div>
 
                     <div class="flex justify-between items-center">
                         <p class="lightspace-nowrap">Status</p>
                         <div class="flex gap-1 items-center text-right">
-                        <span class="text-sm {{ $Sisa == 0 && $totalOutcome > $totalBudgetAmount ? 'text-danger' : 'text-accent' }}">
+                        <span class="text-sm {{ $Sisa == 0 && $totalOutcome > $totalBudgetTrans ? 'text-danger' : 'text-accent' }}">
                            ({{ $persenSisa }}%) {{ $statusAnggaran }} 
                         </span>
                         <p class="text-right">Rp {{ number_format($Sisa, 2, ',', '.') }}</p>
@@ -301,7 +299,7 @@
                     <div>
                         <label for="category_id_{{ $transaction->id }}" class="block mb-2 font-semibold text-gray-700">Kategori</label>
                         <select id="category_id_{{ $transaction->id }}" name="category_id" required
-                                class="block w-full p-2 border border-gray-300 rounded-md">
+                                class="block w-full p-2 border border-netral-light focus:border-accent focus:ring-accent rounded-lg shadow-lg">
                             <option value="" disabled>Kategori</option>
 
                             <optgroup label="Pengeluaran (Outcome)">

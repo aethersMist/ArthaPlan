@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Transaction;
 use App\Models\Category;
 use App\Models\Budget;
+use App\Models\BudgetTransaction;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
@@ -47,24 +48,24 @@ class DashboardController extends Controller
         }
 
         // Anggaran -Budget
-        $totalBudget = Budget::where('user_id', $user->id)->get();
+        $totalBudget = BudgetTransaction::with(['budget', 'category', 'transaction'])->latest()->get();
         if ($totalBudget->isEmpty()) {
-            $totalBudgetAmount = 0;
+            $totalBudgetTrans = 0;
         } else {
-            $totalBudgetAmount = $totalBudget->sum('amount');
+            $totalBudgetTrans = $totalBudget->sum('used_amount');
         }
         
         // Hitung persentase sisa anggaran
-        if ($totalBudgetAmount <= 0) {
+        if ($totalBudgetTrans <= 0) {
             $persenSisa = 100;
             $persenPakai = 0;
         } else {
-            $persenPakai = round(($totalOutcome / $totalBudgetAmount) * 100);
+            $persenPakai = round(($totalOutcome / $totalBudgetTrans) * 100);
             $persenSisa = 100 - $persenPakai;
         }
 
         // Hitung sisa anggaran
-        $Sisa = $totalBudgetAmount - $totalOutcome;
+        $Sisa = $totalBudgetTrans - $totalOutcome;
 
         // Tampilkan status anggaran
         if ($Sisa < 0) {
@@ -88,8 +89,24 @@ class DashboardController extends Controller
             ->groupBy(fn($transaction) => $transaction->category->name)
             ->map(fn($group) => $group->sum('amount'));
 
+        $outcomeByCategory = Transaction::with('category')
+            ->whereHas('category', fn($q) => $q->where('type', 'outcome'))
+            ->get()
+            ->groupBy(fn($transaction) => $transaction->category->name)
+            ->map(fn($group) => $group->sum('amount'));
+
         $categoriesIncome = $incomeByCategory->keys()->toArray();
         $valuesIncome = $incomeByCategory->values()->toArray();
+        
+        $categoriesOutcome = $outcomeByCategory->keys()->toArray();
+        $valuesOutcome = $outcomeByCategory->values()->toArray();
+
+        // Gabungan (Combined)
+        $combinedCategories = array_merge(
+            array_map(fn($c) => "Income: $c", $categoriesIncome),
+            array_map(fn($c) => "Outcome: $c", $categoriesOutcome)
+        );
+        $combinedValues = array_merge($valuesIncome, $valuesOutcome);
 
 
         // Transactions 
@@ -113,9 +130,14 @@ class DashboardController extends Controller
         $totalOut = array_sum($dataOut);
         $rataRata = count($dataOut) ? $totalOut / count($dataOut) : 0;
 
-        return view('dashboard', compact('categories', 'transactions', 'currentDate', 'totalIncome', 'totalOutcome', 'totalBalance',  'labels', 'valuesIncome', 'categoriesIncome' , 
-            'categories', 'currentDate', 'totalIncome', 'totalOutcome', 'totalBalance',
-        'dataOut','dataIn', 'filter', 'selectedDate', 'rataRata', 'totalBudget', 'persenSisa', 'Sisa', 'persenPakai', 'statusAnggaran', 'rataRataHarianOutcome', 'totalBudgetAmount'));
+        return view('dashboard',[ 'categoriesIncome' => json_encode($categoriesIncome),
+            'valuesIncome' => json_encode($valuesIncome),
+            'categoriesOutcome' => json_encode($categoriesOutcome),
+            'valuesOutcome' => json_encode($valuesOutcome),
+            'combinedCategories' => json_encode($combinedCategories),
+            'combinedValues' => json_encode($combinedValues),
+        ], compact('categories', 'transactions', 'currentDate', 'totalIncome', 'totalOutcome', 'totalBalance',  'labels',
+            'categories', 'currentDate', 'totalIncome', 'totalOutcome', 'totalBalance', 'dataOut','dataIn', 'filter', 'selectedDate', 'rataRata', 'totalBudget', 'persenSisa', 'Sisa', 'persenPakai', 'statusAnggaran', 'rataRataHarianOutcome', 'totalBudgetTrans',));
     }
 
     public function getChartDataApi(Request $request)
