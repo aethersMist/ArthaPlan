@@ -97,7 +97,7 @@
                     <div>
                         <label for="category_id_{{ $transaction->id }}" class="block mb-2 font-semibold text-gray-700">Kategori</label>
                         <select id="category_id_{{ $transaction->id }}" name="category_id" required
-                                class="block w-full p-2 border border-gray-300 rounded-md">
+                                class="block w-full p-2 border border-netral-light focus:border-accent focus:ring-accent rounded-lg resize-none shadow-lg">
                             <option value="" disabled>Kategori</option>
 
                             <optgroup label="Pengeluaran (Outcome)">
@@ -122,21 +122,21 @@
 
                     <div>
                         <label for="date_{{ $transaction->id }}" class="block mb-2 text-sm font-medium text-dark">Tanggal</label>
-                        <input type="date" id="date_{{ $transaction->id }}" name="date"
+                        <x-text-input type="date" id="date_{{ $transaction->id }}" name="date"
                             value="{{ $transaction->date->format('Y-m-d') }}"
-                            required class="block w-full p-2.5 text-sm text-dark bg-gray-50 border border-gray-300 rounded-lg" />
+                            required />
                     </div>
 
                     <div class="col-span-2">
                         <label for="amount_{{ $transaction->id }}" class="block mb-2 text-sm font-medium text-dark">Nominal</label>
-                        <input type="number" id="amount_{{ $transaction->id }}" name="amount" value="{{ $transaction->amount }}"
-                            required class="block w-full p-2.5 text-sm text-dark bg-gray-50 border border-gray-300 rounded-lg" />
+                        <x-text-input type="number" id="amount_{{ $transaction->id }}" name="amount" value="{{ $transaction->amount }}"
+                            required />
                     </div>
 
                     <div class="col-span-2">
                         <label for="description_{{ $transaction->id }}" class="block mb-2 text-sm font-medium text-dark">Keterangan</label>
                         <textarea id="description_{{ $transaction->id }}" name="description" rows="3"
-                                class="block w-full p-2.5 text-sm text-dark bg-gray-50 border border-gray-300 rounded-lg resize-none">{{ $transaction->description }}</textarea>
+                                class="block w-full p-2.5 text-sm text-dark bg-gray-50 border border-netral-light focus:border-accent focus:ring-accent rounded-lg resize-none shadow-lg">{{ $transaction->description }}</textarea>
                     </div>
                 </div>
 

@@ -248,20 +248,17 @@
                 <div class="grid grid-cols-1 gap-4 mb-4 sm:grid-cols-2">
                     <div class="col-span-2">
                         <label for="amount" class="block mb-2 text-sm font-medium text-dark">Nominal</label>
-                        <input type="number" id="amount" name="amount" placeholder="100000" required
-                            class="block w-full p-2.5 text-sm text-dark bg-gray-50 border border-netral-light focus:border-accent focus:ring-accent rounded-lg shadow-lg" />
+                        <x-text-input type="number" id="amount" name="amount" placeholder="100000" required />
                     </div>
 
                     <div>
                         <label for="start_date" class="block mb-2 text-sm font-medium text-dark">Tanggal Mulai</label>
-                        <input type="date" id="start_date" name="start_date" required
-                            class="block w-full p-2.5 text-sm text-dark bg-gray-50 border border-netral-light focus:border-accent focus:ring-accent rounded-lg shadow-lg" />
+                        <x-text-input type="date" id="start_date" name="start_date" required />
                     </div>
 
                     <div>
                         <label for="end_date" class="block mb-2 text-sm font-medium text-dark">Tanggal Berakhir</label>
-                        <input type="date" id="end_date" name="end_date" required
-                            class="block w-full p-2.5 text-sm text-dark bg-gray-50 border border-netral-light focus:border-accent focus:ring-accent rounded-lg shadow-lg" />
+                        <x-text-input type="date" id="end_date" name="end_date" required />
                     </div>
                 </div>
 
@@ -283,22 +280,19 @@
             <div class="grid grid-cols-1 gap-4 mb-4 sm:grid-cols-2">
                 <div class="col-span-2">
                     <label for="edit_amount_{{ $budget->id }}" class="block mb-2 text-sm font-medium text-dark">Nominal</label>
-                    <input type="number" id="edit_amount_{{ $budget->id }}" name="amount" placeholder="100000" required
-                        class="block w-full p-2.5 text-sm text-dark bg-gray-50 border border-netral-light focus:border-accent focus:ring-accent rounded-lg shadow-lg"
+                    <x-text-input type="number" id="edit_amount_{{ $budget->id }}" name="amount" placeholder="100000" required
                         value="{{ $budget->amount }}" />
                 </div>
 
                 <div>
                     <label for="edit_start_date_{{ $budget->id }}" class="block mb-2 text-sm font-medium text-dark">Tanggal Mulai</label>
-                    <input type="date" id="edit_start_date_{{ $budget->id }}" name="start_date" required
-                        class="block w-full p-2.5 text-sm text-dark bg-gray-50 border border-netral-light focus:border-accent focus:ring-accent rounded-lg shadow-lg"
+                    <x-text-input type="date" id="edit_start_date_{{ $budget->id }}" name="start_date" required
                         value="{{ $budget->start_date->format('Y-m-d') }}" />
                 </div>
 
                 <div>
                     <label for="edit_end_date_{{ $budget->id }}" class="block mb-2 text-sm font-medium text-dark">Tanggal Berakhir</label>
-                    <input type="date" id="edit_end_date_{{ $budget->id }}" name="end_date" required
-                        class="block w-full p-2.5 text-sm text-dark bg-gray-50 border border-netral-light focus:border-accent focus:ring-accent rounded-lg shadow-lg"
+                    <x-text-input type="date" id="edit_end_date_{{ $budget->id }}" name="end_date" required
                         value="{{ $budget->end_date->format('Y-m-d') }}" />
                 </div>
             </div>
@@ -357,8 +351,7 @@
         </div>
           <div>
             <label for="used_amount" class="block mb-2 text-sm font-medium text-dark">Nominal</label>
-            <input type="number" id="used_amount" name="used_amount" placeholder="100000" required
-                   class="block w-full p-2.5 text-sm text-dark bg-gray-50 border border-netral-light focus:border-accent focus:ring-accent rounded-lg shadow-lg" />
+            <x-text-input type="number" id="used_amount" name="used_amount" placeholder="100000" required/>
           </div>
 
         </div>
@@ -415,8 +408,7 @@
         </div>
           <div>
             <label for="used_amount" class="block mb-2 text-sm font-medium text-dark">Nominal</label>
-            <input type="number" id="used_amount" name="used_amount"   value="{{ $transaction->used_amount }}" required
-                   class="block w-full p-2.5 text-sm text-dark bg-gray-50 border border-netral-light focus:border-accent focus:ring-accent rounded-lg shadow-lg" />
+            <x-text-input type="number" id="used_amount" name="used_amount"   value="{{ $transaction->used_amount }}" required  />
           </div>
 
         </div>

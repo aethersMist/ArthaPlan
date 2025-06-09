@@ -50,16 +50,16 @@
 
                   <!-- Navigation Links (Desktop Only - Show from lg up) -->
                   <div class="hidden lg:flex space-x-4 items-center justify-between w-full lg:w-auto lg:order-1">
-                      <x-nav-link href="#beranda" active>
+                      <x-nav-link href="#beranda">
                           {{ __('Beranda') }}
                       </x-nav-link>
-                      <x-nav-link href="#tentang" active>
+                      <x-nav-link href="#tentang">
                           {{ __('Tentang') }}
                       </x-nav-link>
-                      <x-nav-link href="#fitur" active>
+                      <x-nav-link href="#fitur">
                           {{ __('Fitur') }}
                       </x-nav-link>
-                      <x-nav-link href="#highlight" active>
+                      <x-nav-link href="#highlight">
                           {{ __('Highlight') }}
                       </x-nav-link>
                   </div>
@@ -88,16 +88,16 @@
               <!-- Responsive Mobile Menu (Show on mobile and tablet) -->
               <div :class="{ 'block': open, 'hidden': !open }" class="hidden md:hidden">
                   <div class="pt-2 pb-3 space-y-1">
-                      <x-responsive-nav-link href="#beranda" active>
+                      <x-responsive-nav-link href="#beranda">
                           {{ __('Beranda') }}
                       </x-responsive-nav-link>
-                      <x-responsive-nav-link href="#tentang" active>
+                      <x-responsive-nav-link href="#tentang">
                           {{ __('Tentang') }}
                       </x-responsive-nav-link>
-                      <x-responsive-nav-link href="#fitur" active>
+                      <x-responsive-nav-link href="#fitur">
                           {{ __('Fitur') }}
                       </x-responsive-nav-link>
-                      <x-responsive-nav-link href="#highlight" active>
+                      <x-responsive-nav-link href="#highlight">
                           {{ __('Highlight') }}
                       </x-responsive-nav-link>
                   </div>
@@ -107,15 +107,15 @@
                       @if (Route::has('login'))
                           @auth
                               <a href="{{ route('dashboard') }}" class="block">
-                                  <x-primary-button class="w-full bg-primary">Dashboard</x-primary-button>
+                                  <x-primary-button class="w-full">Beranda</x-primary-button>
                               </a>
                           @else
                               <a href="{{ route('login') }}" class="block">
-                                  <x-primary-button class="w-full bg-accent">Login</x-primary-button>
+                                  <x-secondary-button class="w-full">Login</x-primary-button>
                               </a>
                               @if (Route::has('register'))
                                   <a href="{{ route('register') }}" class="block">
-                                      <x-primary-button class="w-full bg-primary">Sign Up</x-primary-button>
+                                      <x-primary-button class="w-full">Sign Up</x-primary-button>
                                   </a>
                               @endif
                           @endauth
@@ -134,7 +134,7 @@
         class="max-w-screen-xl px-4 py-8 mx-auto text-center lg:py-16 lg:px-12"
       >
         <a
-          href="{{ route('login') }}"
+          href="#"
           class="inline-flex items-center justify-between px-1 py-1 pr-4 text-sm text-light bg-primary rounded-full mb-7 hover:bg-primary-soft "
           role="alert"
         >
@@ -159,18 +159,23 @@
         <div
           class="flex flex-col mb-8 space-y-4 lg:mb-16 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-4"
         >
-          <a
-            href="{{ route('login') }}"
-          >
 
-          <x-primary-button class="rounded-lg px-8 py-4" >Login</x-primary-button>
-
-          </a>
-          <a
-            href="{{ route('register') }}"
-          >
-                                    <x-secondary-button class="rounded-lg px-8 py-4" >Sign Up</x-secondary-button>
-          </a>
+          @if (Route::has('login'))
+                          @auth
+                              <a href="{{ route('dashboard') }}" class="block">
+            <x-primary-button class="rounded-lg px-8 py-4 text-xl font-medium" >Beranda</x-primary-button>
+                              </a>
+                          @else
+                              <a href="{{ route('login') }}" class="block">
+          <x-secondary-button class="rounded-lg px-8 py-4 text-xl font-medium" >Login</x-secondary-button>
+                              </a>
+                              @if (Route::has('register'))
+                                  <a href="{{ route('register') }}" class="block">
+            <x-primary-button class="rounded-lg px-8 py-4 text-xl font-medium" >Sign Up</x-primary-button>
+                                  </a>
+                              @endif
+                          @endauth
+                      @endif
         </div>
       </div>
     </section>

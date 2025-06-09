@@ -8,6 +8,7 @@ use App\Models\Transaction;
 use App\Models\Category;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Carbon\Carbon;
 
 
@@ -118,4 +119,5 @@ class ReportController extends Controller
 
         return [$labels, $dataOut, $dataIn];
     }
+
 }   

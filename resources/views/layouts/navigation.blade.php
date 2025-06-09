@@ -81,7 +81,7 @@
     <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
+                {{ __('Beranda') }}
             </x-responsive-nav-link>
              <x-responsive-nav-link :href="route('reports')" :active="request()->routeIs('reports')">
                 {{ __('Laporan') }}
@@ -127,7 +127,7 @@
         @csrf
         <div class="grid grid-cols-1 gap-4 mb-4 sm:grid-cols-2">
             <div>
-                <label for="category_id" class="block mb-2 font-semibold text-gray-700">Kategori</label>
+                <label for="category_id" class="block mb-2 text-sm font-medium text-dark">Kategori</label>
                 <select id="category_id" name="category_id" required
                         class="block w-full p-2 border border-netral-light focus:border-accent focus:ring-accent rounded-lg shadow-lg">
                     <option value="" disabled selected>Kategori</option>
@@ -152,18 +152,16 @@
 
             <div>
               <label for="date" class="block mb-2 text-sm font-medium text-dark">Tanggal</label>
-              <x-text-input type="date" id="date" name="date" required
-                     class="block w-full p-2.5 text-sm text-dark bg-gray-50 border border-netral-light focus:border-accent focus:ring-accent rounded-lg shadow-lg" />
+              <x-text-input type="date" id="date" name="date" required/>
             </div>
           <div class="col-span-2">
             <label for="amount" class="block mb-2 text-sm font-medium text-dark">Nominal</label>
-            <x-text-input type="number" id="amount" name="amount" placeholder="100000" required
-                   class="block w-full p-2.5 text-sm text-dark bg-gray-50 border border-netral-light focus:border-accent focus:ring-accent rounded-lg shadow-lg" />
+            <x-text-input type="number" id="amount" name="amount" placeholder="100000" required />
           </div>
           <div class="col-span-2">
             <label for="description" class="block mb-2 text-sm font-medium text-dark">Keterangan</label>
             <textarea id="description" name="description" rows="3"
-                      class="block w-full p-2.5 text-sm text-dark bg-gray-50 border border-netral-light focus:border-accent focus:ring-accent rounded-lg resize-none"
+                      class="block w-full p-2.5 text-sm text-dark bg-gray-50 border border-netral-light focus:border-accent focus:ring-accent rounded-lg resize-none shadow-lg"
                       placeholder="Keterangan"></textarea>
           </div>
         </div>
@@ -186,8 +184,8 @@
           <div class="grid grid-cols-1 gap-4 mb-4 sm:grid-cols-2">
             <div>
               <label for="name" class="block mb-2 text-sm font-medium text-dark">Kategori</label>
-              <input type="text" id="name" name="name" placeholder="Makanan, Transportasi, dll"
-                     required class="block w-full p-2.5 text-sm text-dark bg-gray-50 border border-netral-light focus:border-accent focus:ring-accent rounded-lg shadow-lg" />
+              <x-text-input type="text" id="name" name="name" placeholder="Makanan, Transportasi, dll"
+                     required class="block w-full p-2.5 text-sm text-dark bg-gray-50 border border-netral-light focus:border-accent focus:ring-accent rounded-lg" />
             </div>
             <div>
               <label for="type" class="block mb-2 text-sm font-medium text-dark">Jenis Kategori</label>

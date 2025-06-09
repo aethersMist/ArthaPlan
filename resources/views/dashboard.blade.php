@@ -223,7 +223,7 @@
                     >
                     <i class="fa-solid fa-chart-simple fa-md"></i>
                     </x-secondary-button>
-                    <h2 class="text-lg font-semibold">Diagram</h2>
+                    <h2 class="text-lg font-semibold">Diagram Transaksi</h2>
                 </a>
 
                 <!-- Dropdown -->
@@ -324,15 +324,15 @@
 
                     <div>
                         <label for="date_{{ $transaction->id }}" class="block mb-2 text-sm font-medium text-dark">Tanggal</label>
-                        <input type="date" id="date_{{ $transaction->id }}" name="date"
+                        <x-text-input type="date" id="date_{{ $transaction->id }}" name="date"
                             value="{{ $transaction->date->format('Y-m-d') }}"
-                            required class="block w-full p-2.5 text-sm text-dark bg-gray-50 border border-gray-300 rounded-lg" />
+                            required />
                     </div>
 
                     <div class="col-span-2">
                         <label for="amount_{{ $transaction->id }}" class="block mb-2 text-sm font-medium text-dark">Nominal</label>
-                        <input type="number" id="amount_{{ $transaction->id }}" name="amount" value="{{ $transaction->amount }}"
-                            required class="block w-full p-2.5 text-sm text-dark bg-gray-50 border border-gray-300 rounded-lg" />
+                        <x-text-input type="number" id="amount_{{ $transaction->id }}" name="amount" value="{{ $transaction->amount }}"
+                            required />
                     </div>
 
                     <div class="col-span-2">

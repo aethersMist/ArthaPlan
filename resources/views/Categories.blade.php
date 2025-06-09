@@ -90,13 +90,13 @@
           <div class="grid grid-cols-1 gap-4 mb-4 sm:grid-cols-2">
             <div>
               <label for="category_{{ $category->id }}" class="block mb-2 text-sm font-medium text-dark">Kategori</label>
-                <input type="text" id="category_{{ $category->id }}" name="name" value="{{ $category->name }}"
-                     required class="block w-full p-2.5 text-sm text-dark bg-gray-50 border border-gray-300 rounded-lg" />
+                <x-text-input type="text" id="category_{{ $category->id }}" name="name" value="{{ $category->name }}"
+                     required/>
             </div>
             <div>
-              <label for="type_{{ $category->id }}" class="block mb-2 text-sm font-medium text-dark">Jenis Kategori</label>
+              <label for="type_{{ $category->id }}" class="block mb-2 text-sm font-medium text-dark ">Jenis Kategori</label>
               <select id="type_{{ $category->id }}" name="type"
-                      class="block w-full p-2.5 text-sm text-dark bg-gray-50 border border-gray-300 rounded-lg" required>
+                      class="block w-full p-2.5 text-sm text-dark bg-gray-50 border border-netral-light focus:border-accent focus:ring-accent rounded-lg shadow-lg" required>
                  <option value="income" {{ $category->type == 'income' ? 'selected' : '' }}>Pemasukkan</option>
                 <option value="outcome" {{ $category->type == 'outcome' ? 'selected' : '' }}>Pengeluaran</option>
               </select>

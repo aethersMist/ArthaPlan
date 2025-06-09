@@ -8,7 +8,7 @@ window.Alpine = Alpine;
 
 Alpine.start();
 
-// Bar Chart - Dash
+// Bar Chart 
 document.addEventListener("DOMContentLoaded", function () {
     let barChart = {};
 
@@ -193,7 +193,7 @@ document.addEventListener("DOMContentLoaded", function () {
     setInterval(updateWaktu, 1000);
 });
 
-// Donat Chart Anggaran(Dash)
+// Donat Chart - Anggaran
 document.addEventListener("DOMContentLoaded", function () {
     const el = document.getElementById("donutChartPersen");
 
@@ -257,7 +257,7 @@ document.addEventListener("DOMContentLoaded", function () {
     chart.render();
 });
 
-// Laporan - Dash - Income
+// Laporan - Report 
 document.addEventListener("DOMContentLoaded", () => {
     function createDonutChart(
         containerId,

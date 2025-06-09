@@ -6,6 +6,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\BudgetController;
 use App\Http\Controllers\BudgetTransactionController;
+use App\Http\Controllers\DownloadController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 

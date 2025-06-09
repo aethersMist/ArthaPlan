@@ -21,14 +21,16 @@
           <section class="rounded-2xl bg-light shadow-lg p-4 w-full">
             <div class="w-full gap-2">
               <div
-                class="flex-row md:flex justify-between items-center mb-4 text-center font-bold text-light bg-accent uppercase rounded-lg p-2 shadow-lg"
+                class="flex-row md:flex justify-center items-center mb-4 text-center font-bold text-light bg-accent uppercase rounded-lg p-2 shadow-lg"
               >
                 <p>total pemasukkan</p>
 
+                {{-- <a href="{{ route('reports.download.csv') }}" title="Unduh Laporan CSV">
                 <x-primary-button
                             class="flex justify-center items-center h-8 w-8  rounded-full ">
                       <i class="fa fa-download"></i>
                     </x-primary-button>
+                </a> --}}
 
               </div>
               <div
@@ -65,7 +67,7 @@
 
               <!-- Legenda -->
               <div
-                class="flex justify-between items-center mt-4 text-sm md:text-lg w-full bg-base rounded-xl p-4 h-full">
+                class="flex justify-between items-center mt-4 text-sm md:text-lg w-full bg-base border-2 border-primary rounded-xl p-4 h-full">
                 <ul id="legend-Report-Income" class="flex flex-col gap-y-4 w-full">
                     <li class="flex justify-between items-center w-full text-sm font-semibold text-dark mb-1">
                         <div class="inline-flex items-center gap-2">
@@ -95,14 +97,16 @@
           <section class="rounded-2xl bg-light shadow-lg p-6">
             <div class="w-full gap-2">
               <div
-                class="flex-row md:flex justify-between items-center mb-4 text-center font-bold text-light bg-danger uppercase rounded-lg p-2 shadow-lg"
+                class="flex-row md:flex justify-center items-center mb-4 text-center font-bold text-light bg-danger uppercase rounded-lg p-2 shadow-lg"
               >
                 <p>total pengeluaran</p>
 
-                <x-danger-button
-                            class="flex justify-center items-center h-8 w-8  rounded-full ">
-                      <i class="fa fa-download"></i>
+                {{-- <a href="{{ route('reports.download.csv') }}" title="Unduh Laporan CSV">
+                    <x-danger-button class="flex justify-center items-center h-8 w-8 rounded-full">
+                        <i class="fa fa-download"></i>
                     </x-danger-button>
+                </a> --}}
+
 
               </div>
 
@@ -138,7 +142,7 @@
 
               <!-- Legenda -->
               <div
-                class="flex justify-between items-center mt-4 text-sm md:text-lg w-full bg-base rounded-xl p-4 h-full">
+                class="flex justify-between items-center mt-4 text-sm md:text-lg w-full bg-base border-2 border-primary rounded-xl p-4 h-full">
                 <ul id="legend-Report-Outcome" class="flex flex-col gap-y-4 w-full">
                     <li class="flex justify-between items-center w-full text-sm font-semibold text-dark mb-1">
                         <div class="inline-flex items-center gap-2">
