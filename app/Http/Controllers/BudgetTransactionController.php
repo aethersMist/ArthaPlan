@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\BudgetTransaction;
+use App\Models\Budget;
+use App\Models\Category;
+use App\Models\Transaction;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class BudgetTransactionController extends Controller
@@ -12,8 +16,12 @@ class BudgetTransactionController extends Controller
      */
     public function index()
     {
-        $budgets = BudgetTransaction::all();
-        return view('budgets', compact('budgets'));
+        $transactions = BudgetTransaction::with(['budget', 'category', 'transaction'])->latest()->get();
+        $budgets = Budget::all();
+        $categories = Category::all();
+        $rawTransactions = Transaction::all();
+
+        return view('budget', compact('transactions', 'budgets', 'categories', 'rawTransactions'));
     }
 
     /**
@@ -21,7 +29,7 @@ class BudgetTransactionController extends Controller
      */
     public function create()
     {
-        //
+        return view('budgets.create', compact('budgets', 'categories', 'transactions'));
     }
 
     /**
@@ -29,38 +37,57 @@ class BudgetTransactionController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+            $request->validate([
+            'budget_id' => 'required|exists:budgets,id',
+            'category_id' => 'required|exists:categories,id',
+            'transaction_id' => 'required|exists:transactions,id',
+            'used_amount' => 'required|numeric|min:0',
+        ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(BudgetTransaction $budgetTransaction)
-    {
-        //
-    }
+        BudgetTransaction::create($request->all());
+
+        return redirect()->back()->with('success', 'Transaksi anggaran berhasil ditambahkan');    }
+
 
     /**
      * Show the form for editing the specified resource.
      */
     public function edit(BudgetTransaction $budgetTransaction)
     {
-        //
+
+        $budgets = Budget::all();
+        $categories = Category::all();
+        $transactions = Transaction::all();
+        return view('budgets.edit', compact('budgetTransaction', 'budgets', 'categories', 'transactions'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, BudgetTransaction $budgetTransaction)
     {
-        //
+        // dd($request->all());
+
+        $request->validate([
+            'budget_id' => 'required|exists:budgets,id',
+            'category_id' => 'required|exists:categories,id',
+            'transaction_id' => 'required|exists:transactions,id',
+            'used_amount' => 'required|numeric|min:0',
+        ]);
+
+        $budgetTransaction->update([
+            'budget_id'         => $request->budget_id,
+            'category_id'       => $request->category_id,
+            'transaction_id'    => $request->transaction_id,
+            'used_amount'       => $request->used_amount,
+        ]);
+
+        return redirect()->back()->with('success', 'Transaksi anggaran berhasil diupdate');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(BudgetTransaction $budgetTransaction)
     {
-        //
+
+        $budgetTransaction->delete();
+        return redirect()->route('budgets')->with('success', 'Budget Transaction deleted successfully.');
     }
+
+     
 }

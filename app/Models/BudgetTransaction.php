@@ -19,6 +19,11 @@ class BudgetTransaction extends Model
         return $this->belongsTo(Budget::class);
     }
 
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
     public function Transaction()
     {
         return $this->belongsTo(Transaction::class);

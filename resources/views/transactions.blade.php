@@ -33,7 +33,7 @@
                     <span class="{{ $transaction->category->type == 'income' ? 'text-accent' : 'text-danger' }}">
                     <i class="fa fa-{{ $transaction->category->type == 'income' ? 'plus' : 'minus' }}" aria-hidden="true"></i>
                     </span>
-                    <p>Rp{{ number_format($transaction->amount, 0, ',', '.') }}</p>
+                    <p>Rp{{ number_format($transaction->amount, 2, ',', '.') }}</p>
                 </div>
                 </td>
                 <td class="px-4 py-4">{{ $transaction->date->translatedFormat('l, d F Y') }}</td>

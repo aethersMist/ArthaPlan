@@ -5,7 +5,7 @@ use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\BudgetController;
-// use App\Http\Controllers\BudgetTransactionController;
+use App\Http\Controllers\BudgetTransactionController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -21,6 +21,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('/budgets', BudgetController::class);
     Route::resource('/categories', CategoryController::class);
 });
+
 Route::middleware('auth')->group(function () {
     Route::get('/categories', [CategoryController::class, 'index'])->name('categories');
     Route::get('/categories/get-by-type', [CategoryController::class, 'getCategories']);
@@ -29,6 +30,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/categories/{id}', [CategoryController::class, 'update']);
     Route::delete('/categories/{id}', [CategoryController::class, 'destroy']);
 });
+
 Route::middleware('auth')->group(function () {
     Route::resource('/reports', ReportController::class);
     Route::get('/reports', [ReportController::class, 'index'])->name('reports');
@@ -41,12 +43,21 @@ Route::middleware('auth')->group(function () {
     Route::put('/transactions/{id}', [TransactionController::class, 'update'])->name('transactions.update');
     Route::delete('/transactions/{id}', [TransactionController::class, 'destroy'])->name('transactions.destroy');
 });
+
 Route::middleware('auth')->group(function () {
     Route::resource('/budgets', BudgetController::class);
     Route::get('/budgets', [BudgetController::class, 'index'])->name('budgets');
     Route::post('/budgets', [BudgetController::class, 'store'])->name('budgets.store');
     Route::put('/budgets/{id}', [BudgetController::class, 'update'])->name('budgets.update');
     Route::delete('/budgets/{id}', [BudgetController::class, 'destroy'])->name('budgets.destroy');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::resource('/budget-transactions', BudgetTransactionController::class);
+    Route::get('/budgetTransactions', [BudgetTransactionController::class, 'index'])->name('budgetTransactions');
+    Route::post('/budgetTransactions', [BudgetTransactionController::class, 'store'])->name('budgetTransactions.store');
+    Route::put('/budgetTransactions/{budgetTransaction}', [BudgetTransactionController::class, 'update'])->name('budgetTransactions.update');
+    Route::delete('/budgetTransactions/{budgetTransaction}', [BudgetTransactionController::class, 'destroy'])->name('budgetTransactions.destroy');
 });
 
 

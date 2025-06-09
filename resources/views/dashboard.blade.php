@@ -69,7 +69,7 @@
         <!-- Laporan (Pie Chart) -->
         <section class="rounded-2xl bg-light shadow-lg p-6">
             <!-- Header Laporan -->
-            <a href="{{ route('reports') }}" class="flex items-center w-fit mb-4 gap-2 rounded-full bg-base p-2 hover:bg-accent transition">
+            <a href="{{ route('reports') }}" class="flex items-center w-fit mb-4 gap-2 rounded-full bg-base  border-2 border-primary p-2 hover:bg-accent transition">
                 <x-secondary-button class="flex justify-center items-center h-8 w-8 rounded-full">
                     <i class="fa fa-chart-pie fa-md"></i>
                 </x-secondary-button>
@@ -87,7 +87,7 @@
                 </div>
 
             <!-- Legenda -->
-            <div class="flex justify-center items-center mt-4 text-sm md:text-lg w-full bg-base rounded-xl p-4 h-full">
+            <div class="flex justify-center items-center mt-4 text-sm md:text-lg w-full bg-base  border-2 border-primary rounded-xl p-4 h-full">
                 <ul id="legend-Dashboard" class="flex flex-wrap gap-x-6 gap-y-2 space-x-4">
                     <li class="flex items-center transition hover:scale-105 mb-1 space-x-2">
                         <span class="inline-block w-3 h-3 rounded-full"></span>
@@ -99,7 +99,7 @@
 
         <!-- Riwayat Transaksi -->
         <section class="rounded-2xl bg-light shadow-lg p-4">
-            <a href="{{ route('transactions') }}" class="flex items-center w-fit mb-4 gap-2 rounded-full bg-base p-2 hover:bg-accent transition">
+            <a href="{{ route('transactions') }}" class="flex items-center w-fit mb-4 gap-2 rounded-full bg-base  border-2 border-primary p-2 hover:bg-accent transition">
 
             <x-secondary-button class="flex justify-center items-center h-8 w-8 rounded-full">
                 <i class="fa fa-file-lines fa-md" aria-hidden="true"></i>
@@ -175,17 +175,17 @@
         <!-- Anggaran -->
         <section class="rounded-2xl bg-light shadow-lg p-6">
             <!-- Judul -->
-            <a href="{{ route('budgets') }}" class="flex items-center w-fit mb-4 gap-2 rounded-full bg-base p-2 hover:bg-accent transition">
+            <a href="{{ route('budgets') }}" class="flex items-center w-fit mb-4 gap-2 rounded-full bg-base  border-2 border-primary p-2 hover:bg-accent transition">
             <x-secondary-button class="flex justify-center items-center h-8 w-8 rounded-full">
                 <i class="fa-solid fa-table fa-md"></i>
             </x-secondary-button>
-            <h2 class="text-lg font-semibold">Anggaran</h2>
+            <h2 class="text-lg font-semibold">Kategori Anggaran</h2>
             </a>
 
             <!-- Konten Utama -->
             <div class="flex flex-col lg:flex-row w-full gap-4 lg:gap-6 items-center lg:items-center justify-between">
             <!-- Chart -->
-            <div class="w-full lg:w-2/5 flex justify-center bg-base rounded-xl py-4">
+            <div class="w-full lg:w-2/5 flex justify-center bg-base  border-2 border-primary rounded-xl py-4">
                 <div id="donutChartPersen" data-sisa="{{ $persenSisa }}" data-pakai="{{ $persenPakai }}"></div>
             </div>
 
@@ -208,7 +208,7 @@
                 </div>
                 <div class="flex justify-between items-center">
                     <p class="lightspace-nowrap">Rata-rata Harian</p>
-                    <p class="text-right">Rp {{ number_format($rataRataHarianBudget, 2, ',', '.') }}</p>
+                    <p class="text-right">Rp {{ number_format($rataRataHarianOutcome, 2, ',', '.') }}</p>
                 </div>
                 </div>
             </div>
@@ -219,7 +219,7 @@
             <!-- atas -->
             <div class="flex justify-between items-center mb-4">
                 
-                <a href="{{ route('budgets') }}" class="flex items-center gap-2 rounded-full bg-base p-2 hover:bg-accent transition">
+                <a href="{{ route('budgets') }}" class="flex items-center gap-2 rounded-full bg-base border-2 border-primary p-2 hover:bg-accent transition">
                     <x-secondary-button
                     class="flex justify-center items-center h-8 w-8 rounded-full"
                     >

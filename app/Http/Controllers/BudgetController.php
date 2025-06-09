@@ -16,10 +16,8 @@ class BudgetController extends Controller
     {
         $user = Auth::user();
         $budgets = Budget::where('user_id', $user->id)->orderByDesc('start_date')->get();
-        $budgetTransactions = BudgetTransaction::all();
+        $budgets = Budget::with(['budgetTransaction.category'])->where('user_id', Auth::id())->get();
 
-        // Budget Transaction
-        $totalUsedAmount = $budgets->flatMap->budgetTransaction->sum('used_amount');
 
         $currentDate = now()->translatedFormat('l, d F Y');
         $currentMonth = now()->month;
@@ -31,29 +29,53 @@ class BudgetController extends Controller
             ->whereYear('date', $currentYear)
             ->get();
 
+        // Income, Outcome, Balance
         $totalIncome = $transactions->where('category.type', 'income')->sum('amount');
         $totalOutcome = $transactions->where('category.type', 'outcome')->sum('amount');
         $totalBalance = $totalIncome - $totalOutcome;
 
+        // Budget Amount - Rata-Rata Harian - Anggaran
         $totalBudgetAmount = $budgets->sum('amount');
-
         $persenPakai = $totalBudgetAmount > 0 ? round(($totalOutcome / $totalBudgetAmount) * 100) : 0;
         $persenSisa = 100 - $persenPakai;
         $Sisa = max(0, $totalBudgetAmount - $totalOutcome);
         $statusAnggaran = $Sisa <= 0 ? 'Melebihi' : 'Sisa';
 
-        $rataRataHarianBudget = $budgets->reduce(function ($carry, $budget) {
-            $days = $budget->start_date->diffInDays($budget->end_date) + 1;
-            return $carry + ($budget->amount / $days);
-        }, 0);
+        $startDate = $budgets->min('start_date');
+        $endDate = $budgets->max('end_date');
+        $days = \Carbon\Carbon::parse($startDate)->diffInDays($endDate) + 1;
+
+        $rataRataHarianOutcome = $days > 0 ? $totalOutcome / $days : 0;
 
         $categories = Category::all();
-        
+
+        // Budget Transaction
+        foreach ($budgets as $budget) {
+            foreach ($budget->budgetTransaction as $bt) {
+                $limit = $bt->used_amount;
+                $categoryId = $bt->category_id;
+
+                $totalOutcome = Transaction::where('user_id', $user->id)
+                    ->whereMonth('date', $currentMonth)
+                    ->whereYear('date', $currentYear)
+                    ->where('category_id', $categoryId)
+                    ->sum('amount');
+
+                $remaining = $limit - $totalOutcome;
+                $progress = $limit > 0 ? min(100, ($totalOutcome / $limit) * 100) : 0;
+
+                // Simpan nilai-nilai ini ke dalam property dinamis
+                $bt->limit = $limit;
+                $bt->totalOutcome = $totalOutcome;
+                $bt->remaining = $remaining;
+                $bt->progress = $progress;
+            }
+        }
 
 
         return view('budgets', compact(
-            'budgets', 'categories', 'currentDate', 'totalIncome', 'totalOutcome', 'totalBalance', 'totalUsedAmount',
-            'totalBudgetAmount', 'persenSisa', 'Sisa', 'persenPakai', 'statusAnggaran', 'rataRataHarianBudget'
+            'budgets', 'categories', 'currentDate', 'totalIncome', 'totalOutcome', 'totalBalance',
+            'totalBudgetAmount', 'persenSisa', 'Sisa', 'persenPakai', 'statusAnggaran', 'rataRataHarianOutcome', 'transactions'
         ));
     }
 
@@ -106,11 +128,11 @@ class BudgetController extends Controller
         return redirect()->route('budgets')->with('success', 'Budget berhasil diperbarui!');
     }
 
-   
+
     public function destroy(Budget $budget)
     {
         $this->authorizeBudget($budget);
-         
+
         $budget->delete();
 
         return redirect()->route('budgets')->with('success', 'Budget berhasil dihapus!');

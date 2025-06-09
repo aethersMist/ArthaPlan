@@ -27,7 +27,7 @@
         <script src="https://unpkg.com/flowbite@latest/dist/flowbite.min.js"></script>
 
     </head>
-    <body class="font-display antialiased">
+    <body class="font-display bg-base antialiased">
         <div class="min-h-screen bg-base">
             @include('layouts.navigation')
 

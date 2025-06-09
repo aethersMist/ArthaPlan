@@ -19,6 +19,8 @@ class DashboardController extends Controller
     {
         $request = request(); 
         $user = Auth::user();
+        $budgets = Budget::where('user_id', $user->id)->orderByDesc('start_date')->get();
+
 
         // Get the current month
         $currentDate = now()->translatedFormat('l, d F Y');
@@ -73,10 +75,11 @@ class DashboardController extends Controller
         }
 
         // Rata-rata harian budget
-        $jumlahHariBulanIni = now()->daysInMonth;
-        $rataRataHarianBudget = $totalBudgetAmount > 0
-            ? round($totalBudgetAmount / $jumlahHariBulanIni)
-            : 0;
+        $startDate = $budgets->min('start_date');
+        $endDate = $budgets->max('end_date');
+        $days = \Carbon\Carbon::parse($startDate)->diffInDays($endDate) + 1;
+
+        $rataRataHarianOutcome = $days > 0 ? $totalOutcome / $days : 0;
 
         // Laporan
        $incomeByCategory = Transaction::with('category')
@@ -112,7 +115,7 @@ class DashboardController extends Controller
 
         return view('dashboard', compact('categories', 'transactions', 'currentDate', 'totalIncome', 'totalOutcome', 'totalBalance',  'labels', 'valuesIncome', 'categoriesIncome' , 
             'categories', 'currentDate', 'totalIncome', 'totalOutcome', 'totalBalance',
-        'dataOut','dataIn', 'filter', 'selectedDate', 'rataRata', 'totalBudget', 'persenSisa', 'Sisa', 'persenPakai', 'statusAnggaran', 'rataRataHarianBudget', 'totalBudgetAmount'));
+        'dataOut','dataIn', 'filter', 'selectedDate', 'rataRata', 'totalBudget', 'persenSisa', 'Sisa', 'persenPakai', 'statusAnggaran', 'rataRataHarianOutcome', 'totalBudgetAmount'));
     }
 
     public function getChartDataApi(Request $request)
