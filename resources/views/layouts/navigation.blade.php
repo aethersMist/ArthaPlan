@@ -22,7 +22,7 @@
                 {{ __('Laporan') }}
             </x-nav-link>
             <x-nav-link :href="route('transactions')" :active="request()->routeIs('transactions')">
-                {{ __('Riwayat') }}
+                {{ __('Transaksi') }}
             </x-nav-link>
             <x-nav-link :href="route('budgets')" :active="request()->routeIs('budgets')">
                 {{ __('Anggaran') }}
@@ -33,7 +33,7 @@
         <div class="flex items-center md:order-2 space-x-2">
 
             <!-- Tombol Modal Tambah -->
-            
+
             <x-primary-button data-modal-target="addModal"
                 data-modal-toggle="addModal" class="relative flex items-center justify-center rounded-full w-8 h-8">
                 <i class="fa fa-plus fa-lg" aria-hidden="true"></i>
@@ -47,7 +47,7 @@
                             <i class="fa fa-user text-light text-md" aria-hidden="true"></i>
                         </x-secondary-button>
 
-                        
+
                     </x-slot>
 
                     <x-slot name="content" cla>
@@ -56,13 +56,16 @@
                             <div class="font-medium text-sm text-gray-300">{{ Auth::user()->email }}</div>
                         </div>
                         <div class="space-y-1 p-1 rounded-lg text-sm text-dark">
+                            <x-dropdown-link :href="route('categories')">
+                                {{ __('Kategori') }}
+                            </x-dropdown-link>
                             <x-dropdown-link :href="route('profile.edit')" >
                                 {{ __('Profile') }}
                             </x-dropdown-link>
                             <!-- Authentication -->
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
-                                <x-dropdown-link :href="route('logout')" 
+                                <x-dropdown-link :href="route('logout')"
                                     onclick="event.preventDefault(); this.closest('form').submit();">
                                     {{ __('Log Out') }}
                                 </x-dropdown-link>
@@ -84,7 +87,7 @@
                 {{ __('Laporan') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('transactions')" :active="request()->routeIs('transactions')">
-                {{ __('Riwayat') }}
+                {{ __('Transaksi') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('budgets')" :active="request()->routeIs('budgets')">
                 {{ __('Anggaran') }}
@@ -99,6 +102,9 @@
             </div>
 
             <div class="mt-3 space-y-1 p-1 rounded-lg text-sm text-dark bg-light">
+                <x-responsive-nav-link :href="route('categories')">
+                    {{ __('Kategori') }}
+                </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('profile.edit')">
                     {{ __('Pengaturan') }}
                 </x-responsive-nav-link>
@@ -115,34 +121,44 @@
     </div>
 </nav>
 
-<!-- Modal Tambah Transaksi -->
-    <x-moddal id="addModal" title="Transaksi Baru" :name="'Tambah Transaksi'">
-      <form action="{{ route('transactions.store') }}" method="POST" enctype="multipart/form-data">
+{{-- Tambahkan Transaksi --}}
+       <x-moddal id="addModal" title="Tambah Transaksi" :name="'Tambah Transaksi'">
+<form action="{{ route('transactions.store') }}" method="POST">
         @csrf
         <div class="grid grid-cols-1 gap-4 mb-4 sm:grid-cols-2">
-          <div>
-            <label for="category" class="block mb-2 text-sm font-medium text-dark">Kategori</label>
-            <x-text-input type="text" id="category" name="category" placeholder="Makanan" required
-                   class="block w-full p-2.5 text-sm text-dark bg-gray-50 border border-gray-300 rounded-lg" />
-          </div>
-          <div>
-            <label for="type" class="block mb-2 text-sm font-medium text-dark">Jenis Transaksi</label>
-            <select id="type" name="type" required
-                    class="block w-full p-2.5 text-sm text-dark bg-gray-50 border border-netral-light focus:border-accent focus:ring-accent rounded-lg">
-              <option value="" disabled>Pilih Jenis</option>
-              <option value="in">Pemasukan</option>
-              <option value="out">Pengeluaran</option>
-            </select>
-          </div>
-          <div>
+            <div>
+                <label for="category_id" class="block mb-2 font-semibold text-gray-700">Kategori</label>
+                <select id="category_id" name="category_id" required
+                        class="block w-full p-2 border border-netral-light focus:border-accent focus:ring-accent rounded-lg shadow-lg">
+                    <option value="" disabled selected>Kategori</option>
+
+                    <optgroup label="Pengeluaran (Outcome)">
+                    @foreach ($categories->where('type', 'outcome') as $category)
+                        <option value="{{ $category->id }}">
+                        {{ $category->name }}
+                        </option>
+                    @endforeach
+                    </optgroup>
+
+                    <optgroup label="Pemasukkan (Income)">
+                    @foreach ($categories->where('type', 'income') as $category)
+                        <option value="{{ $category->id }}">
+                        {{ $category->name }}
+                        </option>
+                    @endforeach
+                    </optgroup>
+                </select>            
+            </div>
+
+            <div>
+              <label for="date" class="block mb-2 text-sm font-medium text-dark">Tanggal</label>
+              <x-text-input type="date" id="date" name="date" required
+                     class="block w-full p-2.5 text-sm text-dark bg-gray-50 border border-netral-light focus:border-accent focus:ring-accent rounded-lg shadow-lg" />
+            </div>
+          <div class="col-span-2">
             <label for="amount" class="block mb-2 text-sm font-medium text-dark">Nominal</label>
             <x-text-input type="number" id="amount" name="amount" placeholder="100000" required
-                   class="block w-full p-2.5 text-sm text-dark bg-gray-50 border border-gray-300 rounded-lg" />
-          </div>
-          <div>
-            <label for="transaction_date" class="block mb-2 text-sm font-medium text-dark">Tanggal</label>
-            <x-text-input type="date" id="transaction_date" name="transaction_date" required
-                   class="block w-full p-2.5 text-sm text-dark bg-gray-50 border border-gray-300 rounded-lg" />
+                   class="block w-full p-2.5 text-sm text-dark bg-gray-50 border border-netral-light focus:border-accent focus:ring-accent rounded-lg shadow-lg" />
           </div>
           <div class="col-span-2">
             <label for="description" class="block mb-2 text-sm font-medium text-dark">Keterangan</label>
@@ -151,11 +167,44 @@
                       placeholder="Keterangan"></textarea>
           </div>
         </div>
-        <div class="flex items-center justify-end mt-6 gap-2">
+        <div class="flex items-center justify-between mt-6">
+             <x-secondary-button type="button" data-modal-target="addCategoryModal" data-modal-toggle="addCategoryModal" class="rounded-lg space-x-2">
+                <i class="fa fa-plus" aria-hidden="true"></i> <p>Kategori</p>
+                </x-secondary-button>
           <x-primary-button type="submit"
-                  class="px-4 py-2 text-light bg-accent rounded-lg hover:bg-primary transition duration-300 ease-in-out">
+                  class=" rounded-lg ">
             Simpan
           </x-primary-button>
         </div>
       </form>
     </x-moddal>
+
+    <!-- Modal Tambah Kategori -->
+<x-moddal id="addCategoryModal" title="Tambah Kategori" :name="'Tambah Kategori'">
+      <form action="{{ route('categories.store') }}" method="POST" enctype="multipart/form-data">
+          @csrf
+          <div class="grid grid-cols-1 gap-4 mb-4 sm:grid-cols-2">
+            <div>
+              <label for="name" class="block mb-2 text-sm font-medium text-dark">Kategori</label>
+              <input type="text" id="name" name="name" placeholder="Makanan, Transportasi, dll"
+                     required class="block w-full p-2.5 text-sm text-dark bg-gray-50 border border-netral-light focus:border-accent focus:ring-accent rounded-lg shadow-lg" />
+            </div>
+            <div>
+              <label for="type" class="block mb-2 text-sm font-medium text-dark">Jenis Kategori</label>
+              <select id="type" name="type"
+                      class="block w-full p-2.5 text-sm text-dark bg-gray-50 border border-netral-light focus:border-accent focus:ring-accent rounded-lg shadow-lg" required>
+                <option value="income" >Pemasukkan</option>
+                <option value="outcome" >Pengeluaran</option>
+              </select>
+            </div>
+          </div>
+          <div class="flex items-center justify-end mt-6 gap-2">
+            <x-primary-button type="submit" class="rounded-lg px-4 py-2">
+                Simpan
+            </x-primary-button>
+          </div>
+        </form>
+</x-moddal>
+
+
+

@@ -1,5 +1,6 @@
 import "./bootstrap";
 import Chart from "chart.js/auto";
+import ApexCharts from "apexcharts";
 
 import Alpine from "alpinejs";
 
@@ -9,36 +10,66 @@ Alpine.start();
 
 // Bar Chart - Dash
 document.addEventListener("DOMContentLoaded", function () {
-    // Inisialisasi chart
-    let barChart;
+    let barChart = {};
 
-    function initChart(labels, dataOut, dataIn) {
-        const ctx = document.getElementById("barChartCanvas").getContext("2d");
+    function initChart(
+        labels,
+        dataOut,
+        dataIn,
+        canvasId = "barChartCanvas",
+        labelMode = "combined"
+    ) {
+        const canvas = document.getElementById(canvasId);
+        if (!canvas) return;
 
-        if (barChart) {
-            barChart.destroy();
+        const ctx = canvas.getContext("2d");
+
+        if (barChart[canvasId]) {
+            barChart[canvasId].destroy();
         }
 
-        barChart = new Chart(ctx, {
+        const datasets = [];
+
+        if (labelMode === "combined") {
+            datasets.push(
+                {
+                    label: "Pemasukan",
+                    data: dataIn,
+                    backgroundColor: "#285539",
+                    borderRadius: 8,
+                    barThickness: 20,
+                },
+                {
+                    label: "Pengeluaran",
+                    data: dataOut,
+                    backgroundColor: "#f87171",
+                    borderRadius: 8,
+                    barThickness: 20,
+                }
+            );
+        } else if (labelMode === "income") {
+            datasets.push({
+                label: "Pemasukan",
+                data: dataIn,
+                backgroundColor: "#285539",
+                borderRadius: 8,
+                barThickness: 20,
+            });
+        } else if (labelMode === "outcome") {
+            datasets.push({
+                label: "Pengeluaran",
+                data: dataOut,
+                backgroundColor: "#f87171",
+                borderRadius: 8,
+                barThickness: 20,
+            });
+        }
+
+        barChart[canvasId] = new Chart(ctx, {
             type: "bar",
             data: {
                 labels: labels,
-                datasets: [
-                    {
-                        label: "Pemasukan",
-                        data: dataIn,
-                        backgroundColor: "#285539",
-                        borderRadius: 8,
-                        barThickness: 20,
-                    },
-                    {
-                        label: "Pengeluaran",
-                        data: dataOut,
-                        backgroundColor: "#f87171",
-                        borderRadius: 8,
-                        barThickness: 20,
-                    },
-                ],
+                datasets: datasets,
             },
             options: {
                 responsive: true,
@@ -47,22 +78,18 @@ document.addEventListener("DOMContentLoaded", function () {
                     y: {
                         beginAtZero: true,
                         ticks: {
-                            callback: function (value) {
-                                return "Rp" + value.toLocaleString("id-ID");
-                            },
+                            callback: (value) =>
+                                "Rp" + value.toLocaleString("id-ID"),
                         },
                     },
                 },
                 plugins: {
                     tooltip: {
                         callbacks: {
-                            label: function (context) {
-                                return (
-                                    context.dataset.label +
-                                    ": Rp" +
-                                    context.raw.toLocaleString("id-ID")
-                                );
-                            },
+                            label: (context) =>
+                                `${
+                                    context.dataset.label
+                                }: Rp${context.raw.toLocaleString("id-ID")}`,
                         },
                     },
                     legend: {
@@ -77,58 +104,82 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Ambil data dari atribut data-canvas
-    const canvas = document.getElementById("barChartCanvas");
-    const labels = JSON.parse(canvas.getAttribute("data-labels"));
-    const dataOut = JSON.parse(canvas.getAttribute("data-data-out"));
-    const dataIn = JSON.parse(canvas.getAttribute("data-data-in"));
+    // Chart Dashboard (gabungan income + outcome)
+    const dashboardCanvas = document.getElementById("barChartCanvas");
+    if (dashboardCanvas) {
+        const labels = JSON.parse(
+            dashboardCanvas.getAttribute("data-labels") || "[]"
+        );
+        const dataOut = JSON.parse(
+            dashboardCanvas.getAttribute("data-data-out") || "[]"
+        );
+        const dataIn = JSON.parse(
+            dashboardCanvas.getAttribute("data-data-in") || "[]"
+        );
 
-    // Inisialisasi chart pertama kali
-    if (labels.length > 0) {
-        initChart(labels, dataOut, dataIn);
-    }
-    // Handle filter change
-    document.querySelectorAll("[data-filter]").forEach((button) => {
-        button.addEventListener("click", function () {
-            const filter = this.getAttribute("data-filter");
+        if (labels.length > 0) {
+            initChart(labels, dataOut, dataIn, "barChartCanvas", "combined");
+        }
 
-            // Update URL dengan parameter filter
-            const url = new URL(window.location.href);
-            url.searchParams.set("filter", filter);
-            window.location.href = url.toString();
-        });
-    });
+        async function fetchChartData() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const filter = urlParams.get("filter") || "monthly";
+            const date =
+                urlParams.get("date") || new Date().toISOString().split("T")[0];
 
-    // Inisialisasi chart pertama kali
-    if (initialLabels.length > 0) {
-        initChart(initialLabels, initialDataOut, initialDataIn);
-    }
+            try {
+                const response = await fetch(
+                    `/dashboard/chart-data?filter=${filter}&date=${date}`
+                );
+                const data = await response.json();
 
-    // Fungsi untuk mengambil data terbaru dari server
-    async function fetchChartData() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const filter = urlParams.get("filter") || "monthly";
-        const date =
-            urlParams.get("date") || new Date().toISOString().split("T")[0];
-
-        try {
-            const response = await fetch(
-                `/dashboard/chart-data?filter=${filter}&date=${date}`
-            );
-            const data = await response.json();
-
-            if (data.labels && data.labels.length > 0) {
-                initChart(data.labels, data.dataOut, data.dataIn);
+                if (data.labels && data.labels.length > 0) {
+                    initChart(
+                        data.labels,
+                        data.dataOut,
+                        data.dataIn,
+                        "barChartCanvas",
+                        "combined"
+                    );
+                }
+            } catch (error) {
+                console.error("Error fetching chart data:", error);
             }
-        } catch (error) {
-            console.error("Error fetching chart data:", error);
+        }
+
+        setInterval(fetchChartData, 5000);
+    }
+
+    // Chart Report View: Income & Outcome terpisah
+    const incomeCanvas = document.getElementById("barChartIncome");
+    if (incomeCanvas) {
+        const labels = JSON.parse(
+            incomeCanvas.getAttribute("data-labels") || "[]"
+        );
+        const dataIn = JSON.parse(
+            incomeCanvas.getAttribute("data-data") || "[]"
+        );
+
+        if (labels.length > 0) {
+            initChart(labels, [], dataIn, "barChartIncome", "income");
         }
     }
 
-    // Setup polling untuk update realtime (setiap 5 detik)
-    setInterval(fetchChartData, 5000);
+    const outcomeCanvas = document.getElementById("barChartOutcome");
+    if (outcomeCanvas) {
+        const labels = JSON.parse(
+            outcomeCanvas.getAttribute("data-labels") || "[]"
+        );
+        const dataOut = JSON.parse(
+            outcomeCanvas.getAttribute("data-data") || "[]"
+        );
 
-    // Handle filter change
+        if (labels.length > 0) {
+            initChart(labels, dataOut, [], "barChartOutcome", "outcome");
+        }
+    }
+
+    // Event: Filter button (bulanan, mingguan, dll)
     document.querySelectorAll("[data-filter]").forEach((button) => {
         button.addEventListener("click", function () {
             const filter = this.getAttribute("data-filter");
@@ -138,81 +189,93 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // Handle perubahan tanggal
+    // Event: Ganti tanggal
     const dateFilter = document.getElementById("dateFilter");
-    dateFilter.addEventListener("change", function () {
-        const url = new URL(window.location.href);
-        url.searchParams.set("date", this.value);
-        window.location.href = url.toString();
-    });
+    if (dateFilter) {
+        dateFilter.addEventListener("change", function () {
+            const url = new URL(window.location.href);
+            url.searchParams.set("date", this.value);
+            window.location.href = url.toString();
+        });
+    }
 
-    document.addEventListener("DOMContentLoaded", function () {
-        function updateWaktu() {
-            const sekarang = new Date();
-            const options = {
-                weekday: "long",
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-                timeZone: "Asia/Jakarta",
-            };
+    // Tampilkan waktu lokal real-time
+    function updateWaktu() {
+        const sekarang = new Date();
+        const options = {
+            weekday: "long",
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+            timeZone: "Asia/Jakarta",
+        };
 
-            document.getElementById("tanggal-terpilih").textContent =
-                sekarang.toLocaleDateString("id-ID", options);
+        const elemenTanggal = document.getElementById("tanggal-terpilih");
+        if (elemenTanggal) {
+            elemenTanggal.textContent = sekarang.toLocaleDateString(
+                "id-ID",
+                options
+            );
         }
+    }
 
-        // Update setiap detik
-        updateWaktu();
-        setInterval(updateWaktu, 1000);
-    });
+    updateWaktu();
+    setInterval(updateWaktu, 1000);
 });
 
 // Donat Chart Anggaran(Dash)
 document.addEventListener("DOMContentLoaded", function () {
-    const ctxContainer = document.getElementById("donutChartPersen");
+    const el = document.getElementById("donutChartPersen");
 
-    if (!ctxContainer) return;
+    if (!el) return;
 
-    // Ambil data dari atribut data-sisa dan data-pakai (string -> number)
-    const persenSisa = Number(ctxContainer.getAttribute("data-sisa")) || 100;
-    const persenPakai = Number(ctxContainer.getAttribute("data-pakai")) || 0;
+    const persenSisa = Number(el.getAttribute("data-sisa")) || 100;
+    const persenPakai = Number(el.getAttribute("data-pakai")) || 0;
 
-    // Buat canvas dan atur ukuran kecil
-    const canvas = document.createElement("canvas");
-    canvas.width = 200;
-    canvas.height = 200;
-    ctxContainer.appendChild(canvas);
-
-    const ctx = canvas.getContext("2d");
-
-    const data = {
+    const options = {
+        chart: {
+            type: "donut",
+            width: 200,
+            height: 200,
+        },
+        series: [persenSisa, persenPakai],
         labels: ["Sisa", "Terpakai"],
-        datasets: [
-            {
-                label: "Persentase Anggaran",
-                data: [persenSisa, persenPakai],
-                backgroundColor: ["#88cf0f", "#285539"],
-                borderColor: ["#ffffff", "#ffffff"],
-                borderWidth: 2,
+        colors: ["#88cf0f", "#285539"],
+        dataLabels: {
+            enabled: true,
+            formatter: function (val) {
+                return val + "%";
             },
-        ],
-    };
-
-    const config = {
-        type: "doughnut",
-        data: data,
-        options: {
-            responsive: false,
-            maintainAspectRatio: false,
-            cutout: "70%",
-            plugins: {
-                legend: {
-                    display: false,
+        },
+        legend: {
+            show: false,
+        },
+        tooltip: {
+            y: {
+                formatter: function (val) {
+                    return val + "%";
                 },
-                tooltip: {
-                    callbacks: {
-                        label: function (tooltipItem) {
-                            return `${tooltipItem.label}: ${tooltipItem.raw}%`;
+            },
+        },
+        plotOptions: {
+            pie: {
+                donut: {
+                    labels: {
+                        show: true,
+                        name: {
+                            show: true,
+                            fontSize: "16px",
+                            color: "#285539",
+                            fontFamily: "Arial, sans-serif",
+                        },
+                        value: {
+                            show: true,
+                            fontSize: "14px",
+                            color: "#285539",
+                            fontFamily: "Arial, sans-serif",
+                            formatter: function (val) {
+                                return val + "%";
+                            },
                         },
                     },
                 },
@@ -220,307 +283,163 @@ document.addEventListener("DOMContentLoaded", function () {
         },
     };
 
-    new Chart(ctx, config);
+    const chart = new ApexCharts(el, options);
+    chart.render();
 });
 
 // Laporan - Dash - Income
-document.addEventListener("DOMContentLoaded", function () {
-    const pieContainer = document.getElementById("pie-chart-Income");
-    if (!pieContainer) return;
+document.addEventListener("DOMContentLoaded", () => {
+    function createDonutChart(
+        containerId,
+        dataCategoriesAttr,
+        dataValuesAttr,
+        chartLabel,
+        colors,
+        legendDashboardId,
+        legendReportId
+    ) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
 
-    // Ambil data dari data-attributes
-    const rawCategories = pieContainer.dataset.categories;
-    const rawValues = pieContainer.dataset.values;
+        const rawCategories = container.getAttribute(dataCategoriesAttr);
+        const rawValues = container.getAttribute(dataValuesAttr);
 
-    let categories = [];
-    let values = [];
+        let categories = [];
+        let values = [];
 
-    if (!rawCategories || !rawValues) {
-        categories = ["Belum Ada Data"];
-        values = [1];
-    } else {
-        try {
-            categories = JSON.parse(rawCategories);
-            values = JSON.parse(rawValues);
+        if (!rawCategories || !rawValues) {
+            categories = ["Belum Ada Data"];
+            values = [1];
+        } else {
+            try {
+                categories = JSON.parse(rawCategories);
+                values = JSON.parse(rawValues);
 
-            // Cek apakah array kosong atau semua nilainya 0
-            if (values.length === 0 || values.every((v) => v === 0)) {
+                if (values.length === 0 || values.every((v) => v === 0)) {
+                    categories = ["Belum Ada Data"];
+                    values = [1];
+                }
+            } catch (e) {
+                console.error("JSON parse error:", e);
                 categories = ["Belum Ada Data"];
                 values = [1];
             }
-        } catch (e) {
-            console.error("JSON parse error:", e);
-            categories = ["Belum Ada Data"];
-            values = [1];
         }
-    }
 
-    // Buat canvas
-    const canvas = document.createElement("canvas");
-    canvas.width = 200;
-    canvas.height = 200;
-    pieContainer.appendChild(canvas);
-    const ctx = canvas.getContext("2d");
-
-    // Warna background
-    const colors = [
-        "#285539",
-        "#88cf0f",
-        "#00bfa6",
-        "#ff9f1c",
-        "#2979ff",
-        "#ff4081",
-    ];
-    const backgroundColors = categories.map(
-        (_, index) => colors[index % colors.length]
-    );
-
-    // Pie Chart Config
-    new Chart(ctx, {
-        type: "pie",
-        data: {
+        const options = {
+            chart: {
+                type: "pie",
+                height: 200,
+            },
             labels: categories,
-            datasets: [
-                {
-                    label: "Pemasukan per Kategori",
-                    data: values,
-                    backgroundColor: backgroundColors,
-                    borderColor: "#fff",
-                    borderWidth: 2,
+            series: values,
+            colors: colors,
+            dataLabels: {
+                enabled: true,
+                formatter: function (val) {
+                    return val.toFixed(1) + "%";
                 },
-            ],
-        },
-        options: {
-            responsive: false,
-            plugins: {
-                legend: { display: false },
-                tooltip: {
-                    callbacks: {
-                        label: function (context) {
-                            const label = context.label || "";
-                            const value = context.parsed || 0;
-                            return `${label}: Rp ${value.toLocaleString(
-                                "id-ID"
-                            )}`;
-                        },
+            },
+            legend: { show: false },
+            tooltip: {
+                y: {
+                    formatter: function (value) {
+                        return "Rp " + value.toLocaleString("id-ID");
                     },
                 },
             },
-        },
-    });
+        };
 
-    // LEGEND DASHBOARD
-    const legendContainer = document.getElementById("legend-Dashboard");
-    if (legendContainer) {
-        legendContainer.innerHTML = "";
+        // Render ApexChart
+        container.innerHTML = ""; // Bersihin isi kontainer dulu
+        const chart = new ApexCharts(container, options);
+        chart.render();
 
-        categories.forEach((category, i) => {
-            const color = backgroundColors[i];
+        // Legend Dashboard (Kiri)
+        if (legendDashboardId) {
+            const legendDashboard = document.getElementById(legendDashboardId);
+            if (legendDashboard) {
+                legendDashboard.innerHTML = "";
+                categories.forEach((cat, i) => {
+                    const li = document.createElement("li");
+                    li.className =
+                        "flex items-center transition hover:scale-105 mb-1 space-x-2";
 
-            const legendItem = document.createElement("li");
-            legendItem.className =
-                "flex items-center transition hover:scale-105 mb-1";
+                    const colorBox = document.createElement("span");
+                    colorBox.className = "w-3 h-3 rounded-full inline-block";
+                    colorBox.style.backgroundColor = colors[i % colors.length];
 
-            const colorBox = document.createElement("span");
-            colorBox.className = "w-3 h-3 rounded-full mr-2";
-            colorBox.style.backgroundColor = color;
+                    const labelNode = document.createElement("p");
+                    labelNode.textContent = cat;
+                    labelNode.className = "text-sm text-dark";
 
-            const label = document.createTextNode(category);
-
-            legendItem.appendChild(colorBox);
-            legendItem.appendChild(label);
-            legendContainer.appendChild(legendItem);
-        });
-    }
-
-    // LEGEND REPORT
-    const legendContainerReport = document.getElementById("legend-Report");
-
-    if (legendContainerReport) {
-        legendContainerReport.innerHTML = "";
-
-        const totalValue = values.reduce((a, b) => a + b, 0) || 1;
-
-        categories.forEach((category, i) => {
-            const value = values[i];
-            const percentage = ((value / totalValue) * 100).toFixed(2);
-            const color = backgroundColors[i];
-
-            const li = document.createElement("li");
-
-            const topWrapper = document.createElement("div");
-            topWrapper.className =
-                "flex justify-between items-center w-full text-sm font-semibold text-dark mb-1";
-
-            const left = document.createElement("div");
-            left.className = "flex items-center gap-2";
-
-            const label = document.createElement("span");
-            label.textContent = category;
-
-            left.appendChild(label);
-
-            const nominal = document.createElement("p");
-            nominal.textContent = "Rp " + value.toLocaleString("id-ID");
-
-            topWrapper.appendChild(left);
-            topWrapper.appendChild(nominal);
-
-            // Progress bar
-            const progressBg = document.createElement("div");
-            progressBg.className = "w-full bg-gray-300 rounded-full h-2";
-
-            const progressFill = document.createElement("div");
-            progressFill.className = "h-2 rounded-full";
-            progressFill.style.backgroundColor = color;
-            progressFill.style.width = percentage + "%";
-
-            progressBg.appendChild(progressFill);
-
-            li.appendChild(topWrapper);
-            li.appendChild(progressBg);
-
-            legendContainerReport.appendChild(li);
-        });
-    }
-});
-
-// Laporan - Outcome
-document.addEventListener("DOMContentLoaded", function () {
-    const pieContainerOut = document.getElementById("pie-chart-Outcome");
-    if (!pieContainerOut) return;
-
-    // Ambil data dari data-attributes (pastikan pakai tanda - di HTML!)
-    const rawCategories = pieContainerOut.getAttribute("data-categories-out");
-    const rawValues = pieContainerOut.getAttribute("data-values-out");
-
-    let categoriesOut = [];
-    let valuesOut = [];
-
-    if (!rawCategories || !rawValues) {
-        categoriesOut = ["Belum Ada Data"];
-        valuesOut = [1];
-    } else {
-        try {
-            categoriesOut = JSON.parse(rawCategories);
-            valuesOut = JSON.parse(rawValues);
-
-            if (valuesOut.length === 0 || valuesOut.every((v) => v === 0)) {
-                categoriesOut = ["Belum Ada Data"];
-                valuesOut = [1];
+                    li.appendChild(colorBox);
+                    li.appendChild(labelNode);
+                    legendDashboard.appendChild(li);
+                });
             }
-        } catch (e) {
-            console.error("JSON parse error:", e);
-            categoriesOut = ["Belum Ada Data"];
-            valuesOut = [1];
+        }
+
+        // Legend Report (Kanan)
+        if (legendReportId) {
+            const legendReport = document.getElementById(legendReportId);
+            if (legendReport) {
+                legendReport.innerHTML = "";
+                const totalValue = values.reduce((a, b) => a + b, 0) || 1;
+
+                categories.forEach((cat, i) => {
+                    const value = values[i];
+                    const percentage = ((value / totalValue) * 100).toFixed(2);
+                    const color = colors[i % colors.length];
+
+                    const li = document.createElement("li");
+                    li.className =
+                        "flex justify-between items-center w-full text-sm font-semibold text-dark mb-1";
+
+                    const left = document.createElement("div");
+                    left.className = "inline-flex items-center gap-2";
+
+                    const colorBox = document.createElement("span");
+                    colorBox.className = "inline-block w-3 h-3 rounded-full";
+                    colorBox.style.backgroundColor = color;
+
+                    const labelSpan = document.createElement("span");
+                    labelSpan.textContent = cat;
+
+                    left.appendChild(colorBox);
+                    left.appendChild(labelSpan);
+
+                    const nominal = document.createElement("p");
+                    nominal.textContent = "Rp " + value.toLocaleString("id-ID");
+
+                    li.appendChild(left);
+                    li.appendChild(nominal);
+
+                    legendReport.appendChild(li);
+                });
+            }
         }
     }
 
-    // Buat canvas
-    const canvas = document.createElement("canvas");
-    canvas.width = 200;
-    canvas.height = 200;
-    pieContainerOut.appendChild(canvas);
-    const ctx = canvas.getContext("2d");
-
-    // Warna background
-    const colors = [
-        "#f87171",
-        "#ff9f1c",
-        "#ff4081",
-        "#2979ff",
-        "#ef4444",
-        "#991b1b",
-    ];
-    const backgroundColors = categoriesOut.map(
-        (_, index) => colors[index % colors.length]
+    // Income Chart
+    createDonutChart(
+        "pie-chart-Income",
+        "data-categories",
+        "data-values",
+        "Total Pemasukan",
+        ["#285539", "#88cf0f", "#00bfa6", "#ff9f1c", "#2979ff", "#ff4081"],
+        "legend-Dashboard",
+        "legend-Report"
     );
 
-    // Pie Chart Config
-    new Chart(ctx, {
-        type: "pie",
-        data: {
-            labels: categoriesOut,
-            datasets: [
-                {
-                    label: "Pengeluaran per Kategori",
-                    data: valuesOut,
-                    backgroundColor: backgroundColors,
-                    borderColor: "#fff",
-                    borderWidth: 2,
-                },
-            ],
-        },
-        options: {
-            responsive: false,
-            plugins: {
-                legend: { display: false },
-                tooltip: {
-                    callbacks: {
-                        label: function (context) {
-                            const label = context.label || "";
-                            const value = context.parsed || 0;
-                            return `${label}: Rp ${value.toLocaleString(
-                                "id-ID"
-                            )}`;
-                        },
-                    },
-                },
-            },
-        },
-    });
-
-    // LEGEND REPORT
-    const legendContainerReport = document.getElementById(
+    // Outcome Chart
+    createDonutChart(
+        "pie-chart-Outcome",
+        "data-categories-out",
+        "data-values-out",
+        "Total Pengeluaran",
+        ["#f87171", "#ff9f1c", "#ff4081", "#2979ff", "#ef4444", "#991b1b"],
+        null,
         "legend-Report-Outcome"
     );
-
-    if (legendContainerReport) {
-        legendContainerReport.innerHTML = "";
-
-        const totalValue = valuesOut.reduce((a, b) => a + b, 0) || 1;
-
-        categoriesOut.forEach((category, i) => {
-            const value = valuesOut[i];
-            const percentage = ((value / totalValue) * 100).toFixed(2);
-            const color = backgroundColors[i];
-
-            const li = document.createElement("li");
-
-            const topWrapper = document.createElement("div");
-            topWrapper.className =
-                "flex justify-between items-center w-full text-sm font-semibold text-dark mb-1";
-
-            const left = document.createElement("div");
-            left.className = "flex items-center gap-2";
-
-            const label = document.createElement("span");
-            label.textContent = category;
-
-            left.appendChild(label);
-
-            const nominal = document.createElement("p");
-            nominal.textContent = "Rp " + value.toLocaleString("id-ID");
-
-            topWrapper.appendChild(left);
-            topWrapper.appendChild(nominal);
-
-            const progressBg = document.createElement("div");
-            progressBg.className = "w-full bg-gray-300 rounded-full h-2";
-
-            const progressFill = document.createElement("div");
-            progressFill.className = "h-2 rounded-full";
-            progressFill.style.backgroundColor = color;
-            progressFill.style.width = percentage + "%";
-
-            progressBg.appendChild(progressFill);
-
-            li.appendChild(topWrapper);
-            li.appendChild(progressBg);
-
-            legendContainerReport.appendChild(li);
-        });
-    }
 });
-
-// Line Chart - Outcome

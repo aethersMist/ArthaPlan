@@ -25,7 +25,6 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
         <script src="https://unpkg.com/flowbite@latest/dist/flowbite.min.js"></script>
-        <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     </head>
     <body class="font-display antialiased">

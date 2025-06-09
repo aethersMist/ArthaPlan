@@ -3,86 +3,123 @@
 namespace App\Http\Controllers;
 
 use App\Models\Budget;
+use App\Models\BudgetTransaction;
+use App\Models\Category;
 use App\Models\Transaction;
-use Illuminate\Http\Request;
 use Carbon\Carbon;
-
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BudgetController extends Controller
 {
-    // Menampilkan semua data budget
     public function index()
     {
-        $request = request(); 
-        $budgets = Budget::latest()->get();
+        $user = Auth::user();
+        $budgets = Budget::where('user_id', $user->id)->orderByDesc('start_date')->get();
+        $budgetTransactions = BudgetTransaction::all();
 
-
-        $income = Transaction::where('type', 'in')->sum('amount');
-        $outcome = Transaction::where('type', 'out')->sum('amount');
-        $balance = $income - $outcome;
+        // Budget Transaction
+        $totalUsedAmount = $budgets->flatMap->budgetTransaction->sum('used_amount');
 
         $currentDate = now()->translatedFormat('l, d F Y');
+        $currentMonth = now()->month;
+        $currentYear = now()->year;
 
-        // Anggaran
-        $anggaran = Budget::sum('amount');
+        $transactions = Transaction::with('category')
+            ->where('user_id', $user->id)
+            ->whereMonth('date', $currentMonth)
+            ->whereYear('date', $currentYear)
+            ->get();
 
-        $persenSisa = $anggaran > 0 ? round((($anggaran - $outcome) / $anggaran) * 100) : 100;
-        $persenPakai = 100 - $persenSisa;
+        $totalIncome = $transactions->where('category.type', 'income')->sum('amount');
+        $totalOutcome = $transactions->where('category.type', 'outcome')->sum('amount');
+        $totalBalance = $totalIncome - $totalOutcome;
 
-         
+        $totalBudgetAmount = $budgets->sum('amount');
+
+        $persenPakai = $totalBudgetAmount > 0 ? round(($totalOutcome / $totalBudgetAmount) * 100) : 0;
+        $persenSisa = 100 - $persenPakai;
+        $Sisa = max(0, $totalBudgetAmount - $totalOutcome);
+        $statusAnggaran = $Sisa <= 0 ? 'Melebihi' : 'Sisa';
+
+        $rataRataHarianBudget = $budgets->reduce(function ($carry, $budget) {
+            $days = $budget->start_date->diffInDays($budget->end_date) + 1;
+            return $carry + ($budget->amount / $days);
+        }, 0);
+
+        $categories = Category::all();
+        
+
 
         return view('budgets', compact(
-            'budgets', 'balance',  
-            'income', 'outcome', 'persenSisa', 'persenPakai'
+            'budgets', 'categories', 'currentDate', 'totalIncome', 'totalOutcome', 'totalBalance', 'totalUsedAmount',
+            'totalBudgetAmount', 'persenSisa', 'Sisa', 'persenPakai', 'statusAnggaran', 'rataRataHarianBudget'
         ));
     }
 
-    // Menampilkan form create
     public function create()
     {
-        return view('budgets.create');
+        return view('budgets.create', compact('budgets'));
     }
 
-    // Menyimpan data baru
     public function store(Request $request)
     {
         $request->validate([
-            'category'   => 'required|string|max:255',
-            'amount'     => 'required|numeric|min:0',
+            'amount' => 'required|numeric|min:0',
             'start_date' => 'required|date',
-            'end_date'   => 'required|date|after_or_equal:start_date',
+            'end_date' => 'required|date|after_or_equal:start_date',
         ]);
 
-        Budget::create($request->all());
+        Budget::create([
+            'user_id' => Auth::id(),
+            'amount' => $request->amount,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+        ]);
 
-        return redirect()->route('budgets')->with('success', 'Budget created successfully.');
+        return redirect()->route('budgets')->with('success', 'Budget berhasil ditambahkan!');
     }
 
-    // Menampilkan form edit
+
     public function edit(Budget $budget)
     {
-        return view('budgets.edit', compact('budget'));
+        $this->authorizeBudget($budget);
+        return view('budgets.edit', compact('budgets'));
     }
 
-    // Menyimpan update
     public function update(Request $request, Budget $budget)
     {
+        $this->authorizeBudget($budget);
+
         $request->validate([
-            'category'   => 'required|string|max:255',
-            'amount'     => 'required|numeric|min:0',
+            'amount' => 'required|numeric|min:0',
             'start_date' => 'required|date',
-            'end_date'   => 'required|date|after_or_equal:start_date',
+            'end_date' => 'required|date|after_or_equal:start_date',
         ]);
 
-        $budget->update($request->all());
+        $budget->update([
+            'amount' => $request->amount,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+        ]);
 
-        return redirect()->route('budgets')->with('success', 'Budget updated successfully.');
+        return redirect()->route('budgets')->with('success', 'Budget berhasil diperbarui!');
     }
 
-    // Menghapus data
+   
     public function destroy(Budget $budget)
     {
+        $this->authorizeBudget($budget);
+         
         $budget->delete();
-        return redirect()->route('budgets')->with('success', 'Budget deleted successfully.');
+
+        return redirect()->route('budgets')->with('success', 'Budget berhasil dihapus!');
+    }
+
+    private function authorizeBudget(Budget $budget)
+    {
+        if ($budget->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized');
+        }
     }
 }

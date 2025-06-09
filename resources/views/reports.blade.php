@@ -25,16 +25,20 @@
               >
                 <p>total pemasukkan</p>
 
-                <x-secondary-button 
+                <x-primary-button
                             class="flex justify-center items-center h-8 w-8  rounded-full ">
                       <i class="fa fa-download"></i>
-                    </x-secondary-button>
+                    </x-primary-button>
 
               </div>
               <div
-                id="lineChartIncome" 
-                class="bg-base p-4 rounded-lg"
-              ></div>
+                class="bg-gradient-to-t from-accent to-base rounded-xl h-auto flex items-center justify-center text-light p-4"
+            >
+                <canvas id="barChartIncome"
+                    data-labels='@json($labels)'
+                    data-data='@json($dataIn)'>
+                </canvas>
+            </div>
             </div>
           </section>
           <!-- line chart -->
@@ -44,7 +48,7 @@
             <div class="w-full">
               <div class="w-full gap-2">
                 <h2
-                  class="mb-4 text-center font-bold text-primary-dark bg-accent uppercase rounded-lg p-2 shadow-lg"
+                  class="mb-4 text-center font-bold text-light bg-accent uppercase rounded-lg p-2 shadow-lg"
                 >
                   Rincian Kategori Pemasukan
                 </h2>
@@ -52,8 +56,8 @@
             <div class="flex items-center justify-center w-full">
 
                     <div id="pie-chart-Income"
-                        data-categories='@json($categories)'
-                        data-values='@json($values)'>
+                        data-categories='@json($categoriesIncome)'
+                        data-values='@json($valuesIncome)'>
                     </div>
 
                 </div>
@@ -63,7 +67,11 @@
               <div
                 class="flex justify-between items-center mt-4 text-sm md:text-lg w-full bg-base rounded-xl p-4 h-full">
                 <ul id="legend-Report" class="flex flex-col gap-y-4 w-full">
-                  
+                    <li class="flex justify-between items-center w-full text-sm font-semibold text-dark mb-1">
+                        <div class="inline-flex items-center gap-2">
+                            <span class="inline-block w-3 h-3 rounded-full"></span>
+                        </div>
+                  </li>
                 </ul>
               </div>
             </div>
@@ -91,17 +99,21 @@
               >
                 <p>total pengeluaran</p>
 
-                <x-secondary-button 
+                <x-danger-button
                             class="flex justify-center items-center h-8 w-8  rounded-full ">
                       <i class="fa fa-download"></i>
-                    </x-secondary-button>
+                    </x-danger-button>
 
               </div>
 
-              <div
-                id="lineChartOutcome" 
-                class="bg-base p-4 rounded-lg"
-              ></div>
+             <div
+                class="bg-gradient-to-t from-danger-light to-base rounded-xl h-auto flex items-center justify-center text-light p-4"
+            >
+                <canvas id="barChartOutcome"
+                    data-labels='@json($labels)'
+                    data-data='@json($dataOut)'>
+            </canvas>
+            </div> 
             </div>
           </section>
 
@@ -118,7 +130,7 @@
                  <div class="flex items-center justify-center w-full">
 
                     <div id="pie-chart-Outcome"
-                        data-categories-out='@json($categoriesOut)' data-values-out='@json($valuesOut)'>
+                        data-categories-out='@json($categoriesOutcome)' data-values-out='@json($valuesOutcome)'>
                     </div>
 
                 </div>
@@ -128,7 +140,11 @@
               <div
                 class="flex justify-between items-center mt-4 text-sm md:text-lg w-full bg-base rounded-xl p-4 h-full">
                 <ul id="legend-Report-Outcome" class="flex flex-col gap-y-4 w-full">
-                  
+                    <li class="flex justify-between items-center w-full text-sm font-semibold text-dark mb-1">
+                        <div class="inline-flex items-center gap-2">
+                            <span class="inline-block w-3 h-3 rounded-full"></span>
+                        </div>
+                  </li>
                 </ul>
               </div>
             </div>

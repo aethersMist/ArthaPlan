@@ -4,91 +4,118 @@ namespace App\Http\Controllers;
 
 use App\Models\Report;
 use Illuminate\Http\Request;
+use App\Models\Transaction;
+use App\Models\Category;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
 
 class ReportController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
+
         // income
-        $incomeByCategory = DB::table('transactions')
-        ->select('category', DB::raw('SUM(amount) as total'))
-        ->where('type', 'in')
-        ->groupBy('category')
-        ->get();
+        $incomeByCategory = Transaction::with('category')
+            ->whereHas('category', fn($q) => $q->where('type', 'income'))
+            ->get()
+            ->groupBy(fn($transaction) => $transaction->category->name)
+            ->map(fn($group) => $group->sum('amount'));
 
-        // Pisah label dan data buat chart
-        $categories = $incomeByCategory->pluck('category')->toArray();
-        $values = $incomeByCategory->pluck('total')->toArray();
+        $categoriesIncome = $incomeByCategory->keys()->toArray();
+        $valuesIncome = $incomeByCategory->values()->toArray();
 
-        // Outcome
-        $outcomeByCategory = DB::table('transactions')
-        ->select('category', DB::raw('SUM(amount) as total'))
-        ->where('type', 'out')
-        ->groupBy('category')
-        ->get();
-        
-        // Pisah label dan data buat chart
-        $categoriesOut = $outcomeByCategory->pluck('category')->toArray();
-        $valuesOut = $outcomeByCategory->pluck('total')->toArray();
-        
-        // LineChart
+        // outcome
+        $outcomeByCategory = Transaction::with('category')
+            ->whereHas('category', fn($q) => $q->where('type', 'outcome'))
+            ->get()
+            ->groupBy(fn($transaction) => $transaction->category->name)
+            ->map(fn($group) => $group->sum('amount'));
+        $categoriesOutcome = $outcomeByCategory->keys()->toArray();
+        $valuesOutcome = $outcomeByCategory->values()->toArray();
+
+        // Daigram Bar
+        $filter = 'bulan'; 
+        $selectedDate = request()->input('date', now()->format('d F Y'));
+        $date = Carbon::parse($selectedDate);
+
+        list($labels, $dataOut, $dataIn) = $this->getChartData('bulan', $date);
 
         return view('reports', compact(
-        'categories', 'values', 'categoriesOut', 'valuesOut',
+            'categoriesIncome', 'valuesIncome', 'categoriesOutcome', 'valuesOutcome',
+            'labels', 'dataOut', 'dataIn', 'filter', 'selectedDate'
         ));
+
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function getChartDataApi(Request $request)
     {
-        //
+        $user = Auth::user();
+
+        $selectedDate = $request->input('date', now()->format('d F Y'));
+        $date = Carbon::parse($selectedDate);
+
+        $transactions = Transaction::with('category')
+            ->where('user_id', $user->id)
+            ->whereYear('date', $date->year)
+            ->get();
+
+        list($labels, $dataOut, $dataIn) = $this->getChartData('bulan', $date);
+
+        $totalIncome = $transactions->where('category.type', 'income')->sum('amount');
+        $totalOutcome = $transactions->where('category.type', 'outcome')->sum('amount');
+        $balance = $totalIncome - $totalOutcome;
+
+        return response()->json([
+            'labels' => $labels,
+            'dataOut' => $dataOut,
+            'dataIn' => $dataIn,
+            'income' => $totalIncome,
+            'outcome' => $totalOutcome,
+            'balance' => $balance
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Report $report)
+    private function getChartData($filter, Carbon $date)
     {
-        //
-    }
+        
+        $year = now()->year;
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Report $report)
-    {
-        //
-    }
+        $labels = [];
+        $dataOut = array_fill(0, 12, 0);
+        $dataIn = array_fill(0, 12, 0);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Report $report)
-    {
-        //
-    }
+        for ($month = 1; $month <= 12; $month++) {
+            $labels[] = Carbon::create($year, $month)->translatedFormat('F');
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Report $report)
-    {
-        //
+        $queryOut = Transaction::with('category')->whereHas('category', fn($q) => $q->where('type', 'outcome'));
+        $queryIn = Transaction::with('category')->whereHas('category', fn($q) => $q->where('type', 'income'));
+
+        $transactionsOut = $queryOut->select(
+            DB::raw('MONTH(date) as month'),
+            DB::raw('SUM(amount) as total')
+        )->whereYear('date', $year)
+        ->groupBy('month')->get();
+
+        $transactionsIn = $queryIn->select(
+            DB::raw('MONTH(date) as month'),
+            DB::raw('SUM(amount) as total')
+        )->whereYear('date', $year)
+        ->groupBy('month')->get();
+
+        foreach ($transactionsOut as $tr) {
+            $index = $tr->month - 1;
+            $dataOut[$index] = $tr->total;
+        }
+
+        foreach ($transactionsIn as $tr) {
+            $index = $tr->month - 1;
+            $dataIn[$index] = $tr->total;
+        }
+
+        return [$labels, $dataOut, $dataIn];
     }
-}
+}   

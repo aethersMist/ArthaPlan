@@ -4,86 +4,161 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Transaction;
+use App\Models\Category;
 use App\Models\Budget;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
-
+    /**
+     * Display a listing of the resource.
+     */
     public function index()
     {
         $request = request(); 
-        $filter = $request->input('filter', 'bulan');
-        $selectedDate = $request->input('date', now()->format('Y-m-d'));
+        $user = Auth::user();
 
-        // Set default ke 1 Juni jika tidak ada parameter date
-        if (!$request->has('date')) {
-            $selectedDate = now()->format('Y-m-d');
+        // Get the current month
+        $currentDate = now()->translatedFormat('l, d F Y');
+
+        // Saldo - Income - Outcome
+        $currentMonth = now()->month;
+        $currentYear = now()->year;
+
+        $allUserTransactions = Transaction::with('category')
+            ->where('user_id', $user->id)
+            ->whereMonth('date', $currentMonth)
+            ->whereYear('date', $currentYear)
+            ->get();
+            
+        // Calculate total income, outcome, and balance
+        if ($allUserTransactions->isEmpty()) {
+            $totalIncome = 0;
+            $totalOutcome = 0;
+            $totalBalance = 0;
+        } else {
+            $totalIncome = $allUserTransactions->where('category.type', 'income')->sum('amount');
+            $totalOutcome = $allUserTransactions->where('category.type', 'outcome')->sum('amount');
+            $totalBalance = $totalIncome - $totalOutcome;
         }
 
-        $date = Carbon::parse($selectedDate);
-        list($labels, $dataOut, $dataIn) = $this->getChartData($filter, $date);
+        // Anggaran -Budget
+        $totalBudget = Budget::where('user_id', $user->id)->get();
+        if ($totalBudget->isEmpty()) {
+            $totalBudgetAmount = 0;
+        } else {
+            $totalBudgetAmount = $totalBudget->sum('amount');
+        }
+        
+        // Hitung persentase sisa anggaran
+        if ($totalBudgetAmount <= 0) {
+            $persenSisa = 100;
+            $persenPakai = 0;
+        } else {
+            $persenPakai = round(($totalOutcome / $totalBudgetAmount) * 100);
+            $persenSisa = 100 - $persenPakai;
+        }
 
-        // Hitung total dan rata-rata
-        $totalPengeluaran = array_sum($dataOut);
-        $jumlahData = count($dataOut) ?: 1;
-        $rataRata = $totalPengeluaran / $jumlahData;
+        // Hitung sisa anggaran
+        $Sisa = $totalBudgetAmount - $totalOutcome;
 
-        $income = Transaction::where('type', 'in')->sum('amount');
-        $outcome = Transaction::where('type', 'out')->sum('amount');
-        $balance = $income - $outcome;
-        $transactions = Transaction::latest()->take(3)->get();
+        // Tampilkan status anggaran
+        if ($Sisa < 0) {
+            $statusAnggaran = "Melebihi";
+            $Sisa = 0;
+        } else {
+            $statusAnggaran = "Sisa";
+        }
 
-            $currentDate = now()->translatedFormat('l, d F Y');
-
-        // Anggaran
-        $anggaran = Budget::sum('amount');
-
-        $persenSisa = $anggaran > 0 ? round((($anggaran - $outcome) / $anggaran) * 100) : 100;
-        $persenPakai = 100 - $persenSisa;
+        // Rata-rata harian budget
+        $jumlahHariBulanIni = now()->daysInMonth;
+        $rataRataHarianBudget = $totalBudgetAmount > 0
+            ? round($totalBudgetAmount / $jumlahHariBulanIni)
+            : 0;
 
         // Laporan
-        $incomeByCategory = DB::table('transactions')
-        ->select('category', DB::raw('SUM(amount) as total'))
-        ->where('type', 'in')
-        ->groupBy('category')
-        ->get();
+       $incomeByCategory = Transaction::with('category')
+            ->whereHas('category', fn($q) => $q->where('type', 'income'))
+            ->get()
+            ->groupBy(fn($transaction) => $transaction->category->name)
+            ->map(fn($group) => $group->sum('amount'));
 
-// Pisah label dan data buat chart
-$categories = $incomeByCategory->pluck('category')->toArray();
-$values = $incomeByCategory->pluck('total')->toArray();
+        $categoriesIncome = $incomeByCategory->keys()->toArray();
+        $valuesIncome = $incomeByCategory->values()->toArray();
 
-        return view('dashboard', compact(
-            'transactions', 'balance', 'rataRata',
-            'income', 'outcome', 'labels',
-            'dataOut', 'dataIn', 'filter', 'date', 'currentDate', 'persenSisa', 'persenPakai','categories', 'values'
-        ));
+
+        // Transactions 
+        $transactions = Transaction::with('category')
+            ->where('user_id', $user->id)
+            ->latest()
+            ->take(3)
+            ->get();
+
+        // Categories
+        $categories = Category::all();
+
+        // Ambil data untuk grafik (default: bulan ini)
+        $filter = request()->input('filter', 'bulan');
+        $selectedDate = request()->input('date', now()->format('d F Y'));
+        $date = Carbon::parse($selectedDate);
+
+        list($labels, $dataOut, $dataIn) = $this->getChartData($filter, $date);
+
+        // Diagram Batang - Rata-rata Pengeluaran
+        $totalOut = array_sum($dataOut);
+        $rataRata = count($dataOut) ? $totalOut / count($dataOut) : 0;
+
+        return view('dashboard', compact('categories', 'transactions', 'currentDate', 'totalIncome', 'totalOutcome', 'totalBalance',  'labels', 'valuesIncome', 'categoriesIncome' , 
+            'categories', 'currentDate', 'totalIncome', 'totalOutcome', 'totalBalance',
+        'dataOut','dataIn', 'filter', 'selectedDate', 'rataRata', 'totalBudget', 'persenSisa', 'Sisa', 'persenPakai', 'statusAnggaran', 'rataRataHarianBudget', 'totalBudgetAmount'));
     }
 
     public function getChartDataApi(Request $request)
     {
+        $user = Auth::user();
+
         $filter = $request->input('filter', 'bulan');
-        $selectedDate = $request->input('date', now()->format('Y-m-d'));
+        $selectedDate = $request->input('date', now()->format('d F Y'));
         $date = Carbon::parse($selectedDate);
 
+        $transactions = Transaction::with('category')
+            ->where('user_id', $user->id)
+            ->when($filter === 'bulan', function ($query) use ($date) {
+                return $query->whereMonth('date', now()->month)
+                            ->whereYear('date', now()->year);
+            })
+            ->when($filter === 'minggu', function ($query) use ($date) {
+                $startOfWeek = now()->copy()->startOfWeek();
+                $endOfWeek = now()->copy()->endOfWeek();
+                return $query->whereBetween('date', [$startOfWeek, $endOfWeek]);
+            })
+            ->when($filter === 'hari', function ($query) use ($date) {
+                return $query->whereDate('date', now()->toDateString());
+            })
+            ->get();
+
         list($labels, $dataOut, $dataIn) = $this->getChartData($filter, $date);
+
+        $totalIncome = $transactions->where('category.type', 'income')->sum('amount');
+        $totalOutcome = $transactions->where('category.type', 'outcome')->sum('amount');
+        $balance = $totalIncome - $totalOutcome;
 
         return response()->json([
             'labels' => $labels,
             'dataOut' => $dataOut,
             'dataIn' => $dataIn,
-            'income' => Transaction::where('type', 'in')->sum('amount'),
-            'outcome' => Transaction::where('type', 'out')->sum('amount'),
-            'balance' => Transaction::where('type', 'in')->sum('amount') - Transaction::where('type', 'out')->sum('amount')
+            'income' => $totalIncome,
+            'outcome' => $totalOutcome,
+            'balance' => $balance
         ]);
     }
 
     private function getChartData($filter, Carbon $date)
     {
-        $queryOut = Transaction::where('type', 'out');
-        $queryIn = Transaction::where('type', 'in');
+        $queryOut = Transaction::with('category')->whereHas('category', fn($q) => $q->where('type', 'outcome'));
+        $queryIn = Transaction::with('category')->whereHas('category', fn($q) => $q->where('type', 'income'));
 
         $labels = [];
         $dataOut = [];
@@ -91,201 +166,148 @@ $values = $incomeByCategory->pluck('total')->toArray();
 
         switch ($filter) {
             case 'tahun':
-                // Get data for current year and previous 4 years
-                $startYear = $currentYear = now()->year - 4;
-                $endYear = $currentYear = now()->year;
+                $startYear = now()->copy()->year - 2;
+                $endYear = now()->copy()->year;
 
-                // Generate labels for all years in range
                 for ($year = $startYear; $year <= $endYear; $year++) {
                     $labels[] = $year;
                     $dataOut[] = 0;
                     $dataIn[] = 0;
                 }
 
-                // Query outcome
                 $transactionsOut = $queryOut->select(
-                        DB::raw('YEAR(transaction_date) as year'),
-                        DB::raw('SUM(amount) as total')
-                    )
-                    ->whereBetween('transaction_date', [
-                        Carbon::create($startYear, 1, 1)->startOfYear(),
-                        Carbon::create($endYear, 12, 31)->endOfYear()
-                    ])
-                    ->groupBy('year')
-                    ->orderBy('year')
-                    ->get();
+                    DB::raw('YEAR(date) as year'),
+                    DB::raw('SUM(amount) as total')
+                )->whereBetween('date', [
+                    Carbon::create($startYear)->startOfYear(),
+                    Carbon::create($endYear)->endOfYear()
+                ])->groupBy('year')->get();
 
-                // Query income
                 $transactionsIn = $queryIn->select(
-                        DB::raw('YEAR(transaction_date) as year'),
-                        DB::raw('SUM(amount) as total')
-                    )
-                    ->whereBetween('transaction_date', [
-                        Carbon::create($startYear, 1, 1)->startOfYear(),
-                        Carbon::create($endYear, 12, 31)->endOfYear()
-                    ])
-                    ->groupBy('year')
-                    ->orderBy('year')
-                    ->get();
+                    DB::raw('YEAR(date) as year'),
+                    DB::raw('SUM(amount) as total')
+                )->whereBetween('date', [
+                    Carbon::create($startYear)->startOfYear(),
+                    Carbon::create($endYear)->endOfYear()
+                ])->groupBy('year')->get();
 
-                // Fill data
-                foreach ($transactionsOut as $transaction) {
-                    $index = array_search($transaction->year, $labels);
-                    if ($index !== false) {
-                        $dataOut[$index] = $transaction->total;
-                    }
+                foreach ($transactionsOut as $tr) {
+                    $index = array_search($tr->year, $labels);
+                    if ($index !== false) $dataOut[$index] = $tr->total;
                 }
 
-                foreach ($transactionsIn as $transaction) {
-                    $index = array_search($transaction->year, $labels);
-                    if ($index !== false) {
-                        $dataIn[$index] = $transaction->total;
-                    }
+                foreach ($transactionsIn as $tr) {
+                    $index = array_search($tr->year, $labels);
+                    if ($index !== false) $dataIn[$index] = $tr->total;
                 }
                 break;
 
-                case 'bulan':
-    // Get current year
-    $currentYear = now()->year;
+            case 'bulan':
+                $year = now()->year;
 
-    // Query outcome for current year
-    $transactionsOut = $queryOut->select(
-            DB::raw('MONTH(transaction_date) as month'),
-            DB::raw('SUM(amount) as total')
-        )
-        ->whereYear('transaction_date', $currentYear)
-        ->groupBy('month')
-        ->orderBy('month')
-        ->get();
+                $labels = [];
+                $dataOut = array_fill(0, 12, 0);
+                $dataIn = array_fill(0, 12, 0);
 
-    // Query income for current year
-    $transactionsIn = $queryIn->select(
-            DB::raw('MONTH(transaction_date) as month'),
-            DB::raw('SUM(amount) as total')
-        )
-        ->whereYear('transaction_date', $currentYear)
-        ->groupBy('month')
-        ->orderBy('month')
-        ->get();
+                for ($month = 1; $month <= 12; $month++) {
+                    $labels[] = Carbon::create($year, $month)->translatedFormat('F');
+                }
 
-    // Create labels for all months in current year
-    $labels = [];
-    $dataOut = array_fill(0, 12, 0);
-    $dataIn = array_fill(0, 12, 0);
+                $transactionsOut = $queryOut->select(
+                    DB::raw('MONTH(date) as month'),
+                    DB::raw('SUM(amount) as total')
+                )->whereYear('date', $year)
+                ->groupBy('month')->get();
 
-    for ($month = 1; $month <= 12; $month++) {
-        $labels[] = Carbon::create($currentYear, $month, 1)->translatedFormat('F');
-    }
+                $transactionsIn = $queryIn->select(
+                    DB::raw('MONTH(date) as month'),
+                    DB::raw('SUM(amount) as total')
+                )->whereYear('date', $year)
+                ->groupBy('month')->get();
 
-    // Fill data
-    foreach ($transactionsOut as $transaction) {
-        $index = $transaction->month - 1;
-        if (isset($dataOut[$index])) {
-            $dataOut[$index] = $transaction->total;
-        }
-    }
+                foreach ($transactionsOut as $tr) {
+                    $index = $tr->month - 1;
+                    if (isset($dataOut[$index])) $dataOut[$index] = $tr->total;
+                }
 
-    foreach ($transactionsIn as $transaction) {
-        $index = $transaction->month - 1;
-        if (isset($dataIn[$index])) {
-            $dataIn[$index] = $transaction->total;
-        }
-    }
-    break;
+                foreach ($transactionsIn as $tr) {
+                    $index = $tr->month - 1;
+                    if (isset($dataIn[$index])) $dataIn[$index] = $tr->total;
+                }
+                break;
 
             case 'minggu':
-                // Get current week data (week of month)
-            $startOfMonth = now()->startOfMonth();
-            $endOfMonth = now()->endOfMonth();
+                $startOfMonth = now()->copy()->startOfMonth();
+                $endOfMonth = now()->copy()->endOfMonth();
 
-            $transactionsOut = $queryOut->select(
-                    DB::raw('WEEK(transaction_date, 1) - WEEK(DATE_SUB(transaction_date, INTERVAL DAYOFMONTH(transaction_date)-1 DAY), 1) + 1 as week_of_month'),
-                    DB::raw('SUM(amount) as total')
-                )
-                ->whereBetween('transaction_date', [$startOfMonth, $endOfMonth])
-                ->groupBy('week_of_month')
-                ->orderBy('week_of_month')
-                ->get();
-
-            $transactionsIn = $queryIn->select(
-                    DB::raw('WEEK(transaction_date, 1) - WEEK(DATE_SUB(transaction_date, INTERVAL DAYOFMONTH(transaction_date)-1 DAY), 1) + 1 as week_of_month'),
-                    DB::raw('SUM(amount) as total')
-                )
-                ->whereBetween('transaction_date', [$startOfMonth, $endOfMonth])
-                ->groupBy('week_of_month')
-                ->orderBy('week_of_month')
-                ->get();
-
-            // Generate labels for all weeks in current month
-            $totalWeeks = ceil(now()->daysInMonth / 7);
-            for ($i = 1; $i <= $totalWeeks; $i++) {
-                $labels[] = 'Minggu ' . $i;
-                $dataOut[$i-1] = 0;
-                $dataIn[$i-1] = 0;
-            }
-
-            // Fill data
-            foreach ($transactionsOut as $transaction) {
-                $index = $transaction->week_of_month - 1;
-                if (isset($dataOut[$index])) {
-                    $dataOut[$index] = $transaction->total;
+                $totalWeeks = ceil(now()->daysInMonth / 7);
+                for ($i = 1; $i <= $totalWeeks; $i++) {
+                    $labels[] = 'Minggu ' . $i;
+                    $dataOut[] = 0;
+                    $dataIn[] = 0;
                 }
-            }
 
-            foreach ($transactionsIn as $transaction) {
-                $index = $transaction->week_of_month - 1;
-                if (isset($dataIn[$index])) {
-                    $dataIn[$index] = $transaction->total;
+                $transactionsOut = $queryOut->select(
+                    DB::raw('FLOOR((DAY(date) - 1) / 7) + 1 as week_of_month'),
+                    DB::raw('SUM(amount) as total')
+                )->whereBetween('date', [$startOfMonth, $endOfMonth])
+                ->groupBy('week_of_month')->get();
+
+                $transactionsIn = $queryIn->select(
+                    DB::raw('FLOOR((DAY(date) - 1) / 7) + 1 as week_of_month'),
+                    DB::raw('SUM(amount) as total')
+                )->whereBetween('date', [$startOfMonth, $endOfMonth])
+                ->groupBy('week_of_month')->get();
+
+                foreach ($transactionsOut as $tr) {
+                    $index = $tr->week_of_month - 1;
+                    if (isset($dataOut[$index])) $dataOut[$index] = $tr->total;
                 }
-            }
-            break;
+
+                foreach ($transactionsIn as $tr) {
+                    $index = $tr->week_of_month - 1;
+                    if (isset($dataIn[$index])) $dataIn[$index] = $tr->total;
+                }
+                break;
 
             case 'hari':
-                // Get current week days data
-            $startOfWeek = now()->startOfWeek(); // Sunday
-            $endOfWeek = now()->endOfWeek();   // Saturday
+                $startOfWeek = now()->copy()->startOfWeek();
+                $endOfWeek = now()->copy()->endOfWeek();
 
-            $transactionsOut = $queryOut->select(
-                    DB::raw('DAYOFWEEK(transaction_date) as day_of_week'),
+                $dayNames = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+                $labels = $dayNames;
+                $dataOut = array_fill(0, 7, 0);
+                $dataIn = array_fill(0, 7, 0);
+
+                $transactionsOut = $queryOut->select(
+                    DB::raw('DAYOFWEEK(date) as day_of_week'),
                     DB::raw('SUM(amount) as total')
-                )
-                ->whereBetween('transaction_date', [$startOfWeek, $endOfWeek])
-                ->groupBy('day_of_week')
-                ->orderBy('day_of_week')
-                ->get();
+                )->whereBetween('date', [$startOfWeek, $endOfWeek])
+                ->groupBy('day_of_week')->get();
 
-            $transactionsIn = $queryIn->select(
-                    DB::raw('DAYOFWEEK(transaction_date) as day_of_week'),
+                $transactionsIn = $queryIn->select(
+                    DB::raw('DAYOFWEEK(date) as day_of_week'),
                     DB::raw('SUM(amount) as total')
-                )
-                ->whereBetween('transaction_date', [$startOfWeek, $endOfWeek])
-                ->groupBy('day_of_week')
-                ->orderBy('day_of_week')
-                ->get();
+                )->whereBetween('date', [$startOfWeek, $endOfWeek])
+                ->groupBy('day_of_week')->get();
 
-            // Generate labels for all days in current week
-            $dayNames = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-            $labels = $dayNames;
-            $dataOut = array_fill(0, 7, 0);
-            $dataIn = array_fill(0, 7, 0);
-
-            // Fill data
-            foreach ($transactionsOut as $transaction) {
-                $index = $transaction->day_of_week - 1;
-                if (isset($dataOut[$index])) {
-                    $dataOut[$index] = $transaction->total;
+                foreach ($transactionsOut as $tr) {
+                    $index = $tr->day_of_week - 1;
+                    if (isset($dataOut[$index])) $dataOut[$index] = $tr->total;
                 }
-            }
 
-            foreach ($transactionsIn as $transaction) {
-                $index = $transaction->day_of_week - 1;
-                if (isset($dataIn[$index])) {
-                    $dataIn[$index] = $transaction->total;
+                foreach ($transactionsIn as $tr) {
+                    $index = $tr->day_of_week - 1;
+                    if (isset($dataIn[$index])) $dataIn[$index] = $tr->total;
                 }
-            }
-            break;
+                break;
+
+            default:
+                // fallback ke bulan
+                return $this->getChartData('bulan', $date);
         }
 
         return [$labels, $dataOut, $dataIn];
     }
+
 }
