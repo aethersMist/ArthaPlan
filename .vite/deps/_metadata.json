@@ -1,0 +1,37 @@
+{
+  "hash": "341bae9c",
+  "configHash": "5f4a8895",
+  "lockfileHash": "a910d89d",
+  "browserHash": "233415a6",
+  "optimized": {
+    "chart.js/auto": {
+      "src": "../../node_modules/chart.js/auto/auto.js",
+      "file": "chart__js_auto.js",
+      "fileHash": "6fc7cdb6",
+      "needsInterop": false
+    },
+    "apexcharts": {
+      "src": "../../node_modules/apexcharts/dist/apexcharts.esm.js",
+      "file": "apexcharts.js",
+      "fileHash": "de0beb59",
+      "needsInterop": false
+    },
+    "alpinejs": {
+      "src": "../../node_modules/alpinejs/dist/module.esm.js",
+      "file": "alpinejs.js",
+      "fileHash": "42fb2306",
+      "needsInterop": false
+    },
+    "axios": {
+      "src": "../../node_modules/axios/index.js",
+      "file": "axios.js",
+      "fileHash": "a6aa882f",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-UVKRO5ER": {
+      "file": "chunk-UVKRO5ER.js"
+    }
+  }
+}
