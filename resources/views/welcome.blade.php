@@ -7,7 +7,7 @@
 
         <title>{{ config('app.name', 'ArthaPlan') }}</title>
         <link rel="shortcut icon" href="{{ asset('favicon.svg') }}" type="image/x-icon">
-        
+
         <!-- Font Awesome -->
         <link
         rel="stylesheet"
@@ -69,7 +69,7 @@
                       @if (Route::has('login'))
                           @auth
                               <a href="{{ route('dashboard') }}">
-                                  <x-primary-button class="rounded-lg px-4 py-2">Dashboard</x-primary-button>
+                                  <x-primary-button class="rounded-lg px-4 py-2">Beranda</x-primary-button>
                               </a>
                           @else
                               <a href="{{ route('login') }}">
@@ -209,10 +209,10 @@
           </p>
         </div>
         <div class="grid grid-cols-2 gap-4 mt-8">
-          
-          <img src="{{ asset('assets/images/laporan1.png') }}" 
+
+          <img src="{{ asset('assets/images/laporan1.png') }}"
          alt="Foto Profil" class="w-full mt-4 rounded-lg lg:mt-10">
-<img src="{{ asset('assets/images/image.png') }}" 
+<img src="{{ asset('assets/images/image.png') }}"
          alt="Foto Profil" class="w-full mt-4 rounded-lg lg:mt-10">
         </div>
       </div>
@@ -307,14 +307,22 @@
             kamu pantau pemasukan & pengeluaran sehari-hari dengan fitur super
             praktis.
           </p>
-          <a
-            href="{{ route('login') }}"
-          >
 
-                <x-primary-button class="rounded-lg " >Login<i class="fa fa-arrow-right ml-2 -mr-1" aria-hidden="true"></i>
-</x-primary-button>
 
           </a>
+          @if (Route::has('login'))
+                          @auth
+                              <a href="{{ route('dashboard') }}">
+                                  <x-primary-button class="rounded-lg px-4 py-2">Beranda</x-primary-button>
+                              </a>
+                          @else
+                              <a href="{{ route('login') }}">
+<x-primary-button class="rounded-lg " >
+                    Login
+                    <i class="fa fa-arrow-right ml-2 -mr-1" aria-hidden="true"></i>
+                </x-primary-button>                              </a>
+                          @endauth
+                      @endif
         </div>
       </div>
     </section>
@@ -349,6 +357,11 @@
                 <li class="mb-4">
                   <a href="https://www.chartjs.org/docs/latest/" class="hover:underline"
                     >ChartJS</a
+                  >
+                </li>
+                <li class="mb-4">
+                  <a href="https://www.apexcharts.com/" class="hover:underline"
+                    >ApexCharts</a
                   >
                 </li>
                 <li class="mb-4">

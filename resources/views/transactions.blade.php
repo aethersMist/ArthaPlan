@@ -6,68 +6,175 @@
       </div>
     @endif
 
-    <table class="min-w-full text-sm lg:text-md text-left text-gray-700">
-      <thead class="text-sm lg:text-md text-primary-dark uppercase bg-accent">
-        <tr>
-          <th class="px-4 py-3">#</th>
-          <th class="px-4 py-3">Kategori</th>
-          <th class="px-4 py-3">Nominal</th>
-          <th class="px-4 py-3">Tanggal</th>
-          <th class="px-4 py-3">Keterangan</th>
-          <th class="px-4 py-3">Action</th>
-        </tr>
-      </thead>
-      <tbody class="bg-light divide-y divide-gray-200">
-        @forelse($transactions as $index => $transaction)
-            <tr>
-                <td class="px-4 py-4">{{ $index + 1 }}</td>
-                <td class="px-4 py-4">
-                <div class="flex justify-start items-center">
-                    <span class="text-center px-2 py-1 w-full bg-primary text-light font-medium rounded-lg">
-                        {{ $transaction->category->name }}
-                    </span>
-                </div>
-                </td>
-                <td class="px-4 py-4">
-                <div class="flex justify-start items-center gap-1 text-sm lg:text-lg">
-                    <span class="{{ $transaction->category->type == 'income' ? 'text-accent' : 'text-danger' }}">
-                    <i class="fa fa-{{ $transaction->category->type == 'income' ? 'plus' : 'minus' }}" aria-hidden="true"></i>
-                    </span>
-                    <p>Rp{{ number_format($transaction->amount, 2, ',', '.') }}</p>
-                </div>
-                </td>
-                <td class="px-4 py-4">{{ $transaction->date->translatedFormat('l, d F Y') }}</td>
+<div class="space-y-4">
+    @php
+        $groupedTransactions = $transactions->sortByDesc('date')->groupBy(function($item) {
+            return $item->date->format('Y-m-d');
+        });
 
-                <td class="px-4 py-4">{{ $transaction->description }}</td>
- 
-                <td class="flex gap-2 px-4 py-4">
-                <!-- Tombol Update -->
-                <x-primary-button data-modal-target="edit-{{ $transaction->id }}"
-                        data-modal-toggle="edit-{{ $transaction->id }}"
-                        type="button"
-                                class="flex justify-center items-center h-8 w-8  rounded-full">
-                    <i class="fa fa-edit"></i>
-                </x-primary-button>
+        $today = \Carbon\Carbon::today()->format('Y-m-d');
+        $todayTransactions = $groupedTransactions->pull($today) ?? collect();
+    @endphp
 
-                <!-- Tombol Hapus -->
-                <x-secondary-button data-modal-target="deleteAlert-{{ $transaction->id }}"
-                        data-modal-toggle="deleteAlert-{{ $transaction->id }}"
-                        type="button"
-                        class="flex justify-center items-center h-8 w-8  rounded-full ">
-                    <i class="fa fa-trash"></i>
-                </x-secondary-button>
-                </td>
-            </tr>
+    {{-- Today's Section --}}
+    @if($todayTransactions->count() > 0)
+    <div class="">
+        <div class="inline-flex justify-between items-center w-full mt-4">
+            <p>Hari ini - {{ \Carbon\Carbon::today()->translatedFormat('l, d F Y') }}</p>
+            <div class="inline-flex justify-center items-center space-x-4">
+                @php
+                    $todayIncome = $todayTransactions->where('category.type', 'income')->sum('amount');
+                    $todayExpense = $todayTransactions->where('category.type', 'outcome')->sum('amount');
+                @endphp
+                <p class="text-sm text-dark">
+                    <i class="fa fa-arrow-down text-accent" aria-hidden="true"></i>
+                    <span class="font-semibold">Rp{{ number_format($todayIncome, 2, ',', '.') }}</span>
+                </p>
+                <p class="text-sm text-dark">
+                    <i class="fa fa-arrow-up text-danger" aria-hidden="true"></i>
+                    <span class="font-semibold">Rp{{ number_format($todayExpense, 2, ',', '.') }}</span>
+                </p>
+            </div>
+        </div>
 
-            @empty
-          <tr>
-            <td colspan="6" class="w-full text-center py-4 text-md text-dark font-medium bg-light">
-              Tidak ada data transaksi.
-            </td>
-          </tr>
-        @endforelse
-      </tbody>
-    </table>
+        <div class="mt-2 bg-light rounded-lg px-4 py-2 shadow-lg border-2 border-primary">
+            <table class="min-w-full divide-y divide-gray-200">
+                <tbody class="bg-light divide-y divide-gray-200">
+                    @foreach($todayTransactions as $transaction)
+                    <tr>
+                        <td class="py-4 w-10">
+                            <div class="h-10 w-10 rounded-full bg-base border-2 border-accent flex items-center justify-center ">
+                                {{-- <i class="fa-solid fa-dollar-sign text-xl text-primary"></i> --}}
+                                    <span class="font-semibold text-sm flex items-center justify-center {{ $transaction->category->type == 'income' ? 'text-accent' : 'text-danger' }}">
+                                        <i class="fa-solid fa-{{ $transaction->category->type == 'income' ? 'plus' : 'minus' }} fa-lg"></i>
+                                    </span>
+                            </div>
+                        </td>
+                        <td class="py-4 px-2">
+                            <p class="text-md font-medium text-dark">{{ $transaction->category->name }}</p>
+                        </td>
+                        <td class="py-4">
+                            <div class="flex items-center justify-end space-x-2">
+                                <p>
+                                    <span class="font-semibold {{ $transaction->category->type == 'income' ? 'text-accent' : 'text-danger' }}">
+                                        <i class="fa fa-{{ $transaction->category->type == 'income' ? 'plus' : 'minus' }} fa-lg"></i>
+                                        Rp{{ number_format($transaction->amount, 2, ',', '.') }}
+                                    </span>
+                                </p>
+                                <!-- Action buttons -->
+                                <x-primary-button
+                                    data-modal-target="edit-{{ $transaction->id }}"
+                                    data-modal-toggle="edit-{{ $transaction->id }}"
+                                    type="button"
+                                    class="flex justify-center items-center h-8 w-8 rounded-full">
+                                    <i class="fa fa-edit"></i>
+                                </x-primary-button>
+
+                                <x-secondary-button
+                                    data-modal-target="deleteAlert-{{ $transaction->id }}"
+                                    data-modal-toggle="deleteAlert-{{ $transaction->id }}"
+                                    type="button"
+                                    class="flex justify-center items-center h-8 w-8 rounded-full">
+                                    <i class="fa fa-trash"></i>
+                                </x-secondary-button>
+                            </div>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+    @endif
+
+    {{-- Other Days --}}
+    @forelse($groupedTransactions as $date => $dailyTransactions)
+    @php
+        $currentDate = \Carbon\Carbon::parse($date);
+        $isYesterday = $currentDate->isYesterday();
+
+        // Calculate daily totals
+        $dailyIncome = $dailyTransactions->where('category.type', 'income')->sum('amount');
+        $dailyExpense = $dailyTransactions->where('category.type', 'outcome')->sum('amount');
+    @endphp
+
+    <div class="">
+        <div class="inline-flex justify-between items-center w-full mt-4">
+            <p>
+                @if($isYesterday)
+                    Kemarin - {{ $currentDate->translatedFormat('l, d F Y') }}
+                @else
+                    {{ $currentDate->translatedFormat('l, d F Y') }}
+                @endif
+            </p>
+            <div class="inline-flex justify-center items-center space-x-4">
+                <p class="text-sm text-dark">
+                    <i class="fa fa-arrow-down text-accent" aria-hidden="true"></i>
+                    <span class="font-semibold">Rp{{ number_format($dailyIncome, 2, ',', '.') }}</span>
+                </p>
+                <p class="text-sm text-dark">
+                    <i class="fa fa-arrow-up text-danger" aria-hidden="true"></i>
+                    <span class="font-semibold">Rp{{ number_format($dailyExpense, 2, ',', '.') }}</span>
+                </p>
+            </div>
+        </div>
+
+        <div class="mt-2 bg-light rounded-lg px-4 py-2 shadow-lg border-2 border-primary">
+            <table class="min-w-full divide-y divide-gray-200">
+                <tbody class="bg-light divide-y divide-gray-200">
+                    @foreach($dailyTransactions as $transaction)
+                    <tr>
+                        <td class="py-4 w-10">
+                            <div class="h-10 w-10 rounded-full bg-accent border-2 border-primary flex items-center justify-center">
+                                <i class="fa fa-dollar-sign text-xl text-primary"></i>
+                            </div>
+                        </td>
+                        <td class="py-4 px-2">
+                            <p class="text-md font-medium text-dark">{{ $transaction->category->name }}</p>
+                            @if($transaction->description)
+                                <p class="text-xs text-gray-500 mt-1">{{ $transaction->description }}</p>
+                            @endif
+                        </td>
+                        <td class="py-4">
+                            <div class="flex items-center justify-end space-x-2">
+                                <p>
+                                    <span class="font-semibold {{ $transaction->category->type == 'income' ? 'text-accent' : 'text-danger' }}">
+                                        {{ $transaction->category->type == 'income' ? '+' : '-' }}
+                                        Rp{{ number_format($transaction->amount, 2, ',', '.') }}
+                                    </span>
+                                </p>
+                                <!-- Action buttons -->
+                                <x-primary-button
+                                    data-modal-target="edit-{{ $transaction->id }}"
+                                    data-modal-toggle="edit-{{ $transaction->id }}"
+                                    type="button"
+                                    class="flex justify-center items-center h-8 w-8 rounded-full">
+                                    <i class="fa fa-edit"></i>
+                                </x-primary-button>
+
+                                <x-secondary-button
+                                    data-modal-target="deleteAlert-{{ $transaction->id }}"
+                                    data-modal-toggle="deleteAlert-{{ $transaction->id }}"
+                                    type="button"
+                                    class="flex justify-center items-center h-8 w-8 rounded-full">
+                                    <i class="fa fa-trash"></i>
+                                </x-secondary-button>
+                            </div>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+    @empty
+    @if($todayTransactions->count() == 0)
+    <div class="w-full text-center py-4 text-md text-dark font-medium bg-light rounded-lg">
+        Tidak ada data transaksi.
+    </div>
+    @endif
+    @endforelse
+</div>
 
     <!-- Semua Modal -->
       <!-- Modal Hapus -->
@@ -148,7 +255,5 @@
             </form>
         </x-moddal>
       @endforeach
-
-      
   </div>
 </x-app-layout>

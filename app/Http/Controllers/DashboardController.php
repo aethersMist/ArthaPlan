@@ -36,7 +36,7 @@ class DashboardController extends Controller
             ->whereYear('date', $currentYear)
             ->get();
             
-        // Calculate total income, outcome, and balance
+        // total income, outcome, and balance
         if ($allUserTransactions->isEmpty()) {
             $totalIncome = 0;
             $totalOutcome = 0;
@@ -48,7 +48,7 @@ class DashboardController extends Controller
         }
 
         // Anggaran -Budget
-        $totalBudget = BudgetTransaction::with(['budget', 'category', 'transaction'])->latest()->get();
+        $totalBudget = BudgetTransaction::with(['budget', 'category'])->latest()->get();
         if ($totalBudget->isEmpty()) {
             $totalBudgetTrans = 0;
         } else {

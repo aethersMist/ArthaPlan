@@ -14,9 +14,9 @@ class TransactionController extends Controller
         $transactions = Transaction::where('user_id', Auth::id())->with('category')->get();
 
         $transactions = Transaction::with('category')->get();
-        $categories = Category::all(); 
+        $categories = Category::all();
 
-        return view('transactions', compact('transactions', 'categories'));   
+        return view('transactions', compact('transactions', 'categories'));
 
     }
 

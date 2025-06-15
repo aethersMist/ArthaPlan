@@ -15,9 +15,10 @@ class BudgetController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $budgets = Budget::where('user_id', $user->id)->orderByDesc('start_date')->get();
-        $budgets = Budget::with(['budgetTransaction.category'])->where('user_id', Auth::id())->get();
-
+        $budgets = Budget::with(['budgetTransaction.category'])
+                ->where('user_id', $user->id)
+                ->orderByDesc('start_date')
+                ->get();
 
         $currentDate = now()->translatedFormat('l, d F Y');
         $currentMonth = now()->month;
@@ -29,10 +30,24 @@ class BudgetController extends Controller
             ->whereYear('date', $currentYear)
             ->get();
 
-        // Income, Outcome, Balance
-        $totalIncome = $transactions->where('category.type', 'income')->sum('amount');
-        $totalOutcome = $transactions->where('category.type', 'outcome')->sum('amount');
-        $totalBalance = $totalIncome - $totalOutcome;
+         $allUserTransactions = Transaction::with('category')
+            ->where('user_id', $user->id)
+            ->whereMonth('date', $currentMonth)
+            ->whereYear('date', $currentYear)
+            ->get();
+
+        $totalOutcomeB = $allUserTransactions->where('category.type', 'outcome')->sum('amount');
+            
+        // Calculate total income, outcome, and balance
+        if ($allUserTransactions->isEmpty()) {
+            $totalIncome = 0;
+            $totalOutcome = 0;
+            $totalBalance = 0;
+        } else {
+            $totalIncome = $allUserTransactions->where('category.type', 'income')->sum('amount');
+            $totalOutcome = $allUserTransactions->where('category.type', 'outcome')->sum('amount');
+            $totalBalance = $totalIncome - $totalOutcome;
+        }
 
         // Budget Amount - Rata-Rata Harian - Anggaran
         $totalBudgetAmount = $budgets->sum('amount');
@@ -64,7 +79,6 @@ class BudgetController extends Controller
                 $remaining = $limit - $totalOutcome;
                 $progress = $limit > 0 ? min(100, ($totalOutcome / $limit) * 100) : 0;
 
-                // Simpan nilai-nilai ini ke dalam property dinamis
                 $bt->limit = $limit;
                 $bt->totalOutcome = $totalOutcome;
                 $bt->remaining = $remaining;
@@ -74,14 +88,14 @@ class BudgetController extends Controller
 
 
         return view('budgets', compact(
-            'budgets', 'categories', 'currentDate', 'totalIncome', 'totalOutcome', 'totalBalance',
-            'totalBudgetAmount', 'persenSisa', 'Sisa', 'persenPakai', 'statusAnggaran', 'rataRataHarianOutcome', 'transactions'
+            'budgets', 'categories', 'currentDate', 'totalIncome', 'totalOutcome', 'totalBalance', 'totalOutcomeB',
+            'totalBudgetAmount', 'persenSisa', 'Sisa', 'persenPakai', 'statusAnggaran', 'rataRataHarianOutcome', 'transactions',
         ));
     }
 
     public function create()
     {
-        return view('budgets.create', compact('budgets'));
+        return view('budgets.create');
     }
 
     public function store(Request $request)
@@ -106,7 +120,7 @@ class BudgetController extends Controller
     public function edit(Budget $budget)
     {
         $this->authorizeBudget($budget);
-        return view('budgets.edit', compact('budgets'));
+        return view('budgets.edit');
     }
 
     public function update(Request $request, Budget $budget)

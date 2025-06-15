@@ -8,7 +8,7 @@ window.Alpine = Alpine;
 
 Alpine.start();
 
-// Bar Chart 
+// Bar Chart
 document.addEventListener("DOMContentLoaded", function () {
     let barChart = {};
 
@@ -188,9 +188,6 @@ document.addEventListener("DOMContentLoaded", function () {
             window.location.href = url.toString();
         });
     });
-
-    updateWaktu();
-    setInterval(updateWaktu, 1000);
 });
 
 // Donat Chart - Anggaran
@@ -257,7 +254,7 @@ document.addEventListener("DOMContentLoaded", function () {
     chart.render();
 });
 
-// Laporan - Report 
+// Laporan - Report
 document.addEventListener("DOMContentLoaded", () => {
     function createDonutChart(
         containerId,

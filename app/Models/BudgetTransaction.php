@@ -9,7 +9,7 @@ class BudgetTransaction extends Model
     protected $fillable = [
         'budget_id',
         'category_id',
-        'transaction_id',
+        // 'transaction_id',
         'used_amount'
     ];
 
@@ -24,9 +24,9 @@ class BudgetTransaction extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function Transaction()
-    {
-        return $this->belongsTo(Transaction::class);
-    }
+    // public function Transaction()
+    // {
+    //     return $this->belongsTo(Transaction::class);
+    // }
 
 }

@@ -28,13 +28,13 @@
                   </td>
                   <td class="px-4 py-4">
                     <div class="flex justify-start items-center">
-                       <span class="text-center px-2 py-1 rounded-lg font-semibold 
+                       <span class="text-center px-2 py-1 rounded-lg font-semibold
                             {{ $category->type == 'income' ? 'bg-accent/50 text-primary-dark' : 'bg-danger/50 text-danger-dark' }}">
                             {{ $category->type == 'income' ? 'Pemasukkan' : 'Pengeluaran' }}
                         </span>
                     </div>
                   </td>
-                    
+
                   </td>
                   <td class="flex gap-2 px-4 py-4">
                     <!-- Tombol Edit -->
@@ -46,12 +46,12 @@
                     </x-primary-button>
 
                     <!-- Tombol Hapus -->
-                    <x-danger-button data-modal-target="deleteAlert-{{ $category->id }}"
+                    <x-secondary-button data-modal-target="deleteAlert-{{ $category->id }}"
                             data-modal-toggle="deleteAlert-{{ $category->id }}"
                             type="button"
                             class="flex justify-center items-center h-8 w-8  rounded-full ">
                       <i class="fa fa-trash"></i>
-                    </x-danger-button>
+                    </x-secondary-button>
                   </td>
                 </tr>
 @empty
@@ -67,7 +67,7 @@
 
     <!-- Semua Modal -->
     @foreach($categories as $category)
-    
+
       <!-- Modal Hapus -->
       <x-moddal id="deleteAlert-{{ $category->id }}" title="Hapus Kategori" :name="'Hapus Kategori'">
         <div class="mb-6 text-dark">
@@ -110,7 +110,7 @@
         </form>
       </x-moddal>
       @endforeach
-    </div>  
+    </div>
   </div>
 
 </x-app-layout>
