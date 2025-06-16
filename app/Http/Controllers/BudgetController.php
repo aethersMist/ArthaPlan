@@ -30,22 +30,19 @@ class BudgetController extends Controller
             ->whereYear('date', $currentYear)
             ->get();
 
-         $allUserTransactions = Transaction::with('category')
-            ->where('user_id', $user->id)
-            ->whereMonth('date', $currentMonth)
-            ->whereYear('date', $currentYear)
-            ->get();
-
-        $totalOutcomeB = $allUserTransactions->where('category.type', 'outcome')->sum('amount');
-            
-        // Calculate total income, outcome, and balance
-        if ($allUserTransactions->isEmpty()) {
+        // total income, outcome, and balance
+        if ($transactions->isEmpty()) {
             $totalIncome = 0;
             $totalOutcome = 0;
             $totalBalance = 0;
         } else {
-            $totalIncome = $allUserTransactions->where('category.type', 'income')->sum('amount');
-            $totalOutcome = $allUserTransactions->where('category.type', 'outcome')->sum('amount');
+            $totalIncome = $transactions->filter(function ($t) {
+                return $t->category && $t->category->type === 'income';
+            })->sum('amount');
+
+            $totalOutcome = $transactions->filter(function ($t) {
+                return $t->category && $t->category->type === 'outcome';
+            })->sum('amount');
             $totalBalance = $totalIncome - $totalOutcome;
         }
 
@@ -86,6 +83,11 @@ class BudgetController extends Controller
             }
         }
 
+        $totalOutcomeB = Transaction::where('user_id', $user->id)
+            ->whereMonth('date', $currentMonth)
+            ->whereYear('date', $currentYear)
+            ->whereHas('category', fn($q) => $q->where('type', 'outcome'))
+            ->sum('amount');
 
         return view('budgets', compact(
             'budgets', 'categories', 'currentDate', 'totalIncome', 'totalOutcome', 'totalBalance', 'totalOutcomeB',

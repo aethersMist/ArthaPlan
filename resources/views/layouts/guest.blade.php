@@ -7,7 +7,7 @@
 
         <title>{{ config('app.name', 'Laravel') }}</title>
         <link rel="shortcut icon" href="{{ asset('favicon.svg') }}" type="image/x-icon">
-        
+
         <!-- Font Awesome -->
         <link
         rel="stylesheet"
@@ -31,7 +31,13 @@
     <body class="font-sans text-dark antialiased">
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-8 bg-base">
 
-     {{ $slot }}
+        <div id="global-loader" class="fixed inset-0 bg-white flex items-center justify-center z-50">
+                <x-loader />
+            </div>
+
+            <div id="app-content" class="invisible">
+                {{ $slot ?? '' }}
+            </div>
         </div>
     </body>
 </html>

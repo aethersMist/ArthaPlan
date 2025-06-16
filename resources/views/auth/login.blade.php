@@ -13,9 +13,9 @@
             <form method="POST" action="{{ route('login') }}" class="w-full max-w-xs">
         <div class="flex-col justify-center items-center mb-4 text-center space-y-1">
 
-            <h2 class="text-2xl font-bold">Sign In</h2>
+            <h2 class="text-2xl font-bold">Masuk</h2>
             <span class="text-sm text-netral w-full"
-            >or use your Email & Password</span>
+            >atau gunakan Email & Kata Sandi Anda</span>
         </div>
         <div class="">
         <x-auth-session-status class="mb-4" :status="session('status')" />
@@ -32,7 +32,7 @@
 
         <!-- Password -->
         <div  class="mt-4 text-start">
-            <x-input-label for="password" :value="__('Password')" />
+            <x-input-label for="password" :value="__('Kata Sandi')" />
             <x-text-input id="password" class="block mt-1 w-full"
                             type="password"
                             name="password"
@@ -47,7 +47,7 @@
             <div class="block ">
                 <label for="remember_me" class="inline-flex items-center">
                     <input id="remember_me" type="checkbox" class="rounded focus:ring-accent focus:border-accent shadow-sm " name="remember">
-                    <span class="ms-2 text-sm text-netral">{{ __('Remember me') }}</span>
+                    <span class="ms-2 text-sm text-netral">{{ __('Ingat saya') }}</span>
                 </label>
             </div>
 
@@ -60,12 +60,12 @@
         data-modal-target="resetModal"
         data-modal-toggle="resetModal"
         class="underline text-sm text-netral hover:text-netral-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent">
-        {{ __('Forgot your password?') }}
+        {{ __('Lupa kata sandi Anda?') }}
         </button>
 
             </div>
                 <x-secondary-button type="submit" class="w-full flex justify-center items-center mt-4">
-                    {{ __('Log in') }}
+                    {{ __('Masuk') }}
                 </x-secondary-button>
         </form>
             </div>
@@ -82,14 +82,13 @@
                 </a>
             </div>      
              <h2 class="text-3xl font-bold mb-2 text-primary">
-                Hello, Friend!
+                Hello, Teman-teman!
               </h2>
-              
-              <p class="text-sm mb-4">To stay connected, please login</p>
-              
+              <p class="text-sm mb-4">Untuk tetap terhubung, silakan masuk</p>
+
               <a href="{{ route('register') }}">
               <x-secondary-button class="flex justify-center items-center">
-                {{ __('Sign Up') }}
+                {{ __('Daftar') }}
                 <i class="fa fa-arrow-right ml-1" aria-hidden="true"></i>
             </x-secondary-button>
              </a>
@@ -102,7 +101,7 @@
 
         <x-moddal id="resetModal" title="Reset Password" :name="'Reset Password'">
         <div class="mb-4 text-sm text-gray-600">
-        {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
+        {{ __('Lupa kata sandi Anda? Tidak masalah. Cukup beri tahu kami alamat email Anda dan kami akan mengirimkan tautan reset kata sandi yang memungkinkan Anda memilih kata sandi baru.') }}
     </div>
 
     <form method="POST" action="{{ route('password.email') }}">
@@ -117,7 +116,7 @@
 
         <div class="flex items-center justify-end mt-4">
             <x-primary-button>
-                {{ __('Email Password Reset Link') }}
+                {{ __('Kirim Tautan Reset Kata Sandi') }}
             </x-primary-button>
         </div>
     </form>

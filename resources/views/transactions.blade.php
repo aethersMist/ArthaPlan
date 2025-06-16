@@ -24,7 +24,7 @@
             <div class="inline-flex justify-center items-center space-x-4">
                 @php
                     $todayIncome = $todayTransactions->where('category.type', 'income')->sum('amount');
-                    $todayExpense = $todayTransactions->where('category.type', 'outcome')->sum('amount');
+                    $todayOutcome = $todayTransactions->where('category.type', 'outcome')->sum('amount');
                 @endphp
                 <p class="text-sm text-dark">
                     <i class="fa fa-arrow-down text-accent" aria-hidden="true"></i>
@@ -32,7 +32,7 @@
                 </p>
                 <p class="text-sm text-dark">
                     <i class="fa fa-arrow-up text-danger" aria-hidden="true"></i>
-                    <span class="font-semibold">Rp{{ number_format($todayExpense, 2, ',', '.') }}</span>
+                    <span class="font-semibold">Rp{{ number_format($todayOutcome, 2, ',', '.') }}</span>
                 </p>
             </div>
         </div>
@@ -43,11 +43,11 @@
                     @foreach($todayTransactions as $transaction)
                     <tr>
                         <td class="py-4 w-10">
-                            <div class="h-10 w-10 rounded-full bg-base border-2 border-accent flex items-center justify-center ">
-                                {{-- <i class="fa-solid fa-dollar-sign text-xl text-primary"></i> --}}
-                                    <span class="font-semibold text-sm flex items-center justify-center {{ $transaction->category->type == 'income' ? 'text-accent' : 'text-danger' }}">
+                            <div class="h-10 w-10 rounded-full bg-accent border-2 border-primary flex items-center justify-center ">
+                                <i class="fa-solid fa-dollar-sign text-xl text-primary"></i>
+                                    {{-- <span class="font-semibold text-sm flex items-center justify-center {{ $transaction->category->type == 'income' ? 'text-accent' : 'text-danger' }}">
                                         <i class="fa-solid fa-{{ $transaction->category->type == 'income' ? 'plus' : 'minus' }} fa-lg"></i>
-                                    </span>
+                                    </span> --}}
                             </div>
                         </td>
                         <td class="py-4 px-2">
@@ -95,7 +95,7 @@
 
         // Calculate daily totals
         $dailyIncome = $dailyTransactions->where('category.type', 'income')->sum('amount');
-        $dailyExpense = $dailyTransactions->where('category.type', 'outcome')->sum('amount');
+        $dailyOutcome = $dailyTransactions->where('category.type', 'outcome')->sum('amount');
     @endphp
 
     <div class="">
@@ -114,7 +114,7 @@
                 </p>
                 <p class="text-sm text-dark">
                     <i class="fa fa-arrow-up text-danger" aria-hidden="true"></i>
-                    <span class="font-semibold">Rp{{ number_format($dailyExpense, 2, ',', '.') }}</span>
+                    <span class="font-semibold">Rp{{ number_format($dailyOutcome, 2, ',', '.') }}</span>
                 </p>
             </div>
         </div>
@@ -139,7 +139,7 @@
                             <div class="flex items-center justify-end space-x-2">
                                 <p>
                                     <span class="font-semibold {{ $transaction->category->type == 'income' ? 'text-accent' : 'text-danger' }}">
-                                        {{ $transaction->category->type == 'income' ? '+' : '-' }}
+                                        <i class="fa fa-{{ $transaction->category->type == 'income' ? 'plus' : 'minus' }} fa-lg"></i>
                                         Rp{{ number_format($transaction->amount, 2, ',', '.') }}
                                     </span>
                                 </p>
@@ -202,7 +202,7 @@
                 <div class="grid grid-cols-1 gap-4 mb-4 sm:grid-cols-2">
                     <!-- Kategori -->
                     <div>
-                        <label for="category_id_{{ $transaction->id }}" class="block mb-2 font-semibold text-gray-700">Kategori</label>
+                        <label for="category_id_{{ $transaction->id }}" class="block mb-2  text-gray-700">Kategori</label>
                         <select id="category_id_{{ $transaction->id }}" name="category_id" required
                                 class="block w-full p-2 border border-netral-light focus:border-accent focus:ring-accent rounded-lg resize-none shadow-lg">
                             <option value="" disabled>Kategori</option>

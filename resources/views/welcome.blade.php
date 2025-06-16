@@ -60,7 +60,7 @@
                           {{ __('Fitur') }}
                       </x-nav-link>
                       <x-nav-link href="#highlight">
-                          {{ __('Highlight') }}
+                          {{ __('Sorotan') }}
                       </x-nav-link>
                   </div>
 
@@ -73,11 +73,11 @@
                               </a>
                           @else
                               <a href="{{ route('login') }}">
-                                  <x-primary-button class="rounded-lg px-3 py-1.5">Login</x-primary-button>
+                                  <x-primary-button class="rounded-lg px-3 py-1.5">Masuk</x-primary-button>
                               </a>
                               @if (Route::has('register'))
                                   <a href="{{ route('register') }}">
-                                      <x-secondary-button class="rounded-lg px-3 py-1.5">Sign Up</x-secondary-button>
+                                      <x-secondary-button class="rounded-lg px-3 py-1.5">Daftar</x-secondary-button>
                                   </a>
                               @endif
                           @endauth
@@ -98,7 +98,7 @@
                           {{ __('Fitur') }}
                       </x-responsive-nav-link>
                       <x-responsive-nav-link href="#highlight">
-                          {{ __('Highlight') }}
+                          {{ __('Sorotan') }}
                       </x-responsive-nav-link>
                   </div>
 
@@ -111,11 +111,11 @@
                               </a>
                           @else
                               <a href="{{ route('login') }}" class="block">
-                                  <x-secondary-button class="w-full">Login</x-primary-button>
+                                  <x-secondary-button class="w-full">Masuk</x-primary-button>
                               </a>
                               @if (Route::has('register'))
                                   <a href="{{ route('register') }}" class="block">
-                                      <x-primary-button class="w-full">Sign Up</x-primary-button>
+                                      <x-primary-button class="w-full">Daftar</x-primary-button>
                                   </a>
                               @endif
                           @endauth
@@ -167,11 +167,11 @@
                               </a>
                           @else
                               <a href="{{ route('login') }}" class="block">
-          <x-secondary-button class="rounded-lg px-8 py-4 text-xl font-medium" >Login</x-secondary-button>
+          <x-secondary-button class="rounded-lg px-8 py-4 text-xl font-medium" >Masuk</x-secondary-button>
                               </a>
                               @if (Route::has('register'))
                                   <a href="{{ route('register') }}" class="block">
-            <x-primary-button class="rounded-lg px-8 py-4 text-xl font-medium" >Sign Up</x-primary-button>
+            <x-primary-button class="rounded-lg px-8 py-4 text-xl font-medium" >Daftar</x-primary-button>
                                   </a>
                               @endif
                           @endauth
@@ -318,7 +318,7 @@
                           @else
                               <a href="{{ route('login') }}">
 <x-primary-button class="rounded-lg " >
-                    Login
+                    Masuk
                     <i class="fa fa-arrow-right ml-2 -mr-1" aria-hidden="true"></i>
                 </x-primary-button>                              </a>
                           @endauth
@@ -425,8 +425,8 @@
         <div class="flex items-center justify-center">
           <span class="text-sm text-netral text-center"
             >© 2025
-            <a href="#" class="hover:underline">Kelompok Pemrograman Web™</a>.
-            All Rights Reserved.
+            <a href="#" class="hover:underline">Kelompok Pemrograman Web 1™</a>.
+            Semua Hak Dilindungi.
           </span>
         </div>
       </div>

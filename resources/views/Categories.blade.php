@@ -12,7 +12,7 @@
           <th class="px-4 py-3">#</th>
           <th class="px-4 py-3">Kategori</th>
           <th class="px-4 py-3">Tipe</th>
-          <th class="px-4 py-3">Action</th>
+          <th class="px-4 py-3">#</th>
         </tr>
       </thead>
       <tbody class="bg-light divide-y divide-gray-200">

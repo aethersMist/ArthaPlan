@@ -281,12 +281,21 @@ document.addEventListener("DOMContentLoaded", () => {
             values = [1];
         }
 
+        const displayCategories = categories.map((cat) => {
+            if (cat.toLowerCase().includes("income")) {
+                return cat.replace(/income/gi, "Pemasukkan");
+            } else if (cat.toLowerCase().includes("outcome")) {
+                return cat.replace(/outcome/gi, "Pengeluaran");
+            }
+            return cat;
+        });
+
         const options = {
             chart: {
                 type: "pie",
                 height: 200,
             },
-            labels: categories,
+            labels: displayCategories,
             series: values,
             colors: colors,
             dataLabels: {
@@ -297,6 +306,11 @@ document.addEventListener("DOMContentLoaded", () => {
             tooltip: {
                 y: {
                     formatter: (value) => "Rp " + value.toLocaleString("id-ID"),
+                },
+                x: {
+                    formatter: (value, { seriesIndex }) => {
+                        return displayCategories[seriesIndex];
+                    },
                 },
             },
         };
@@ -310,7 +324,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (legendReport) {
                 legendReport.innerHTML = "";
 
-                categories.forEach((cat, i) => {
+                displayCategories.forEach((cat, i) => {
                     const color = colors[i % colors.length];
 
                     const li = document.createElement("li");
@@ -351,23 +365,23 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Warna combined chart income dan outcome
+    // Warna combined chart pemasukkan dan pengeluaran
     const combinedColors = [
-        "#285539",
+        "#285539", // Pemasukkan
         "#88cf0f",
         "#00bfa6",
         "#ff9f1c",
         "#2979ff",
-        "#ff4081", // income
-        "#f87171",
+        "#ff4081",
+        "#f87171", // Pengeluaran
         "#ef4444",
         "#991b1b",
         "#fb923c",
         "#dc2626",
-        "#7f1d1d", // outcome
+        "#7f1d1d",
     ];
 
-    const incomeColors = [
+    const pemasukkanColors = [
         "#285539",
         "#88cf0f",
         "#00bfa6",
@@ -375,7 +389,7 @@ document.addEventListener("DOMContentLoaded", () => {
         "#2979ff",
         "#ff4081",
     ];
-    const outcomeColors = [
+    const pengeluaranColors = [
         "#f87171",
         "#ff9f1c",
         "#ff4081",
@@ -396,7 +410,7 @@ document.addEventListener("DOMContentLoaded", () => {
         "pie-chart-Income",
         "data-categories",
         "data-values",
-        incomeColors,
+        pemasukkanColors,
         "legend-Report-Income"
     );
 
@@ -404,7 +418,13 @@ document.addEventListener("DOMContentLoaded", () => {
         "pie-chart-Outcome",
         "data-categories-out",
         "data-values-out",
-        outcomeColors,
+        pengeluaranColors,
         "legend-Report-Outcome"
     );
+});
+
+// Loader
+window.addEventListener("load", () => {
+    document.getElementById("global-loader").style.display = "none";
+    document.getElementById("app-content").classList.remove("invisible");
 });

@@ -60,14 +60,14 @@
                                 {{ __('Kategori') }}
                             </x-dropdown-link>
                             <x-dropdown-link :href="route('profile.edit')" >
-                                {{ __('Profile') }}
+                                {{ __('Pengaturan ') }}
                             </x-dropdown-link>
                             <!-- Authentication -->
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <x-dropdown-link :href="route('logout')"
                                     onclick="event.preventDefault(); this.closest('form').submit();">
-                                    {{ __('Log Out') }}
+                                    {{ __('Keluar') }}
                                 </x-dropdown-link>
                             </form>
                         </div>
@@ -132,7 +132,7 @@
                         class="block w-full p-2 border border-netral-light focus:border-accent focus:ring-accent rounded-lg shadow-lg">
                     <option value="" disabled selected>Kategori</option>
 
-                    <optgroup label="Pengeluaran (Outcome)">
+                    <optgroup label="Pengeluaran">
                     @foreach ($categories->where('type', 'outcome') as $category)
                         <option value="{{ $category->id }}">
                         {{ $category->name }}
@@ -140,14 +140,14 @@
                     @endforeach
                     </optgroup>
 
-                    <optgroup label="Pemasukkan (Income)">
+                    <optgroup label="Pemasukkan">
                     @foreach ($categories->where('type', 'income') as $category)
                         <option value="{{ $category->id }}">
                         {{ $category->name }}
                         </option>
                     @endforeach
                     </optgroup>
-                </select>            
+                </select>
             </div>
 
             <div>

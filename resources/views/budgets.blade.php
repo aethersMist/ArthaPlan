@@ -331,7 +331,7 @@
     {{-- MODAL UPDATE ANGGARAN CARD --}}
 @foreach ($budgets as $budget)
     @foreach ($budget->budgetTransaction as $index => $transaction)
-          
+
     <x-moddal id="editBudgetTrans-{{ $transaction->id }}" title="Update Anggaran" :name="'Update Anggaran'">
       <form action="{{ route('budgetTransactions.update', $transaction->id)}}" method="POST" enctype="multipart/form-data">
         @csrf

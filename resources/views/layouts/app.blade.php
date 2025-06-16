@@ -7,7 +7,7 @@
 
         <title>{{ config('app.name', 'ArthaPlan') }}</title>
         <link rel="shortcut icon" href="{{ asset('favicon.svg') }}" type="image/x-icon">
-        
+
         <!-- Font Awesome -->
         <link
         rel="stylesheet"
@@ -29,13 +29,20 @@
     </head>
     <body class="font-display bg-base antialiased">
         <div class="min-h-screen">
+
+            <div id="global-loader" class="fixed inset-0 bg-white flex items-center justify-center z-50">
+                <x-loader />
+            </div>
+
+            <div id="app-content" class="invisible">
+
             @include('layouts.navigation')
 
             <!-- Page Heading -->
             @isset($header)
                 <header class="bg-white shadow">
                     <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
+                        {{ $header ?? '' }}
                     </div>
                 </header>
             @endisset
@@ -44,11 +51,12 @@
             <main>
                 <div class="p-6 mt-[90px] sm:mt-[70px]">
 
-                {{ $slot }}
+                {{ $slot ?? '' }}
                 </div>
             </main>
         </div>
             @include('layouts.footer')
+            </div>
 
     </body>
 </html>

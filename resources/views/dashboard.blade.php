@@ -17,7 +17,7 @@
         <!-- Saldo -->
         <div class="flex items-center justify-between p-4 rounded-xl shadow-lg bg-primary text-light">
         <div>
-            <p class="text-sm lg:text-lg">Saldo</p>
+            <p class="text-sm lg:text-lg font-medium">Saldo</p>
             <div class="flex items-start gap-1 font-bold">
             <span class="text-sm lg:text-lg">Rp</span>
             <p class="text-2xl">{{ number_format($totalBalance, 2, ',', '.') }}</p>
@@ -31,7 +31,7 @@
         <!-- Pemasukan -->
         <div class="flex items-center justify-between p-4 bg-primary text-light rounded-xl shadow">
         <div>
-            <p class="text-sm lg:text-lg">Pemasukan</p>
+            <p class="text-sm lg:text-lg font-medium">Pemasukan</p>
             <div class="flex items-start gap-1 font-bold">
             <span class="text-sm lg:text-lg">Rp</span>
             <p class="text-2xl">{{ number_format($totalIncome, 2, ',', '.') }}</p>
@@ -48,7 +48,7 @@
         <!-- Pengeluaran -->
         <div class="flex items-center justify-between p-4 bg-primary text-light rounded-xl shadow">
         <div>
-            <p class="text-sm lg:text-lg">Pengeluaran</p>
+            <p class="text-sm lg:text-lg font-medium">Pengeluaran</p>
             <div class="flex items-start gap-1 font-bold">
             <span class="text-sm lg:text-lg">Rp</span>
             <p class="text-2xl">{{ number_format($totalOutcome, 2, ',', '.') }}</p>
@@ -190,33 +190,33 @@
                 <!-- Informasi Anggaran -->
                 <div class="w-full lg:w-3/5 space-y-4 text-md sm:text-sm lg:text-lg">
                     <div class="flex justify-between items-center">
-                    <p class="lightspace-nowrap">Anggaran</p>
+                    <p class="lightspace-nowrap font-semibold">Anggaran</p>
                     <p class="text-right">Rp {{ number_format($totalBudgetTrans, 2, ',', '.') }}</p>
                     </div>
 
                     <div class="flex justify-between items-center">
-                        <p class="lightspace-nowrap">Status</p>
+                        <p class="lightspace-nowrap font-semibold">Status</p>
                         <div class="flex gap-1 items-center text-right">
                         <span class="text-sm {{ $Sisa == 0 && $totalOutcome > $totalBudgetTrans ? 'text-danger' : 'text-accent' }}">
-                           ({{ $persenSisa }}%) {{ $statusAnggaran }} 
+                           ({{ $persenSisa }}%) {{ $statusAnggaran }}
                         </span>
                         <p class="text-right">Rp {{ number_format($Sisa, 2, ',', '.') }}</p>
                     </div>
 
                 </div>
                 <div class="flex justify-between items-center">
-                    <p class="lightspace-nowrap">Rata-rata Harian</p>
+                    <p class="lightspace-nowrap font-semibold">Rata-rata Harian</p>
                     <p class="text-right">Rp {{ number_format($rataRataHarianOutcome, 2, ',', '.') }}</p>
                 </div>
                 </div>
             </div>
         </section>
-        
+
         <!-- Diagram (Bar Chart) -->
         <section class="flex flex-col rounded-2xl bg-light shadow-lg p-6">
             <!-- atas -->
             <div class="flex justify-between items-center mb-4">
-                
+
                 <a href="{{ route('budgets') }}" class="flex items-center gap-2 rounded-full bg-base border-2 border-primary p-2 hover:bg-accent transition">
                     <x-secondary-button
                     class="flex justify-center items-center h-8 w-8 rounded-full"

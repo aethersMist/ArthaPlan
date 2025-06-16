@@ -9,14 +9,14 @@
             <form method="POST" action="{{ route('register') }}" class="w-full max-w-xs">
                 <div class="flex-col justify-center items-center mb-4 text-center space-y-1">
 
-            <h2 class="text-2xl font-bold">Create Account</h2>
+            <h2 class="text-2xl font-bold">Buat Akun</h2>
         
         </div>
         @csrf
 
         <!-- Name -->
         <div class="text-start">
-            <x-input-label for="name" :value="__('Name')" />
+            <x-input-label for="name" :value="__('Nama')" />
             <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
             <x-input-error :messages="$errors->get('name')" class="mt-2" />
         </div>
@@ -30,7 +30,7 @@
 
         <!-- Password -->
         <div class="mt-4 text-start">
-            <x-input-label for="password" :value="__('Password')" />
+            <x-input-label for="password" :value="__('Kata Sandi')" />
 
             <x-text-input id="password" class="block mt-1 w-full"
                             type="password"
@@ -42,7 +42,7 @@
 
         <!-- Confirm Password -->
         <div class="mt-4 text-start">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
+            <x-input-label for="password_confirmation" :value="__('Konfirmasi Kata Sandi')" />
 
             <x-text-input id="password_confirmation" class="block mt-1 w-full"
                             type="password"
@@ -52,7 +52,7 @@
         </div>
 
         <x-secondary-button type="submit" class="w-full flex justify-center items-center mt-4">
-                {{ __('Register') }}
+                {{ __('Daftar') }}
             </x-secondary-button>
     </form>
           </div>
@@ -73,14 +73,14 @@
                 </a>
             </div>      
                           <h2 class="text-3xl font-bold mb-2 text-primary">
-                Welcome!
+                Selamat Datang!
               </h2>
 <p class="text-sm mb-4">
-                Register with your personal details to use all of our features
+                Daftar dengan detail pribadi Anda untuk menggunakan semua fitur kami
               </p>              <a href="{{ route('login') }}">
                   <x-secondary-button class="rounded-lg space-x-2 text-sm font-medium">
                   <i class="fa fa-arrow-left mr-1" aria-hidden="true"></i>
-                {{ __('Sign In') }}
+                {{ __('Masuk') }}
             </x-secondary-button>
              </a>
             
