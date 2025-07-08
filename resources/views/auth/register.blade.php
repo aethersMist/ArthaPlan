@@ -1,7 +1,7 @@
 <x-guest-layout>
     <div class="flex items-center justify-center min-h-screen px-4">
         <div class="relative w-full max-w-4xl bg-light min-h-[500px] rounded-2xl shadow-xl overflow-hidden flex flex-col-reverse md:flex-row">
-            
+
             {{-- Welcome Panel --}}
             <div class="w-full md:w-1/2 h-[240px] md:h-auto bg-accent text-light flex flex-col justify-center items-center px-8 text-center z-10">
                 <a href="/" class="hidden md:block">
@@ -59,13 +59,13 @@
                     {{-- Pemisah --}}
                     <div class="text-center text-gray-500 mb-4">— atau —</div>
 
-                    {{-- Login Google --}}
-                    <a href="{{ url('auth/google') }}" class="flex justify-center">
-                        <x-primary-button class="w-8 h-8 text-sm leading-4 font-medium rounded-full">
-                            <i class="fa-brands fa-google"></i>
-                        </x-primary-button>
-                    </a>
                 </form>
+                {{-- Login Google --}}
+                <a href="{{ url('auth/google') }}" class="flex justify-center">
+                    <x-primary-button class="w-8 h-8 text-sm leading-4 font-medium rounded-full">
+                        <i class="fa-brands fa-google"></i>
+                    </x-primary-button>
+                </a>
             </div>
         </div>
     </div>
