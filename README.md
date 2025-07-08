@@ -1,5 +1,46 @@
 # ArthaPlan
 
+ArthaPlan adalah aplikasi manajemen kategori berbasis Laravel yang memudahkan pengelolaan data kategori secara efisien. Proyek ini dirancang untuk membantu pengguna dalam membuat, membaca, memperbarui, dan menghapus kategori dengan antarmuka yang sederhana dan intuitif.
+
+## Fitur Utama
+
+- CRUD kategori (Create, Read, Update, Delete)
+- Validasi data input
+- Antarmuka responsif berbasis Laravel Blade
+- Struktur kode yang mudah dikembangkan
+
+## Instalasi
+
+1. Clone repositori ini:
+    ```bash
+    git clone https://github.com/username/ArthaPlan.git
+    ```
+2. Masuk ke direktori proyek:
+    ```bash
+    cd ArthaPlan
+    ```
+3. Install dependensi menggunakan Composer:
+    ```bash
+    composer install
+    ```
+4. Salin file `.env.example` menjadi `.env` dan sesuaikan konfigurasi database.
+5. Generate application key:
+    ```bash
+    php artisan key:generate
+    ```
+6. Jalankan migrasi database:
+    ```bash
+    php artisan migrate
+    ```
+7. Jalankan server lokal:
+    ```bash
+    php artisan serve
+    ```
+
+## Kontribusi
+
+Kontribusi sangat terbuka untuk pengembangan aplikasi ini. Silakan buat pull request atau buka issue untuk diskusi lebih lanjut.
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">

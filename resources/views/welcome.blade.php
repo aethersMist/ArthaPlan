@@ -341,7 +341,7 @@
                             <div>
                                 <h2 class="mb-6 text-sm font-semibold text-dark uppercase">Diskusi</h2>
                                 <ul class="text-netral">
-                                    <li class="mb-4"><a href="https://github.com/aethersMist/ArthaPlan-PemWeb" class="hover:underline">Github</a></li>
+                                    <li class="mb-4"><a href="https://github.com/aethersMist/ArthaPlan" class="hover:underline">Github</a></li>
                                     <li class="mb-4"><a href="#" class="hover:underline">Discord</a></li>
                                     <li class="mb-4"><a href="https://trello.com/b/vl409pP9/aplikasi-manajemen-keuangan-pribadi" class="hover:underline">Trello</a></li>
                                 </ul>
