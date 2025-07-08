@@ -19,8 +19,8 @@ class UserSeeder extends Seeder
         // Create an admin user
         User::create([
             'name' => 'Admin',
-            'email' => 'admin@arthaplan.com',
-            'password' => Hash::make('password'),
+            'email' => 'admin@artha.plan',
+            'password' => Hash::make("asdfghjkl;'"),
             'email_verified_at' => now(),
             'remember_token' => Str::random(10),
         ]);

@@ -12,8 +12,6 @@ class TransactionController extends Controller
     public function index()
     {
         $transactions = Transaction::where('user_id', Auth::id())->with('category')->get();
-
-        $transactions = Transaction::with('category')->get();
         $categories = Category::all();
 
         return view('transactions', compact('transactions', 'categories'));

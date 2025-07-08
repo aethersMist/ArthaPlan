@@ -1,91 +1,72 @@
 <x-guest-layout>
-    <div class="flex-grow flex items-center justify-center">
-        <div
-          class="relative w-[768px] bg-light min-h-[500px] rounded-2xl shadow-xl overflow-hidden">
-          <!-- Sign Up Form -->
-          <div
-            class="sign-up-form absolute w-1/2 h-full top-0 right-0 flex flex-col justify-center items-center px-8 text-center bg-light"
-          >
-            <form method="POST" action="{{ route('register') }}" class="w-full max-w-xs">
-                <div class="flex-col justify-center items-center mb-4 text-center space-y-1">
-
-            <h2 class="text-2xl font-bold">Buat Akun</h2>
-        
-        </div>
-        @csrf
-
-        <!-- Name -->
-        <div class="text-start">
-            <x-input-label for="name" :value="__('Nama')" />
-            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
-            <x-input-error :messages="$errors->get('name')" class="mt-2" />
-        </div>
-
-        <!-- Email Address -->
-        <div class="mt-4 text-start">
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
-
-        <!-- Password -->
-        <div class="mt-4 text-start">
-            <x-input-label for="password" :value="__('Kata Sandi')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <!-- Confirm Password -->
-        <div class="mt-4 text-start">
-            <x-input-label for="password_confirmation" :value="__('Konfirmasi Kata Sandi')" />
-
-            <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                            type="password"
-                            name="password_confirmation" required autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-        </div>
-
-        <x-secondary-button type="submit" class="w-full flex justify-center items-center mt-4">
-                {{ __('Daftar') }}
-            </x-secondary-button>
-    </form>
-          </div>
-
-
-          {{-- Toggle Panel --}}
-          {{-- Sign In --}}
-          <div
-            class="toggle absolute w-1/2 h-full top-0 right-1/2 bg-accent text-light flex flex-col justify-center items-center px-8 text-center z-10"
-          >
+    <div class="flex items-center justify-center min-h-screen px-4">
+        <div class="relative w-full max-w-4xl bg-light min-h-[500px] rounded-2xl shadow-xl overflow-hidden flex flex-col-reverse md:flex-row">
             
-            {{-- Sign Up --}}
-                       <div class="block flex flex-col items-center space-x-4">
-
- <div>
-                <a href="/">
-                    <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
+            {{-- Welcome Panel --}}
+            <div class="w-full md:w-1/2 h-[240px] md:h-auto bg-accent text-light flex flex-col justify-center items-center px-8 text-center z-10">
+                <a href="/" class="hidden md:block">
+                    <x-application-logo class="w-20 h-20 fill-current text-white" />
                 </a>
-            </div>      
-                          <h2 class="text-3xl font-bold mb-2 text-primary">
-                Selamat Datang!
-              </h2>
-<p class="text-sm mb-4">
-                Daftar dengan detail pribadi Anda untuk menggunakan semua fitur kami
-              </p>              <a href="{{ route('login') }}">
-                  <x-secondary-button class="rounded-lg space-x-2 text-sm font-medium">
+                <h2 class="text-2xl md:text-3xl font-bold mb-2 mt-4 text-white">Selamat Datang!</h2>
+                <p class="text-sm mb-4 text-light">Daftar dengan detail pribadi Anda untuk menggunakan semua fitur kami</p>
+                <a href="{{ route('login') }}">
+                    <x-secondary-button class="rounded-lg space-x-2 text-sm font-medium">
                   <i class="fa fa-arrow-left mr-1" aria-hidden="true"></i>
                 {{ __('Masuk') }}
-            </x-secondary-button>
-             </a>
-            
+                    </x-secondary-button>
+                </a>
             </div>
-          </div>
+
+            {{-- Register Form --}}
+            <div class="w-full md:w-1/2 flex flex-col justify-center items-center px-8 py-10 text-center bg-light z-20">
+                <form method="POST" action="{{ route('register') }}" class="w-full max-w-xs">
+                    @csrf
+
+                    <h2 class="text-2xl font-bold mb-2">Daftar</h2>
+
+                    {{-- Name --}}
+                    <div class="text-start mb-4">
+                        <x-input-label for="name" :value="__('Nama')" />
+                        <x-text-input id="name" type="text" name="name" :value="old('name')" class="w-full" required autofocus autocomplete="name" />
+                        <x-input-error :messages="$errors->get('name')" class="mt-2" />
+                    </div>
+
+                    {{-- Email --}}
+                    <div class="text-start mb-4">
+                        <x-input-label for="email" :value="__('Email')" />
+                        <x-text-input id="email" type="email" name="email" :value="old('email')" class="w-full" required autocomplete="username" />
+                        <x-input-error :messages="$errors->get('email')" class="mt-2" />
+                    </div>
+
+                    {{-- Password --}}
+                    <div class="text-start mb-4">
+                        <x-input-label for="password" :value="__('Kata Sandi')" />
+                        <x-text-input id="password" type="password" name="password" class="w-full" required autocomplete="new-password" />
+                        <x-input-error :messages="$errors->get('password')" class="mt-2" />
+                    </div>
+
+                    {{-- Konfirmasi Password --}}
+                    <div class="text-start mb-4">
+                        <x-input-label for="password_confirmation" :value="__('Konfirmasi Kata Sandi')" />
+                        <x-text-input id="password_confirmation" type="password" name="password_confirmation" class="w-full" required autocomplete="new-password" />
+                        <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+                    </div>
+
+                    <x-secondary-button type="submit" class="w-full justify-center mb-4">
+                        {{ __('Daftar') }}
+                    </x-secondary-button>
+
+                    {{-- Pemisah --}}
+                    <div class="text-center text-gray-500 mb-4">— atau —</div>
+
+                    {{-- Login Google --}}
+                    <a href="{{ url('auth/google') }}" class="flex justify-center">
+                        <x-primary-button class="w-8 h-8 text-sm leading-4 font-medium rounded-full">
+                            <i class="fa-brands fa-google"></i>
+                        </x-primary-button>
+                    </a>
+                </form>
+            </div>
         </div>
-        </div>
+    </div>
 </x-guest-layout>

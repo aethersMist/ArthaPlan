@@ -25,12 +25,13 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
         <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-        
-        
+
+
     </head>
     <body class="font-display antialiased scroll-smooth">
         <script src="https://unpkg.com/flowbite@latest/dist/flowbite.min.js"></script>
         <script>document.documentElement.classList.add('js')</script>
+        <script>AOS.init();</script>
         <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
         <div class="min-h-screen bg-base">
         <!-- Header / Navbar -->
@@ -130,9 +131,9 @@
         <main>
             <div class=" mt-[90px] sm:mt-[70px]">
             <!-- Content 1 -->
-            <section class="px-6 bg-base mt-[85px] sm:mt-[62px]" id="#beranda" data-aos="fade-up">
+            <section class="px-6 bg-base mt-[85px] sm:mt-[62px]" id="#beranda">
                 <div class="max-w-screen-xl px-4 py-8 mx-auto text-center lg:py-16 lg:px-12">
-                    <a data-aos="fade-up" data-aos-anchor-placement="center-center"
+                    <a
                     href="#"
                     class="inline-flex items-center justify-between px-1 py-1 pr-4 text-sm text-light bg-primary rounded-full mb-7 hover:bg-primary-soft "
                     role="alert"
@@ -144,12 +145,12 @@
                     <i class="fa fa-chevron-right ml-2 fa-sm" aria-hidden="true"></i>
                     </a>
 
-                    <h1 data-aos="fade-up" data-aos-delay="100"
+                    <h1
                     class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-dark md:text-5xl lg:text-6xl"
                     >
                     Kendalikan Keuangan Anda – Kelola Uang dengan Mudah dan Cerdas!
                     </h1>
-                    <p data-aos="fade-up" data-aos-delay="200"
+                    <p
                     class="mb-8 text-lg font-medium text-netral lg:text-xl sm:px-16 xl:px-48"
                     >
                     Lacak pengeluaran, buat anggaran, dan optimalkan keuangan Anda dengan
@@ -180,7 +181,7 @@
             </section>
 
             <!-- Content 2 -->
-            <section class="p-6 bg-primary-dark" id="tentang" data-aos="fade-right">
+            <section class="p-6 bg-primary-dark" id="tentang">
                 <div class="items-center max-w-screen-xl gap-16 px-4 py-8 mx-auto lg:grid lg:grid-cols-2 lg:py-16 lg:px-6" >
                     <div class="text-netral-light sm:text-lg">
                     <h2
@@ -205,7 +206,7 @@
                         flow, semua dalam tampilan satu halaman yang informatif.
                     </p>
                     </div>
-                    <div class="grid grid-cols-2 gap-4 mt-8" data-aos="zoom-in-up">
+                    <div class="grid grid-cols-2 gap-4 mt-8">
 
                     <img src="{{ asset('assets/images/laporan1.png') }}"
                     alt="Foto Profil" class="w-full mt-4 rounded-lg lg:mt-10">
@@ -228,7 +229,7 @@
                         </p>
                     </div>
                     <div class="space-y-8 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-12 md:space-y-0">
-                        <div data-aos="fade-up" data-aos-delay="100">
+                        <div>
                             <div
                             class="flex items-center justify-center w-10 h-10 mb-4 bg-accent rounded-full lg:h-12 lg:w-12"
                             >
@@ -246,7 +247,7 @@
                             khawatir boros lagi!
                             </p>
                         </div>
-                        <div data-aos="fade-up" data-aos-delay="200">
+                        <div>
                             <div
                             class="flex items-center justify-center w-10 h-10 mb-4 bg-accent rounded-full lg:h-12 lg:w-12"
                             >
@@ -261,7 +262,7 @@
                             bulannya.
                             </p>
                         </div>
-                        <div data-aos="fade-up" data-aos-delay="300">
+                        <div>
                             <div
                             class="flex items-center justify-center w-10 h-10 mb-4 bg-accent rounded-full lg:h-12 lg:w-12"
                             >
@@ -281,13 +282,13 @@
             <!-- Content 4 -->
             <section class="px-6 bg-primary-dark" id="highlight">
                 <div class="items-center max-w-screen-xl gap-8 px-4 py-8 mx-auto xl:gap-16 md:grid md:grid-cols-2 sm:py-16 lg:px-6" >
-                    <img data-aos="zoom-in-right"
+                    <img
                     class="w-full rounded-xl"
                     src="../assets/images/Dashboard.png"
                     alt="dashboard image"
                     />
 
-                    <div class="mt-4 md:mt-0" data-aos="fade-left">
+                    <div class="mt-4 md:mt-0">
                     <h2 class="mb-4 text-4xl font-extrabold tracking-tight text-light">
                         Yuk, mulai atur uangmu dengan cara seru!
                     </h2>
@@ -314,18 +315,18 @@
                                 @endif
                     </div>
                 </div>
-            </section>  
+            </section>
 
             <!-- footer -->
-            <footer class="p-4 bg-base sm:p-6" data-aos="fade-up" data-aos-duration="1000">
+            <footer class="p-4 bg-base sm:p-6">
                 <div class="max-w-screen-xl mx-auto">
-                    <div class="md:flex md:justify-between" data-aos="fade-up" data-aos-delay="100">
-                        <div class="mb-6 md:mb-0" data-aos="fade-right" data-aos-delay="200">
+                    <div class="md:flex md:justify-between">
+                        <div class="mb-6 md:mb-0">
                             <x-application-logo class="block h-20 w-auto fill-current text-light" />
                             <span class="self-center text-2xl font-semibold whitespace-nowrap">ArthaPlan</span>
                         </div>
 
-                        <div class="grid grid-cols-2 gap-8 sm:gap-6 sm:grid-cols-3" data-aos="fade-left" data-aos-delay="300">
+                        <div class="grid grid-cols-2 gap-8 sm:gap-6 sm:grid-cols-3"  >
                             <div>
                                 <h2 class="mb-6 text-sm font-semibold text-dark uppercase">Alat</h2>
                                 <ul class="text-netral">
@@ -357,7 +358,7 @@
 
                     <hr class="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
 
-                    <div class="flex items-center justify-center" data-aos="zoom-in" data-aos-delay="400">
+                    <div class="flex items-center justify-center">
                         <span class="text-sm text-netral text-center">
                             ©2025
                             <a href="#" class="text-accent hover:font-medium hover:bg-accent hover:text-primary rounded-2xl px-2 transition duration-300 ease-in-out">Kelompok Pemrograman Web 1 ™</a>.

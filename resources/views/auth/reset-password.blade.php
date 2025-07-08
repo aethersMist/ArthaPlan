@@ -1,5 +1,9 @@
 <x-guest-layout>
-            <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
+     @push('head')
+        <title>Reset Kata Sandi - ArthaPlan</title>
+    @endpush
+    <div class="w-full max-w-xl mt-6 px-8 py-6 bg-white shadow-md overflow-hidden rounded-lg mx-auto">
+        <h1 class="text-2xl font-bold text-center mb-6 text-gray-800">Reset Kata Sandi</h1>
 
     <form method="POST" action="{{ route('password.store') }}">
         @csrf

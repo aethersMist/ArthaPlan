@@ -18,10 +18,9 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        $request = request(); 
+        $request = request();
         $user = Auth::user();
         $budgets = Budget::where('user_id', $user->id)->orderByDesc('start_date')->get();
-
 
         // Get the current month
         $currentDate = now()->translatedFormat('l, d F Y');
@@ -35,7 +34,7 @@ class DashboardController extends Controller
             ->whereMonth('date', $currentMonth)
             ->whereYear('date', $currentYear)
             ->get();
-            
+
         // total income, outcome, and balance
         if ($allUserTransactions->isEmpty()) {
             $totalIncome = 0;
@@ -48,13 +47,18 @@ class DashboardController extends Controller
         }
 
         // Anggaran -Budget
-        $totalBudget = BudgetTransaction::with(['budget', 'category'])->latest()->get();
+$totalBudget = BudgetTransaction::with(['budget', 'category'])
+    ->whereHas('budget', function ($query) {
+        $query->where('user_id', Auth::id());
+    })
+    ->latest()
+    ->get();
         if ($totalBudget->isEmpty()) {
             $totalBudgetTrans = 0;
         } else {
             $totalBudgetTrans = $totalBudget->sum('used_amount');
         }
-        
+
         // Hitung persentase sisa anggaran
         if ($totalBudgetTrans <= 0) {
             $persenSisa = 100;
@@ -83,13 +87,13 @@ class DashboardController extends Controller
         $rataRataHarianOutcome = $days > 0 ? $totalOutcome / $days : 0;
 
         // Laporan
-       $incomeByCategory = Transaction::with('category')
+       $incomeByCategory = Transaction::where('user_id', Auth::id())->with('category')
             ->whereHas('category', fn($q) => $q->where('type', 'income'))
             ->get()
             ->groupBy(fn($transaction) => $transaction->category->name)
             ->map(fn($group) => $group->sum('amount'));
 
-        $outcomeByCategory = Transaction::with('category')
+        $outcomeByCategory = Transaction::where('user_id', Auth::id())->with('category')
             ->whereHas('category', fn($q) => $q->where('type', 'outcome'))
             ->get()
             ->groupBy(fn($transaction) => $transaction->category->name)
@@ -97,7 +101,7 @@ class DashboardController extends Controller
 
         $categoriesIncome = $incomeByCategory->keys()->toArray();
         $valuesIncome = $incomeByCategory->values()->toArray();
-        
+
         $categoriesOutcome = $outcomeByCategory->keys()->toArray();
         $valuesOutcome = $outcomeByCategory->values()->toArray();
 
@@ -109,7 +113,7 @@ class DashboardController extends Controller
         $combinedValues = array_merge($valuesIncome, $valuesOutcome);
 
 
-        // Transactions 
+        // Transactions
         $transactions = Transaction::with('category')
             ->where('user_id', $user->id)
             ->latest()
@@ -182,8 +186,8 @@ class DashboardController extends Controller
 
     private function getChartData($filter, Carbon $date)
     {
-        $queryOut = Transaction::with('category')->whereHas('category', fn($q) => $q->where('type', 'outcome'));
-        $queryIn = Transaction::with('category')->whereHas('category', fn($q) => $q->where('type', 'income'));
+        $queryOut = Transaction::where('user_id', Auth::id())->with('category')->whereHas('category', fn($q) => $q->where('type', 'outcome'));
+        $queryIn = Transaction::where('user_id', Auth::id())->with('category')->whereHas('category', fn($q) => $q->where('type', 'income'));
 
         $labels = [];
         $dataOut = [];

@@ -5,8 +5,11 @@
         {{ session('success') }}
       </div>
     @endif
+    <div class="min-h-screen flex flex-col">
 
-<div class="space-y-4">
+
+
+<div class="space-y-4 flex-1">
     @php
         $groupedTransactions = $transactions->sortByDesc('date')->groupBy(function($item) {
             return $item->date->format('Y-m-d');
@@ -256,4 +259,6 @@
         </x-moddal>
       @endforeach
   </div>
+    </div>
+
 </x-app-layout>

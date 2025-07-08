@@ -18,7 +18,7 @@ class ReportController extends Controller
     {
 
         // income
-        $incomeByCategory = Transaction::with('category')
+        $incomeByCategory = Transaction::where('user_id', Auth::id())->with('category')
             ->whereHas('category', fn($q) => $q->where('type', 'income'))
             ->get()
             ->groupBy(fn($transaction) => $transaction->category->name)
@@ -28,7 +28,7 @@ class ReportController extends Controller
         $valuesIncome = $incomeByCategory->values()->toArray();
 
         // outcome
-        $outcomeByCategory = Transaction::with('category')
+        $outcomeByCategory = Transaction::where('user_id', Auth::id())->with('category')
             ->whereHas('category', fn($q) => $q->where('type', 'outcome'))
             ->get()
             ->groupBy(fn($transaction) => $transaction->category->name)
@@ -37,7 +37,7 @@ class ReportController extends Controller
         $valuesOutcome = $outcomeByCategory->values()->toArray();
 
         // Daigram Bar
-        $filter = 'bulan'; 
+        $filter = 'bulan';
         $selectedDate = request()->input('date', now()->format('d F Y'));
         $date = Carbon::parse($selectedDate);
 
@@ -57,7 +57,7 @@ class ReportController extends Controller
         $selectedDate = $request->input('date', now()->format('d F Y'));
         $date = Carbon::parse($selectedDate);
 
-        $transactions = Transaction::with('category')
+        $transactions = Transaction::where('user_id', Auth::id())->with('category')
             ->where('user_id', $user->id)
             ->whereYear('date', $date->year)
             ->get();
@@ -81,7 +81,7 @@ class ReportController extends Controller
 
     private function getChartData($filter, Carbon $date)
     {
-        
+
         $year = now()->year;
 
         $labels = [];
@@ -92,8 +92,8 @@ class ReportController extends Controller
             $labels[] = Carbon::create($year, $month)->translatedFormat('F');
         }
 
-        $queryOut = Transaction::with('category')->whereHas('category', fn($q) => $q->where('type', 'outcome'));
-        $queryIn = Transaction::with('category')->whereHas('category', fn($q) => $q->where('type', 'income'));
+        $queryOut = Transaction::where('user_id', Auth::id())->with('category')->whereHas('category', fn($q) => $q->where('type', 'outcome'));
+        $queryIn = Transaction::where('user_id', Auth::id())->with('category')->whereHas('category', fn($q) => $q->where('type', 'income'));
 
         $transactionsOut = $queryOut->select(
             DB::raw('MONTH(date) as month'),
@@ -120,4 +120,4 @@ class ReportController extends Controller
         return [$labels, $dataOut, $dataIn];
     }
 
-}   
+}
