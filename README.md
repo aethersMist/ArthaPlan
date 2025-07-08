@@ -1,13 +1,23 @@
-# ArthaPlan
+# ArthaPlan — Manajemen Keuangan Pribadi Berbasis Website
 
-ArthaPlan adalah aplikasi manajemen kategori berbasis Laravel yang memudahkan pengelolaan data kategori secara efisien. Proyek ini dirancang untuk membantu pengguna dalam membuat, membaca, memperbarui, dan menghapus kategori dengan antarmuka yang sederhana dan intuitif.
+ArthaPlan adalah aplikasi web untuk membantu pengguna mengatur dan memantau keuangan pribadi. Dibangun menggunakan Laravel 12, ArthaPlan memungkinkan pengguna mencatat pemasukan dan pengeluaran, menyusun anggaran bulanan, serta melihat laporan keuangan dalam bentuk grafik dan tabel yang mudah dipahami.
 
 ## Fitur Utama
 
-- CRUD kategori (Create, Read, Update, Delete)
-- Validasi data input
-- Antarmuka responsif berbasis Laravel Blade
-- Struktur kode yang mudah dikembangkan
+- Pencatatan pemasukan dan pengeluaran
+- Kategori transaksi (kebutuhan, keinginan, tabungan, dll.)
+- Sistem anggaran bulanan
+- Laporan dan grafik keuangan
+- Autentikasi pengguna (login, register, reset password)
+- UI responsif dan sederhana
+
+## Tools
+- Laravel 12
+- PHP 8.x
+- MySQL / MariaDB
+- Blade Templating Engine
+- Tailwind CSS (Flowbite)
+- Fontawesome
 
 ## Instalasi
 
