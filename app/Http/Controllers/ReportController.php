@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Report;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\Models\Transaction;
 use App\Models\Category;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 
 class ReportController extends Controller
@@ -43,9 +45,13 @@ class ReportController extends Controller
 
         list($labels, $dataOut, $dataIn) = $this->getChartData('bulan', $date);
 
+        $transactionsDate = Transaction::where('user_id', Auth::id())->with('category')
+            ->whereYear('date', $date->year)
+            ->get();
+
         return view('reports', compact(
             'categoriesIncome', 'valuesIncome', 'categoriesOutcome', 'valuesOutcome',
-            'labels', 'dataOut', 'dataIn', 'filter', 'selectedDate'
+            'labels', 'dataOut', 'dataIn', 'filter', 'selectedDate', 'transactionsDate'
         ));
 
     }
@@ -119,5 +125,50 @@ class ReportController extends Controller
 
         return [$labels, $dataOut, $dataIn];
     }
+
+private function exportCSVByType($filename, $type = null)
+{
+    $path = storage_path("app/public/{$filename}");
+    $handle = fopen($path, 'w');
+
+    fputcsv($handle, ['Tanggal', 'Kategori', 'Tipe', 'Jumlah', 'Deskripsi']);
+
+    $query = DB::table('transactions')
+        ->join('categories', 'transactions.category_id', '=', 'categories.id')
+        ->where('transactions.user_id', auth()->id())
+        ->select(
+            'transactions.date',
+            'categories.name as category',
+            'categories.type',
+            'transactions.amount',
+            'transactions.description'
+        )
+        ->orderByDesc('transactions.date');
+
+    if ($type) {
+        $query->where('categories.type', $type);
+    }
+
+    $transactions = $query->get();
+
+    foreach ($transactions as $row) {
+        fputcsv($handle, [
+            $row->date,
+            $row->category,
+            ucfirst($row->type),
+            number_format($row->amount, 0, ',', '.'),
+            $row->description,
+        ]);
+    }
+
+    fclose($handle);
+    return response()->download($path)->deleteFileAfterSend(true);
+}
+
+public function exportAll()
+{
+    return $this->exportCSVByType('laporan-semua.csv');
+}
+
 
 }

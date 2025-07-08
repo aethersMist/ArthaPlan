@@ -18,7 +18,11 @@ Route::get('/', function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::resource('/transactions', TransactionController::class);
-    Route::resource('/reports', ReportController::class);
+    
+    Route::get('/reports/export-csv', [ReportController::class, 'exportAll'])->name('reports.export.all');
+    Route::resource('/reports', ReportController::class)->except(['show']);
+
+    // Route::resource('/reports', ReportController::class);
     Route::resource('/budgets', BudgetController::class);
     Route::resource('/categories', CategoryController::class);
 });

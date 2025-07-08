@@ -2,8 +2,24 @@
       <div
         class="flex flex-col gap-4 justify-between items-center w-full overflow-hidden"
       >
+<div class="flex max-w-md px-2 justify-between items-center bg-accent/50 border-2  rounded-lg shadow-lg w-auto">
+        {{-- Title --}}
+          <h2
+            class="text-sm p-4 text-light w-full"
+          >
+            Unduh Laporan
+          </h2>
+            {{-- Button --}}
+            <a href="{{ route('reports.export.all') }}" title="Unduh Laporan CSV">
+                <x-primary-button
+                            class="flex justify-center items-center h-8 w-8  rounded-full ">
+                      <i class="fa fa-download"></i>
+                    </x-primary-button>
+            </a>
+        </div>
+
         {{-- Income --}}
-      <div class="flex justify-between items-center w-full">
+      <div class="flex justify-center items-center w-full">
         {{-- Title --}}
           <h2
             class="text-xl p-4  text-center text-light bg-primary uppercase rounded-lg shadow-lg w-full font-bold"
@@ -21,17 +37,9 @@
           <section class="rounded-2xl bg-light shadow-lg p-4 w-full">
             <div class="w-full gap-2">
               <div
-                class="flex-row md:flex justify-center items-center mb-4 text-center font-bold text-light bg-accent uppercase rounded-lg p-2 shadow-lg"
+                class="flex justify-center items-center mb-4 text-center font-bold text-light bg-accent uppercase rounded-lg p-2 shadow-lg"
               >
                 <p>total pemasukkan</p>
-
-                {{-- <a href="{{ route('reports.download.csv') }}" title="Unduh Laporan CSV">
-                <x-primary-button
-                            class="flex justify-center items-center h-8 w-8  rounded-full ">
-                      <i class="fa fa-download"></i>
-                    </x-primary-button>
-                </a> --}}
-
               </div>
               <div
                 class="bg-gradient-to-t from-accent to-base rounded-xl h-auto flex items-center justify-center text-light p-4"
@@ -97,16 +105,9 @@
           <section class="rounded-2xl bg-light shadow-lg p-6">
             <div class="w-full gap-2">
               <div
-                class="flex-row md:flex justify-center items-center mb-4 text-center font-bold text-light bg-danger uppercase rounded-lg p-2 shadow-lg"
+                class="flex justify-center items-center mb-4 text-center font-bold text-light bg-danger uppercase rounded-lg p-2 shadow-lg"
               >
                 <p>total pengeluaran</p>
-
-                {{-- <a href="{{ route('reports.download.csv') }}" title="Unduh Laporan CSV">
-                    <x-danger-button class="flex justify-center items-center h-8 w-8 rounded-full">
-                        <i class="fa fa-download"></i>
-                    </x-danger-button>
-                </a> --}}
-
 
               </div>
 
