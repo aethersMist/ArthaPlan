@@ -59,6 +59,9 @@
                             <x-dropdown-link :href="route('categories')">
                                 {{ __('Kategori') }}
                             </x-dropdown-link>
+                            <x-dropdown-link :href="route('reports.export.all')">
+                                {{ __('Unduh Laporan') }}
+                            </x-dropdown-link>
                             <x-dropdown-link :href="route('profile.edit')" >
                                 {{ __('Pengaturan ') }}
                             </x-dropdown-link>

@@ -8,10 +8,12 @@ ArthaPlan adalah aplikasi web untuk membantu pengguna mengatur dan memantau keua
 - Kategori transaksi (kebutuhan, keinginan, tabungan, dll.)
 - Sistem anggaran bulanan
 - Laporan dan grafik keuangan
+- Ekspor data ke format CSV
 - Autentikasi pengguna (login, register, reset password)
 - UI responsif dan sederhana
 
 ## Tools
+
 - Laravel 12
 - PHP 8.x
 - MySQL / MariaDB

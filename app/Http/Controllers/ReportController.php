@@ -135,7 +135,7 @@ private function exportCSVByType($filename, $type = null)
 
     $query = DB::table('transactions')
         ->join('categories', 'transactions.category_id', '=', 'categories.id')
-        ->where('transactions.user_id', auth()->id())
+        ->where('transactions.user_id', Auth::id())
         ->select(
             'transactions.date',
             'categories.name as category',
@@ -155,7 +155,7 @@ private function exportCSVByType($filename, $type = null)
         fputcsv($handle, [
             $row->date,
             $row->category,
-            ucfirst($row->type),
+            $row->type === 'income' ? 'Pemasukan' : 'Pengeluaran',
             number_format($row->amount, 0, ',', '.'),
             $row->description,
         ]);
@@ -167,7 +167,7 @@ private function exportCSVByType($filename, $type = null)
 
 public function exportAll()
 {
-    return $this->exportCSVByType('laporan-semua.csv');
+    return $this->exportCSVByType('laporan.csv');
 }
 
 

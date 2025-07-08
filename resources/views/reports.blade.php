@@ -2,21 +2,6 @@
       <div
         class="flex flex-col gap-4 justify-between items-center w-full overflow-hidden"
       >
-<div class="flex max-w-md px-2 justify-between items-center bg-accent/50 border-2  rounded-lg shadow-lg w-auto">
-        {{-- Title --}}
-          <h2
-            class="text-sm p-4 text-light w-full"
-          >
-            Unduh Laporan
-          </h2>
-            {{-- Button --}}
-            <a href="{{ route('reports.export.all') }}" title="Unduh Laporan CSV">
-                <x-primary-button
-                            class="flex justify-center items-center h-8 w-8  rounded-full ">
-                      <i class="fa fa-download"></i>
-                    </x-primary-button>
-            </a>
-        </div>
 
         {{-- Income --}}
       <div class="flex justify-center items-center w-full">
