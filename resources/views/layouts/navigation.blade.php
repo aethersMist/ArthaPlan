@@ -101,7 +101,7 @@
         <div class="w-auto pt-4 pb-1 border-t border-gray-200">
             <div class="px-4">
                 <div class="font-medium text-md text-light">{{ Auth::user()->name }}</div>
-                <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
+                <div class="font-medium text-sm text-netral-light">{{ Auth::user()->email }}</div>
             </div>
 
             <div class="mt-3 space-y-1 p-1 rounded-lg text-sm text-dark bg-light">
