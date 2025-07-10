@@ -8,6 +8,10 @@ use App\Http\Controllers\BudgetController;
 use App\Http\Controllers\BudgetTransactionController;
 use App\Http\Controllers\DownloadController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Auth\PasswordResetLinkController;
+use App\Http\Controllers\Auth\NewPasswordController;
+use App\Http\Controllers\Auth\PasswordController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -18,13 +22,16 @@ Route::get('/', function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::resource('/transactions', TransactionController::class);
-    
+
     Route::get('/reports/export-csv', [ReportController::class, 'exportAll'])->name('reports.export.all');
     Route::resource('/reports', ReportController::class)->except(['show']);
 
     // Route::resource('/reports', ReportController::class);
     Route::resource('/budgets', BudgetController::class);
     Route::resource('/categories', CategoryController::class);
+
+    Route::get('/auth/callback', [AuthenticatedSessionController::class, 'callback'])->middleware('/');
+    Route::put('/update-password', [PasswordController::class, 'updateCustom'])->name('password.update.custom');
 });
 
 Route::middleware('auth')->group(function () {
@@ -71,7 +78,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/categories', [CategoryController::class, 'index'])->name('categories');
     Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
     Route::put('/categories/{id}', [CategoryController::class, 'update'])->name('categories.update');
-    Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('transactions.destroy');
+    Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
 });
 
 // Routing profil user
@@ -80,5 +87,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+
+
 
 require __DIR__.'/auth.php';

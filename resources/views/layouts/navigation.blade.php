@@ -108,6 +108,9 @@
                 <x-responsive-nav-link :href="route('categories')">
                     {{ __('Kategori') }}
                 </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('reports.export.all')">
+                    {{ __('Unduh Laporan') }}
+                </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('profile.edit')">
                     {{ __('Pengaturan') }}
                 </x-responsive-nav-link>

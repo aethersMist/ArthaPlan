@@ -1,48 +1,96 @@
 <section>
-    <header>
-        <h2 class="text-lg font-medium text-gray-900">
-            {{ __('Perbarui Kata Sandi') }}
-        </h2>
 
-        <p class="mt-1 text-sm text-gray-600">
-            {{ __('Pastikan akun Anda menggunakan kata sandi yang panjang dan acak agar tetap aman.') }}
-        </p>
-    </header>
+    @php
+        $hasPassword = !is_null(Auth::user()->password);
+    @endphp
 
-    <form method="post" action="{{ route('password.update') }}" class="mt-6 space-y-6">
+    @if ($hasPassword)
+        <header>
+            <h2 class="text-lg font-medium text-gray-900">
+                {{ __('Perbarui Kata Sandi') }}
+            </h2>
+
+            <p class="mt-1 text-sm text-gray-600">
+                {{ __('Pastikan akun Anda menggunakan kata sandi yang panjang dan acak agar tetap aman.') }}
+            </p>
+        </header>
+
+
+        <form method="post" action="{{ route('password.update.custom') }}" class="mt-6 space-y-6">
+            @csrf
+            @method('put')
+
+            <div>
+                <x-input-label for="update_password_current_password" :value="__('Kata Sandi Saat Ini')" />
+                <x-text-input id="update_password_current_password" name="current_password" type="password" class="mt-1 block w-full" autocomplete="current-password" />
+                <x-input-error :messages="$errors->updatePassword->get('current_password')" class="mt-2" />
+            </div>
+
+            <div>
+                <x-input-label for="update_password_password" :value="__('Kata Sandi Baru')" />
+                <x-text-input id="update_password_password" name="password" type="password" class="mt-1 block w-full" autocomplete="new-password" />
+                <x-input-error :messages="$errors->updatePassword->get('password')" class="mt-2" />
+            </div>
+
+            <div>
+                <x-input-label for="update_password_password_confirmation" :value="__('Konfirmasi Kata Sandi')" />
+                <x-text-input id="update_password_password_confirmation" name="password_confirmation" type="password" class="mt-1 block w-full" autocomplete="new-password" />
+                <x-input-error :messages="$errors->updatePassword->get('password_confirmation')" class="mt-2" />
+            </div>
+
+            <div class="flex items-center gap-4">
+                <x-primary-button>{{ __('Simpan') }}</x-primary-button>
+            <x-auth-session-status class="mb-4" :status="session('status')" />
+
+                @if (session('status') === 'password-updated')
+                    <p
+                        x-data="{ show: true }"
+                        x-show="show"
+                        x-transition
+                        x-init="setTimeout(() => show = false, 2000)"
+                        class="text-sm text-gray-600"
+                    >{{ __('Tersimpan.') }}</p>
+                @endif
+            </div>
+        </form>
+
+    @else
+        <header>
+            <h2 class="text-lg font-medium text-gray-900">
+                {{ __('Buat Kata Sandi') }}
+            </h2>
+
+            <p class="mt-1 text-sm text-gray-600">
+                {{ __('Anda belum memiliki kata sandi. Buat kata sandi untuk akun Anda.') }}
+            </p>
+        </header>
+
+               
+
+    <form method="POST" action="{{ route('password.email') }}" class="mt-4 space-y-4">
         @csrf
-        @method('put')
 
         <div>
-            <x-input-label for="update_password_current_password" :value="__('Kata Sandi Saat Ini')" />
-            <x-text-input id="update_password_current_password" name="current_password" type="password" class="mt-1 block w-full" autocomplete="current-password" />
-            <x-input-error :messages="$errors->updatePassword->get('current_password')" class="mt-2" />
+            <x-input-label for="email" value="Email" />
+            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full"
+                value="{{ Auth::user()->email }}" readonly />
         </div>
+        
+        <x-primary-button type="submit">
+            Kirim Link Atur Kata Sandi
+        </x-primary-button>
 
-        <div>
-            <x-input-label for="update_password_password" :value="__('Kata Sandi Baru')" />
-            <x-text-input id="update_password_password" name="password" type="password" class="mt-1 block w-full" autocomplete="new-password" />
-            <x-input-error :messages="$errors->updatePassword->get('password')" class="mt-2" />
-        </div>
-
-        <div>
-            <x-input-label for="update_password_password_confirmation" :value="__('Konfirmasi Kata Sandi')" />
-            <x-text-input id="update_password_password_confirmation" name="password_confirmation" type="password" class="mt-1 block w-full" autocomplete="new-password" />
-            <x-input-error :messages="$errors->updatePassword->get('password_confirmation')" class="mt-2" />
-        </div>
-
-        <div class="flex items-center gap-4">
-            <x-primary-button>{{ __('Simpan') }}</x-primary-button>
-
-            @if (session('status') === 'password-updated')
-                <p
-                    x-data="{ show: true }"
-                    x-show="show"
-                    x-transition
-                    x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-gray-600"
-                >{{ __('Tersimpan.') }}</p>
-            @endif
-        </div>
+        <x-auth-session-status class="mb-4" :status="session('status')" />
+        @if (session('status') === 'password-reset-link-sent')
+            <p
+                x-data="{ show: true }"
+                x-show="show"
+                x-transition
+                x-init="setTimeout(() => show = false, 2000)"
+                class="text-sm text-gray-600"
+            >{{ __('Link atur kata sandi telah dikirim ke email Anda.') }}</p>
+        @endif
     </form>
+@endif
+
 </section>
