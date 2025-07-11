@@ -14,19 +14,7 @@
 
     <!-- Ringkasan -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <!-- Saldo -->
-        <div class="flex items-center justify-between p-4 rounded-xl shadow-lg bg-primary text-light">
-        <div>
-            <p class="text-sm lg:text-lg font-medium">Saldo</p>
-            <div class="flex items-start gap-1 font-bold">
-            <span class="text-sm lg:text-lg">Rp</span>
-            <p class="text-2xl">{{ number_format($totalBalance, 2, ',', '.') }}</p>
-            </div>
-        </div>
-        <div class="h-10 w-10 rounded-full bg-light flex md:hidden lg:flex items-center justify-center">
-            <i class="fa fa-money-bill text-2xl text-accent"></i>
-        </div>
-        </div>
+
 
         <!-- Pemasukan -->
         <div class="flex items-center justify-between p-4 bg-primary text-light rounded-xl shadow">
@@ -59,6 +47,20 @@
         </div>
         <div class="h-10 w-10 rounded-full bg-light flex md:hidden lg:flex items-center justify-center">
             <i class="fa-solid fa-arrow-right-to-bracket text-xl text-accent"></i>
+        </div>
+        </div>
+
+        <!-- Saldo -->
+        <div class="flex items-center justify-between p-4 rounded-xl shadow-lg bg-primary text-light">
+        <div>
+            <p class="text-sm lg:text-lg font-medium">Saldo</p>
+            <div class="flex items-start gap-1 font-bold">
+            <span class="text-sm lg:text-lg">Rp</span>
+            <p class="text-2xl">{{ number_format($totalBalance, 2, ',', '.') }}</p>
+            </div>
+        </div>
+        <div class="h-10 w-10 rounded-full bg-light flex md:hidden lg:flex items-center justify-center">
+            <i class="fa fa-money-bill text-2xl text-accent"></i>
         </div>
         </div>
     </div>

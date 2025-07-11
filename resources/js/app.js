@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
         dataOut,
         dataIn,
         canvasId = "barChartCanvas",
-        labelMode = "combined",
+        labelMode = "combined"
     ) {
         const canvas = document.getElementById(canvasId);
         if (!canvas) return;
@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     backgroundColor: "#f87171",
                     borderRadius: 8,
                     barThickness: 20,
-                },
+                }
             );
         } else if (labelMode === "income") {
             datasets.push({
@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         beginAtZero: true,
                         ticks: {
                             callback: (value) =>
-                                "Rp" + value.toLocaleString("id-ID"),
+                                "Rp" + value.toLocaleString("id-ID") + ",00",
                         },
                     },
                 },
@@ -89,7 +89,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             label: (context) =>
                                 `${
                                     context.dataset.label
-                                }: Rp${context.raw.toLocaleString("id-ID")}`,
+                                }: Rp${context.raw.toLocaleString("id-ID")},00`,
                         },
                     },
                     legend: {
@@ -108,13 +108,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const dashboardCanvas = document.getElementById("barChartCanvas");
     if (dashboardCanvas) {
         const labels = JSON.parse(
-            dashboardCanvas.getAttribute("data-labels") || "[]",
+            dashboardCanvas.getAttribute("data-labels") || "[]"
         );
         const dataOut = JSON.parse(
-            dashboardCanvas.getAttribute("data-data-out") || "[]",
+            dashboardCanvas.getAttribute("data-data-out") || "[]"
         );
         const dataIn = JSON.parse(
-            dashboardCanvas.getAttribute("data-data-in") || "[]",
+            dashboardCanvas.getAttribute("data-data-in") || "[]"
         );
 
         if (labels.length > 0) {
@@ -129,7 +129,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             try {
                 const response = await fetch(
-                    `/dashboard/chart-data?filter=${filter}&date=${date}`,
+                    `/dashboard/chart-data?filter=${filter}&date=${date}`
                 );
                 const data = await response.json();
 
@@ -139,7 +139,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         data.dataOut,
                         data.dataIn,
                         "barChartCanvas",
-                        "combined",
+                        "combined"
                     );
                 }
             } catch (error) {
@@ -154,10 +154,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const incomeCanvas = document.getElementById("barChartIncome");
     if (incomeCanvas) {
         const labels = JSON.parse(
-            incomeCanvas.getAttribute("data-labels") || "[]",
+            incomeCanvas.getAttribute("data-labels") || "[]"
         );
         const dataIn = JSON.parse(
-            incomeCanvas.getAttribute("data-data") || "[]",
+            incomeCanvas.getAttribute("data-data") || "[]"
         );
 
         if (labels.length > 0) {
@@ -168,10 +168,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const outcomeCanvas = document.getElementById("barChartOutcome");
     if (outcomeCanvas) {
         const labels = JSON.parse(
-            outcomeCanvas.getAttribute("data-labels") || "[]",
+            outcomeCanvas.getAttribute("data-labels") || "[]"
         );
         const dataOut = JSON.parse(
-            outcomeCanvas.getAttribute("data-data") || "[]",
+            outcomeCanvas.getAttribute("data-data") || "[]"
         );
 
         if (labels.length > 0) {
@@ -261,7 +261,7 @@ document.addEventListener("DOMContentLoaded", () => {
         dataCategoriesAttr,
         dataValuesAttr,
         colors,
-        legendReportId,
+        legendReportId
     ) {
         const container = document.getElementById(containerId);
         if (!container) return;
@@ -305,7 +305,8 @@ document.addEventListener("DOMContentLoaded", () => {
             legend: { show: false },
             tooltip: {
                 y: {
-                    formatter: (value) => "Rp " + value.toLocaleString("id-ID"),
+                    formatter: (value) =>
+                        "Rp " + value.toLocaleString("id-ID") + ",00",
                 },
                 x: {
                     formatter: (value, { seriesIndex }) => {
@@ -355,7 +356,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         // legend Report
                         const nominal = document.createElement("p");
                         nominal.textContent =
-                            "Rp " + values[i].toLocaleString("id-ID");
+                            "Rp " + values[i].toLocaleString("id-ID") + ",00";
                         li.appendChild(nominal);
                     }
 
@@ -403,7 +404,7 @@ document.addEventListener("DOMContentLoaded", () => {
         "data-categories-combined",
         "data-values-combined",
         combinedColors,
-        "legend-Report-Combined",
+        "legend-Report-Combined"
     );
 
     createDonutChart(
@@ -411,7 +412,7 @@ document.addEventListener("DOMContentLoaded", () => {
         "data-categories",
         "data-values",
         pemasukkanColors,
-        "legend-Report-Income",
+        "legend-Report-Income"
     );
 
     createDonutChart(
@@ -419,7 +420,7 @@ document.addEventListener("DOMContentLoaded", () => {
         "data-categories-out",
         "data-values-out",
         pengeluaranColors,
-        "legend-Report-Outcome",
+        "legend-Report-Outcome"
     );
 });
 
