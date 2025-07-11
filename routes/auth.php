@@ -18,7 +18,7 @@ use App\Http\Controllers\GoogleController;
 Route::middleware('guest')->group(function () {
     Route::get('auth/google', [GoogleController::class, 'redirectToGoogle']);
     Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
-    
+
     Route::get('register', [RegisteredUserController::class, 'create'])
         ->name('register');
 
@@ -54,7 +54,7 @@ Route::middleware('auth')->group(function () {
 
     Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store');
-        
+
     Route::get('verify-email', EmailVerificationPromptController::class)
         ->name('verification.notice');
 
