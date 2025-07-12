@@ -23,5 +23,7 @@ return [
     'password_reset_link_sent' => 'Link reset kata sandi telah dikirim ke email Anda.',
     'password_reset_link_invalid' => 'Link reset kata sandi tidak valid atau telah kedaluwarsa.',
     'password_reset_token_mismatch' => 'Token reset kata sandi tidak cocok. Silakan coba lagi.',
+    'password-updated' => 'Kata sandi diperbarui.',
+    'password-created' => 'Kata sandi dibuat.',
 
 ];

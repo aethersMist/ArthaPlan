@@ -38,8 +38,9 @@
                 <x-input-error :messages="$errors->updatePassword->get('password_confirmation')" class="mt-2" />
             </div>
 
+            <x-primary-button>{{ __('Simpan') }}</x-primary-button>
+
             <div class="flex items-center gap-4">
-                <x-primary-button>{{ __('Simpan') }}</x-primary-button>
             <x-auth-session-status class="mb-4" :status="session('status')" />
 
                 @if (session('status') === 'password-updated')
@@ -67,30 +68,37 @@
 
                
 
-    <form method="POST" action="{{ route('password.email') }}" class="mt-4 space-y-4">
-        @csrf
+    <form method="POST" action="{{ route('password.set.store') }}" class="mt-4 space-y-4">
+            @csrf
 
-        <div>
-            <x-input-label for="email" value="Email" />
-            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full"
-                value="{{ Auth::user()->email }}" readonly />
-        </div>
-        
-        <x-primary-button type="submit">
-            Kirim Link Atur Kata Sandi
-        </x-primary-button>
+            <div>
+                <x-input-label for="password" value="Kata Sandi Baru" />
+                <x-text-input id="password" name="password" type="password" class="mt-1 block w-full" required />
+                <x-input-error :messages="$errors->get('password')" class="mt-2" />
+            </div>
 
-        <x-auth-session-status class="mb-4" :status="session('status')" />
-        @if (session('status') === 'password-reset-link-sent')
-            <p
-                x-data="{ show: true }"
-                x-show="show"
-                x-transition
-                x-init="setTimeout(() => show = false, 2000)"
-                class="text-sm text-gray-600"
-            >{{ __('Link atur kata sandi telah dikirim ke email Anda.') }}</p>
-        @endif
-    </form>
+            <div>
+                <x-input-label for="password_confirmation" value="Konfirmasi Kata Sandi" />
+                <x-text-input id="password_confirmation" name="password_confirmation" type="password" class="mt-1 block w-full" required />
+                <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+            </div>
+
+            <x-primary-button type="submit">Simpan</x-primary-button>
+            
+            {{-- Status message --}}
+            <div class="flex items-center gap-4">
+            <x-auth-session-status class="mb-4" :status="session('status')" />
+            @if (session('status') === 'password-set')
+                <p
+                    x-data="{ show: true }"
+                    x-show="show"
+                    x-transition
+                    x-init="setTimeout(() => show = false, 2000)"
+                    class="text-sm text-gray-600"
+                >{{ __('Kata sandi berhasil dibuat.') }}</p>
+            @endif
+            </div>
+        </form>
 @endif
 
 </section>
