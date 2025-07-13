@@ -1,15 +1,16 @@
 <x-app-layout>
+
     <section class="w-full bg-light shadow-lg rounded-2xl p-6 mb-6 items-center justify-center">
     <!-- Calendar -->
     <div class="flex items-center space-x-2 mb-6">
-    <x-secondary-button class="flex justify-center items-center h-8 w-8  rounded-full ">
-        <i class="fa fa-calendar fa-md" aria-hidden="true"></i>
-    </x-secondary-button>
-    <div class="flex items-center gap-2">
-        <p id="tanggal-terpilih" class="text-md font-bold text-dark">
-        {{ $currentDate }}
-        </p>
-    </div>
+        <x-secondary-button class="flex justify-center items-center h-8 w-8  rounded-full ">
+            <i class="fa fa-calendar fa-md" aria-hidden="true"></i>
+        </x-secondary-button>
+        <div class="flex items-center gap-2">
+            <p id="tanggal-terpilih" class="text-md font-bold text-dark">
+            {{ $currentDate }}
+            </p>
+        </div>
     </div>
 
     <!-- Ringkasan -->

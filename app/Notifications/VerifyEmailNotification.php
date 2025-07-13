@@ -13,7 +13,7 @@ class VerifyEmailNotification extends VerifyEmail
 
         return (new MailMessage)
             ->subject('Verifikasi Akun Anda - ArthaPlan')
-            ->greeting('Halo!')
+            ->greeting('Halo, ' . $notifiable->name . '!')
             ->line('Silakan klik tombol di bawah untuk memverifikasi email Anda.')
             ->action('Verifikasi Email', $verificationUrl)
             ->line('Jika Anda tidak membuat akun, abaikan email ini.')

@@ -31,7 +31,7 @@ class ResetPasswordNotification extends Notification
 
         return (new MailMessage)
             ->subject('Permintaan Reset Kata Sandi - ArthaPlan')
-            ->greeting('Halo!')
+            ->greeting('Halo, ' . $notifiable->name . '!')
             ->line('Kami menerima permintaan untuk mengatur ulang kata sandi Anda.')
             ->action('Reset Kata Sandi', $url)
             ->line('Tautan ini akan kedaluwarsa dalam 60 menit.')
