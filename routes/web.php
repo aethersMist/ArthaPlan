@@ -20,6 +20,9 @@ Route::get('/', function () {
 // Routing setelah login
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/chart-data', [DashboardController::class, 'getChartDataApi'])->name('dashboard.chart-data');
+
+
     Route::resource('/transactions', TransactionController::class);
 
     Route::get('/reports/export-csv', [ReportController::class, 'exportAll'])->name('reports.export.all');
