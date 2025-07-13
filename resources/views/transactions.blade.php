@@ -9,7 +9,7 @@
 
 
 
-<div class="space-y-4 flex-1">
+<div class="space-y-4">
     @php
         $groupedTransactions = $transactions->sortByDesc('date')->groupBy(function($item) {
             return $item->date->format('Y-m-d');
@@ -41,9 +41,9 @@
             </div>
         </div>
 
-        <div class="mt-2 bg-light rounded-lg px-2 py-2 shadow-lg border-2 border-primary overflow-x-auto">
+        <div class="mt-2 rounded-lg shadow-lg border-2 border-primary bg-light px-2 py-2 sm:px-4 sm:py-2 w-full overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
-                <tbody class="bg-light divide-y divide-gray-200">
+                 <tbody class="bg-light divide-y divide-gray-200">
                     @foreach($todayTransactions as $transaction)
                     <tr>
                         <td class="py-4 w-10 min-w-[40px]">

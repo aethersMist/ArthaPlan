@@ -38,15 +38,26 @@
                 <x-input-error :messages="$errors->updatePassword->get('password_confirmation')" class="mt-2" />
             </div>
 
-            <x-primary-button>{{ __('Simpan') }}</x-primary-button>
+            @if (session('status') === 'password-updated')
+                    <p class="font-medium text-sm text-accent">
+                        {{ __('Kata sandi berhasil diperbarui.') }}
+                    </p>
+                @endif
 
-            <div class="flex justify-start items-center mb-4">
-               @if (session('status') === 'password-updated')
-                        <p class="font-medium text-sm text-accent">
-                            {{ __('Kata sandi berhasil diperbarui.') }}
-                        </p>
-                    @endif
-            </div>
+        <div class="flex items-center gap-4">
+            <x-primary-button>{{ __('Simpan') }}</x-primary-button>
+        
+            @if (session('status') === 'password-updated')
+                <p
+                    x-data="{ show: true }"
+                    x-show="show"
+                    x-transition
+                    x-init="setTimeout(() => show = false, 2000)"
+                    class="text-sm text-gray-600"
+                >{{ __('Tersimpan.') }}</p>
+            @endif
+        </div>
+
         </form>
 
     @else
@@ -76,20 +87,28 @@
                 <x-text-input id="password_confirmation" name="password_confirmation" type="password" class="mt-1 block w-full" required />
                 <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
             </div>
-
-            <x-primary-button type="submit">Simpan</x-primary-button>
-
-            <div class="flex justify-start items-center mb-4">
             @if (session('status') === 'password-set')
+                <p class="font-medium text-sm text-accent">
+                    {{ __('Kata sandi berhasil dibuat.') }}
+                </p>
+            @endif
+           
+
+        <div class="flex items-center gap-4">
+            <x-primary-button>{{ __('Simpan') }}</x-primary-button>
+        
+         @if (session('status') === 'password-set')
                 <p
                     x-data="{ show: true }"
                     x-show="show"
                     x-transition
                     x-init="setTimeout(() => show = false, 2000)"
                     class="font-medium text-sm text-accent"
-                >{{ __('Kata sandi berhasil dibuat.') }}</p>
+                >{{ __('Tersimpan.') }}</p>
             @endif
-            </div>
+        </div>
+
+
         </form>
 @endif
 

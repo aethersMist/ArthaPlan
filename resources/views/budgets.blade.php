@@ -87,14 +87,14 @@
             <div class="flex flex-col w-full md:w-1/3 items-center bg-base border-2 border-primary rounded-xl p-4 gap-4">
                 <div id="donutChartPersen" data-sisa="{{ $persenSisa }}" data-pakai="{{ $persenPakai }}"></div>
                 @foreach ($budgets as $budget)
-                        <x-primary-button
+                        <x-primary-button 
                         type="button"
                         data-modal-target="addBudgetTransactionModal-{{ $budget->id }}"
                         data-modal-toggle="addBudgetTransactionModal-{{ $budget->id }}"
-                        class="rounded-full space-x-2">
-                    <i class="fa fa-plus " aria-hidden="true"></i>
-                    <p>Anggaran Kategori</p>
-                    </x-primary-button>
+                        class="rounded-full space-x-1 sm:space-x-2 px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                            <p class="xs:hidden inline-block sm:hidden lg:inline-block">Anggaran Kategori</p>
+                        </x-primary-button>
                 @endforeach
             </div>
 
@@ -183,7 +183,7 @@
     </section>
 
       <!-- Card Section -->
-      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3">
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         <!-- Anggaran -->
             @foreach ($budgets as $budget)
                 @foreach ($budget->budgetTransaction as $transaction)
