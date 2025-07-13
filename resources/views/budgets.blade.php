@@ -257,7 +257,7 @@
       </div>
 
       {{-- Modal Budget --}}
-        <x-moddal id="budgetModal" title="Buat Anggaran" name="Buat Anggaran">
+        <x-moddal id="budgetModal" title="Buat Anggaran" :name="'Buat Anggaran'">
             <form action="{{ route('budgets.store') }}" method="POST" id="budgetForm">
                 @csrf
                 <input type="hidden" name="budget_id" autocomplete="off" id="budget_id" value="">

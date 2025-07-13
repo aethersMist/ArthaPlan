@@ -1,6 +1,8 @@
 @props(['id', 'title'])
 
-<div id="{{ $id }}" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full inset-0 h-modal h-full justify-center items-center bg-dark/75">
+<div id="{{ $id }}"
+    data-modal-target="{{ $id }}"
+    tabindex="{{ $tabindex ?? '-1' }}" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full inset-0 h-modal h-full justify-center items-center bg-dark/75">
     <div class="relative p-4 w-full max-w-md h-full md:h-auto">
         <!-- Modal content -->
         <div class="relative bg-base rounded-lg shadow-lg ">

@@ -426,6 +426,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Loader
 window.addEventListener("load", () => {
-    document.getElementById("global-loader").style.display = "none";
-    document.getElementById("app-content").classList.remove("invisible");
+    const loader = document.getElementById("global-loader");
+    const content = document.getElementById("app-content");
+
+    if (loader) {
+        loader.style.display = "none";
+    }
+
+    if (content) {
+        content.classList.remove("invisible");
+    }
 });
