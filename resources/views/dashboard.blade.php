@@ -148,7 +148,10 @@
                         </td>
                         <td class="px-4 py-4">{{ $transaction->date->translatedFormat('l, d F Y') }}</td>
 
-                        <td class="px-4 py-4">{{ $transaction->description }}</td>
+                        <td class="px-4 py-4">
+                            {{ $transaction->description ?? '-' }}
+                        </td>
+
 
                         <td class="flex gap-2 px-4 py-4">
                         <!-- Tombol Update -->
