@@ -188,9 +188,9 @@
             @foreach ($budgets as $budget)
                 @foreach ($budget->budgetTransaction as $transaction)
                 <section class="rounded-2xl bg-light shadow-lg p-6">
-                    <input type="hidden" name="budget_id" value="{{ $transaction->budget_id }}">
-                    <input type="hidden" name="category_id" value="{{ $transaction->category_id }}">
-                    <input type="hidden" name="transaction_id" value="{{ $transaction->id }}">
+                    <input type="hidden" name="budget_id" autocomplete="off" value="{{ $transaction->budget_id }}">
+                    <input type="hidden" name="category_id" autocomplete="off" value="{{ $transaction->category_id }}">
+                    <input type="hidden" name="transaction_id" autocomplete="off" value="{{ $transaction->id }}">
 
                 <!-- Judul -->
                 <div class="flex justify-between items-center mb-4 bg-base p-2 rounded-full border-2 border-primary">
@@ -260,7 +260,7 @@
         <x-moddal id="budgetModal" title="Buat Anggaran" name="Buat Anggaran">
             <form action="{{ route('budgets.store') }}" method="POST" id="budgetForm">
                 @csrf
-                <input type="hidden" name="budget_id" id="budget_id" value="">
+                <input type="hidden" name="budget_id" autocomplete="off" id="budget_id" value="">
 
                 <div class="grid grid-cols-1 gap-4 mb-4 sm:grid-cols-2">
                     <div class="col-span-2">
@@ -292,7 +292,7 @@
         <form action="{{ route('budgets.update', $budget->id) }}" method="POST" id="editBudgetForm-{{ $budget->id }}">
             @csrf
             @method('PUT')
-            <input type="hidden" name="budget_id" id="edit_budget_id_{{ $budget->id }}" value="{{ $budget->id }}">
+            <input type="hidden" name="budget_id" autocomplete="off" id="edit_budget_id_{{ $budget->id }}" value="{{ $budget->id }}">
 
             <div class="grid grid-cols-1 gap-4 mb-4 sm:grid-cols-2">
                 <div class="col-span-2">
@@ -353,8 +353,7 @@
         @method('PUT')
         <div class="grid grid-cols-1 gap-4 mb-4 sm:grid-cols-2">
           <div>
-            <input type="hidden" name="budget_id" value="{{ $transaction->budget_id }}">
-            {{-- <input type="hidden" name="transaction_id" value="{{ $transaction->transaction_id }}"> --}}
+            <input type="hidden" name="budget_id" autocomplete="off" value="{{ $transaction->budget_id }}">
 
             <label for="category_id_{{ $transaction->id }}" class="block mb-2 text-dark">Kategori</label>
             <select id="category_id_{{ $transaction->id }}" name="category_id" required class="block w-full p-2 border border-netral-light focus:border-accent focus:ring-accent rounded-lg shadow-lg" >
@@ -455,8 +454,8 @@
  <x-moddal id="addBudgetTransactionModal-{{ $budget->id }}" title="Buat Anggaran" :name="'Buat Anggaran'">
    <form action="{{ route('budgetTransactions.store') }}" method="POST" enctype="multipart/form-data">
      @csrf
-     <input type="hidden" name="budget_id" id="budget_id" value="{{ $budget->id ?? '' }}">
-     <input type="hidden" name="transaction_id" value="{{ $transaction->id ?? '' }}">
+     <input type="hidden" name="budget_id" autocomplete="off" id="budget_id" value="{{ $budget->id ?? '' }}">
+     <input type="hidden" name="transaction_id" autocomplete="off" value="{{ $transaction->id ?? '' }}">
 
      <div class="grid grid-cols-1 gap-4 mb-4 sm:grid-cols-2">
        <div>

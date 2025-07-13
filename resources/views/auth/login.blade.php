@@ -31,7 +31,7 @@
                     {{-- Remember Me & Lupa Sandi --}}
                     <div class="flex justify-between items-center mb-4">
                         <label class="inline-flex items-center">
-                            <input id="remember_me" type="checkbox" class="rounded focus:ring-accent focus:border-accent shadow-sm " name="remember">
+                            <input id="remember_me" type="checkbox" class="rounded focus:ring-accent focus:border-accent shadow-sm " name="remember" autocomplete="off">
                     <span class="ms-2 text-sm text-netral">{{ __('Ingat saya') }}</span>
                         </label>
 
