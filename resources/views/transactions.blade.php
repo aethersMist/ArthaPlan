@@ -21,45 +21,43 @@
 
     {{-- Today's Section --}}
     @if($todayTransactions->count() > 0)
-    <div class="">
-        <div class="inline-flex justify-between items-center w-full mt-4">
-            <p>Hari ini - {{ \Carbon\Carbon::today()->translatedFormat('l, d F Y') }}</p>
-            <div class="inline-flex justify-center items-center space-x-4">
-                @php
-                    $todayIncome = $todayTransactions->where('category.type', 'income')->sum('amount');
-                    $todayOutcome = $todayTransactions->where('category.type', 'outcome')->sum('amount');
-                @endphp
-                <p class="text-sm text-dark">
-                    <i class="fa fa-arrow-down text-accent" aria-hidden="true"></i>
-                    <span class="font-semibold">Rp{{ number_format($todayIncome, 2, ',', '.') }}</span>
-                </p>
-                <p class="text-sm text-dark">
-                    <i class="fa fa-arrow-up text-danger" aria-hidden="true"></i>
-                    <span class="font-semibold">Rp{{ number_format($todayOutcome, 2, ',', '.') }}</span>
-                </p>
+    <div>
+            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center w-full mt-4 gap-2">
+                <p>Hari ini - {{ \Carbon\Carbon::today()->translatedFormat('l, d F Y') }}</p>
+                <div class="flex justify-start sm:justify-center items-center space-x-4">
+                    @php
+                        $todayIncome = $todayTransactions->where('category.type', 'income')->sum('amount');
+                        $todayOutcome = $todayTransactions->where('category.type', 'outcome')->sum('amount');
+                    @endphp
+                    <p class="text-sm text-dark">
+                        <i class="fa fa-arrow-down text-accent" aria-hidden="true"></i>
+                        <span class="font-semibold">Rp{{ number_format($todayIncome, 2, ',', '.') }}</span>
+                    </p>
+                    <p class="text-sm text-dark">
+                        <i class="fa fa-arrow-up text-danger" aria-hidden="true"></i>
+                        <span class="font-semibold">Rp{{ number_format($todayOutcome, 2, ',', '.') }}</span>
+                    </p>
+                </div>
             </div>
         </div>
 
-        <div class="mt-2 bg-light rounded-lg px-4 py-2 shadow-lg border-2 border-primary">
+        <div class="mt-2 bg-light rounded-lg px-2 py-2 shadow-lg border-2 border-primary overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
                 <tbody class="bg-light divide-y divide-gray-200">
                     @foreach($todayTransactions as $transaction)
                     <tr>
-                        <td class="py-4 w-10">
-                            <div class="h-10 w-10 rounded-full bg-accent border-2 border-primary flex items-center justify-center ">
+                        <td class="py-4 w-10 min-w-[40px]">
+                            <div class="h-10 w-10 rounded-full bg-accent border-2 border-primary flex items-center justify-center">
                                 <i class="fa-solid fa-dollar-sign text-xl text-primary"></i>
-                                    {{-- <span class="font-semibold text-sm flex items-center justify-center {{ $transaction->category->type == 'income' ? 'text-accent' : 'text-danger' }}">
-                                        <i class="fa-solid fa-{{ $transaction->category->type == 'income' ? 'plus' : 'minus' }} fa-lg"></i>
-                                    </span> --}}
                             </div>
                         </td>
-                        <td class="py-4 px-2">
+                        <td class="py-4 px-2 min-w-[120px]">
                             <p class="text-md font-medium text-dark">{{ $transaction->category->name }}</p>
                         </td>
-                        <td class="py-4">
+                        <td class="py-4 min-w-[150px]">
                             <div class="flex items-center justify-end space-x-2">
                                 <p>
-                                    <span class="font-semibold {{ $transaction->category->type == 'income' ? 'text-accent' : 'text-danger' }}">
+                                    <span class="inline-flex items-center justify-between gap-x-2 font-semibold {{ $transaction->category->type == 'income' ? 'text-accent' : 'text-danger' }}">
                                         <i class="fa fa-{{ $transaction->category->type == 'income' ? 'plus' : 'minus' }} fa-lg"></i>
                                         Rp{{ number_format($transaction->amount, 2, ',', '.') }}
                                     </span>
@@ -102,7 +100,7 @@
     @endphp
 
     <div class="">
-        <div class="inline-flex justify-between items-center w-full mt-4">
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center w-full mt-4 gap-2">
             <p>
                 @if($isYesterday)
                     Kemarin - {{ $currentDate->translatedFormat('l, d F Y') }}
@@ -110,7 +108,7 @@
                     {{ $currentDate->translatedFormat('l, d F Y') }}
                 @endif
             </p>
-            <div class="inline-flex justify-center items-center space-x-4">
+            <div class="flex justify-start sm:justify-center items-center space-x-4">
                 <p class="text-sm text-dark">
                     <i class="fa fa-arrow-down text-accent" aria-hidden="true"></i>
                     <span class="font-semibold">Rp{{ number_format($dailyIncome, 2, ',', '.') }}</span>
@@ -122,9 +120,9 @@
             </div>
         </div>
 
-        <div class="mt-2 bg-light rounded-lg px-4 py-2 shadow-lg border-2 border-primary">
+        <div class="mt-2 rounded-lg shadow-lg border-2 border-primary bg-light px-2 py-2 sm:px-4 sm:py-2 w-full overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
-                <tbody class="bg-light divide-y divide-gray-200">
+                <tbody class="divide-y divide-gray-200">
                     @foreach($dailyTransactions as $transaction)
                     <tr>
                         <td class="py-4 w-10">
@@ -132,7 +130,7 @@
                                 <i class="fa fa-dollar-sign text-xl text-primary"></i>
                             </div>
                         </td>
-                        <td class="py-4 px-2">
+                        <td class="py-4 px-2 min-w-[120px]">
                             <p class="text-md font-medium text-dark">{{ $transaction->category->name }}</p>
                             @if($transaction->description)
                                 <p class="text-xs text-gray-500 mt-1">{{ $transaction->description }}</p>
@@ -141,7 +139,7 @@
                         <td class="py-4">
                             <div class="flex items-center justify-end space-x-2">
                                 <p>
-                                    <span class="font-semibold {{ $transaction->category->type == 'income' ? 'text-accent' : 'text-danger' }}">
+                                    <span class="inline-flex items-center justify-between gap-x-2 font-semibold {{ $transaction->category->type == 'income' ? 'text-accent' : 'text-danger' }}">
                                         <i class="fa fa-{{ $transaction->category->type == 'income' ? 'plus' : 'minus' }} fa-lg"></i>
                                         Rp{{ number_format($transaction->amount, 2, ',', '.') }}
                                     </span>

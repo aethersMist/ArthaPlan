@@ -28,7 +28,11 @@
                 </span>
                 </div>
             </div>
-            <div class="h-10 w-10 rounded-full bg-light flex md:hidden lg:flex items-center justify-center">
+            <div class="h-10 w-10 rounded-full bg-light flex items-center justify-center
+                hidden
+                xs:flex
+                md:hidden
+                lg:flex">
                 <i class="fa-solid fa-heart text-xl text-accent"></i>
             </div>
             </div>
@@ -45,8 +49,11 @@
                 </span>
                 </div>
             </div>
-            <div class="h-10 w-10 rounded-full bg-light flex md:hidden lg:flex items-center justify-center">
-                <i class="fa-solid fa-arrow-right-to-bracket text-xl text-accent"></i>
+<div class="h-10 w-10 rounded-full bg-light flex items-center justify-center
+                hidden
+                xs:flex
+                md:hidden
+                lg:flex">                <i class="fa-solid fa-arrow-right-to-bracket text-xl text-accent"></i>
             </div>
             </div>
 
@@ -59,8 +66,11 @@
                 <p class="text-2xl">{{ number_format($totalBalance, 2, ',', '.') }}</p>
                 </div>
             </div>
-            <div class="h-10 w-10 rounded-full bg-light flex md:hidden lg:flex items-center justify-center">
-                <i class="fa fa-money-bill text-2xl text-accent"></i>
+<div class="h-10 w-10 rounded-full bg-light flex items-center justify-center
+                hidden
+                xs:flex
+                md:hidden
+                lg:flex">                <i class="fa fa-money-bill text-2xl text-accent"></i>
             </div>
             </div>
         </div>
@@ -94,7 +104,7 @@
                 <div class="flex items-center justify-between px-4 py-2 rounded-xl shadow-lg  bg-primary text-light">
                     <div>
                         <!-- Tanggal -->
-                        <div class="flex justify-start items-center text-light text-sm  space-x-2">
+                        <div class="flex flex-col sm:flex-row justify-start items-start sm:items-center text-light text-sm space-y-1 sm:space-y-0 sm:space-x-2">
                             <p class="lg:text-lg">Anggaran</p>
                             <span class="inline-flex text-accent font-semibold items-center gap-1">
                                 ({{ $budgets->count() ? $budgets->first()->start_date->translatedFormat('d F Y') : '-' }}
@@ -105,20 +115,23 @@
                         <div class="flex items-start gap-1 font-bold">
                             <span class="text-sm lg:text-lg">Rp</span>
                             <p class="text-2xl">{{ number_format($totalBudgetAmount, 2, ',', '.') }}</p>
-                            <button
-                                type="button" data-modal-target="budgetModal"
-                                    data-modal-toggle="budgetModal" class="text-sm text-netral-light">
-                                <i
-                                    class="fa fa-pen fa-lg hover:text-light cursor-pointer transition duration-300 ease-in-out"
-                                    aria-hidden="true"
-                                ></i>
-                            </button>
-                            @foreach($budgets as $budget)
+                            @if ($totalBudgetAmount == 0)
                                 <button
-                                    type="button" data-modal-target="editBudgetModal-{{ $budget->id }}" data-modal-toggle="editBudgetModal-{{ $budget->id }}" class="text-sm text-netral-light hover:text-netral cursor-pointer transition duration-300 ease-in-out">
-                                    <i class="fa fa-edit fa-lg "></i>
+                                    type="button" data-modal-target="budgetModal"
+                                    data-modal-toggle="budgetModal" class="text-sm text-netral-light">
+                                    <i
+                                        class="fa fa-pen fa-lg hover:text-light cursor-pointer transition duration-300 ease-in-out"
+                                        aria-hidden="true"
+                                    ></i>
                                 </button>
-                            @endforeach
+                            @else
+                                @foreach($budgets as $budget)
+                                    <button
+                                        type="button" data-modal-target="editBudgetModal-{{ $budget->id }}" data-modal-toggle="editBudgetModal-{{ $budget->id }}" class="text-sm text-netral-light hover:text-netral cursor-pointer transition duration-300 ease-in-out">
+                                        <i class="fa fa-edit fa-lg "></i>
+                                    </button>
+                                @endforeach
+                            @endif
 
                         </div>
                     </div>
@@ -275,7 +288,7 @@
 
         <!-- Modal Edit Anggaran -->
       @foreach($budgets as $budget)
-    <x-moddal id="editBudgetModal-{{ $budget->id }}" title="Edit Anggaran" :name="'Edit Anggaran'">
+    <x-moddal id="editBudgetModal-{{ $budget->id }}" title="Ubah Anggaran" :name="'Edit Anggaran'">
         <form action="{{ route('budgets.update', $budget->id) }}" method="POST" id="editBudgetForm-{{ $budget->id }}">
             @csrf
             @method('PUT')
@@ -309,7 +322,7 @@
                       <i class="fa fa-trash"></i>
                     </x-danger-button>
 
-                <x-primary-button type="submit" class="rounded-lg px-4 py-2">Update</x-primary-button>
+                <x-primary-button type="submit" class="rounded-lg px-4 py-2">Simpan</x-primary-button>
             </div>
         </form>
     </x-moddal>
@@ -334,7 +347,7 @@
 @foreach ($budgets as $budget)
     @foreach ($budget->budgetTransaction as $index => $transaction)
 
-    <x-moddal id="editBudgetTrans-{{ $transaction->id }}" title="Update Anggaran" :name="'Update Anggaran'">
+    <x-moddal id="editBudgetTrans-{{ $transaction->id }}" title="Ubah Anggaran" :name="'Ubah Anggaran'">
       <form action="{{ route('budgetTransactions.update', $transaction->id)}}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
@@ -343,11 +356,11 @@
             <input type="hidden" name="budget_id" value="{{ $transaction->budget_id }}">
             {{-- <input type="hidden" name="transaction_id" value="{{ $transaction->transaction_id }}"> --}}
 
-            <label for="category_id_{{ $transaction->id }}" class="block mb-2 font-semibold text-gray-700">Kategori</label>
+            <label for="category_id_{{ $transaction->id }}" class="block mb-2 text-dark">Kategori</label>
             <select id="category_id_{{ $transaction->id }}" name="category_id" required class="block w-full p-2 border border-netral-light focus:border-accent focus:ring-accent rounded-lg shadow-lg" >
                     <option value="" disabled selected>Kategori</option>
 
-                    <optgroup label="Pengeluaran (Outcome)">
+                    <optgroup label="Pengeluaran">
                         @foreach ($categories->where('type', 'outcome') as $category)
                             <option value="{{ $category->id }}"
                                 {{ $transaction->category_id == $category->id ? 'selected' : '' }}>

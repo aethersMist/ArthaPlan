@@ -40,18 +40,12 @@
 
             <x-primary-button>{{ __('Simpan') }}</x-primary-button>
 
-            <div class="flex items-center gap-4">
-            <x-auth-session-status class="mb-4" :status="session('status')" />
-
-                @if (session('status') === 'password-updated')
-                    <p
-                        x-data="{ show: true }"
-                        x-show="show"
-                        x-transition
-                        x-init="setTimeout(() => show = false, 2000)"
-                        class="text-sm text-gray-600"
-                    >{{ __('Tersimpan.') }}</p>
-                @endif
+            <div class="flex justify-start items-center mb-4">
+               @if (session('status') === 'password-updated')
+                        <p class="font-medium text-sm text-accent">
+                            {{ __('Kata sandi berhasil diperbarui.') }}
+                        </p>
+                    @endif
             </div>
         </form>
 
@@ -66,7 +60,7 @@
             </p>
         </header>
 
-               
+
 
     <form method="POST" action="{{ route('password.set.store') }}" class="mt-4 space-y-4">
             @csrf
@@ -84,17 +78,15 @@
             </div>
 
             <x-primary-button type="submit">Simpan</x-primary-button>
-            
-            {{-- Status message --}}
-            <div class="flex items-center gap-4">
-            <x-auth-session-status class="mb-4" :status="session('status')" />
+
+            <div class="flex justify-start items-center mb-4">
             @if (session('status') === 'password-set')
                 <p
                     x-data="{ show: true }"
                     x-show="show"
                     x-transition
                     x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-gray-600"
+                    class="font-medium text-sm text-accent"
                 >{{ __('Kata sandi berhasil dibuat.') }}</p>
             @endif
             </div>

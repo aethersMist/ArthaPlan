@@ -28,8 +28,11 @@
             </span>
             </div>
         </div>
-        <div class="h-10 w-10 rounded-full bg-light flex md:hidden lg:flex items-center justify-center">
-            <i class="fa-solid fa-heart text-xl text-accent"></i>
+<div class="h-10 w-10 rounded-full bg-light flex items-center justify-center
+                hidden
+                xs:flex
+                md:hidden
+                lg:flex">            <i class="fa-solid fa-heart text-xl text-accent"></i>
         </div>
         </div>
 
@@ -45,8 +48,11 @@
             </span>
             </div>
         </div>
-        <div class="h-10 w-10 rounded-full bg-light flex md:hidden lg:flex items-center justify-center">
-            <i class="fa-solid fa-arrow-right-to-bracket text-xl text-accent"></i>
+<div class="h-10 w-10 rounded-full bg-light flex items-center justify-center
+                hidden
+                xs:flex
+                md:hidden
+                lg:flex">            <i class="fa-solid fa-arrow-right-to-bracket text-xl text-accent"></i>
         </div>
         </div>
 
@@ -59,8 +65,12 @@
             <p class="text-2xl">{{ number_format($totalBalance, 2, ',', '.') }}</p>
             </div>
         </div>
-        <div class="h-10 w-10 rounded-full bg-light flex md:hidden lg:flex items-center justify-center">
-            <i class="fa fa-money-bill text-2xl text-accent"></i>
+<div class="h-10 w-10 rounded-full bg-light flex items-center justify-center
+                hidden
+                xs:flex
+                md:hidden
+                lg:flex">
+                            <i class="fa fa-money-bill text-2xl text-accent"></i>
         </div>
         </div>
     </div>
@@ -75,7 +85,7 @@
                 <x-secondary-button class="flex justify-center items-center h-8 w-8 rounded-full">
                     <i class="fa fa-chart-pie fa-md"></i>
                 </x-secondary-button>
-                <h2 class="text-lg font-semibold">Laporan Transaksi</h2>
+                <h2 class="text-md lg:text-lg font-semibold">Laporan Transaksi</h2>
             </a>
 
             <!-- Chart dan Legenda -->
@@ -98,13 +108,13 @@
         </section>
 
         <!-- Riwayat Transaksi -->
-        <section class="rounded-2xl bg-light shadow-lg p-4">
+        <section class="rounded-2xl bg-light shadow-lg p-6">
             <a href="{{ route('transactions') }}" class="flex items-center w-fit mb-4 gap-2 rounded-full bg-base  border-2 border-primary p-2 hover:bg-accent transition">
 
             <x-secondary-button class="flex justify-center items-center h-8 w-8 rounded-full">
                 <i class="fa fa-file-lines fa-md" aria-hidden="true"></i>
             </x-secondary-button>
-            <h2 class="text-lg font-semibold">Riwayat Transaksi</h2>
+            <h2 class="text-md lg:text-lg font-semibold">Riwayat Transaksi</h2>
             </a>
             <div class="overflow-x-auto rounded-lg">
             <table class="min-w-full text-sm lg:text-md text-left text-gray-700">
@@ -130,12 +140,10 @@
                         </div>
                         </td>
                         <td class="px-4 py-4">
-                        <div class="flex justify-start items-center gap-1 text-sm lg:text-lg">
-                            <span class="{{ $transaction->category->type == 'income' ? 'text-accent' : 'text-danger' }}">
-                            <i class="fa fa-{{ $transaction->category->type == 'income' ? 'plus' : 'minus' }}" aria-hidden="true"></i>
+                            <span class="flex justify-start items-center gap-1 {{ $transaction->category->type == 'income' ? 'text-accent' : 'text-danger' }}">
+                                <i class="fa fa-{{ $transaction->category->type == 'income' ? 'plus' : 'minus' }}" aria-hidden="true"></i>
+                                <p class="text-sm md:text-md lg:text-lg">Rp{{ number_format($transaction->amount, 0, ',', '.') }}</p>
                             </span>
-                            <p>Rp{{ number_format($transaction->amount, 0, ',', '.') }}</p>
-                        </div>
                         </td>
                         <td class="px-4 py-4">{{ $transaction->date->translatedFormat('l, d F Y') }}</td>
 
@@ -179,37 +187,37 @@
             <x-secondary-button class="flex justify-center items-center h-8 w-8 rounded-full">
                 <i class="fa-solid fa-table fa-md"></i>
             </x-secondary-button>
-            <h2 class="text-lg font-semibold">Kategori Anggaran</h2>
+            <h2 class="text-md lg:text-lg font-semibold">Kategori Anggaran</h2>
             </a>
 
             <!-- Konten Utama -->
             <div class="flex flex-col lg:flex-row w-full gap-4 lg:gap-6 items-center lg:items-center justify-between">
-            <!-- Chart -->
-            <div class="w-full lg:w-2/5 flex justify-center bg-base  border-2 border-primary rounded-xl py-4">
-                <div id="donutChartPersen" data-sisa="{{ $persenSisa }}" data-pakai="{{ $persenPakai }}"></div>
-            </div>
+                <!-- Chart -->
+                <div class="w-full lg:w-2/5 flex justify-center bg-base border-2 border-primary rounded-xl shadow-lg lg:bg-transparent lg:border-0 lg:rounded-none lg:shadow-none xl:bg-base xl:border-2 xl:border-primary xl:rounded-xl xl:shadow-lg py-4">
+                    <div id="donutChartPersen" data-sisa="{{ $persenSisa }}" data-pakai="{{ $persenPakai }}"></div>
+                </div>
 
                 <!-- Informasi Anggaran -->
                 <div class="w-full lg:w-3/5 space-y-4 text-md sm:text-sm lg:text-lg">
-                    <div class="flex justify-between items-center">
-                    <p class="lightspace-nowrap font-semibold">Anggaran</p>
-                    <p class="text-right">Rp {{ number_format($totalBudgetTrans, 2, ',', '.') }}</p>
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                        <p class="whitespace-nowrap font-semibold">Anggaran</p>
+                        <p class="text-left sm:text-right mt-1 sm:mt-0">Rp {{ number_format($totalBudgetTrans, 2, ',', '.') }}</p>
                     </div>
 
-                    <div class="flex justify-between items-center">
-                        <p class="lightspace-nowrap font-semibold">Status</p>
-                        <div class="flex gap-1 items-center text-right">
-                        <span class="text-sm {{ $Sisa == 0 && $totalOutcome > $totalBudgetTrans ? 'text-danger' : 'text-accent' }}">
-                           ({{ $persenSisa }}%) {{ $statusAnggaran }}
-                        </span>
-                        <p class="text-right">Rp {{ number_format($Sisa, 2, ',', '.') }}</p>
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                        <p class="whitespace-nowrap font-semibold">Status</p>
+                        <div class="flex flex-col sm:flex-row gap-1 items-start sm:items-center text-left sm:text-right mt-1 sm:mt-0">
+                            <span class="text-sm {{ $Sisa == 0 && $totalOutcome > $totalBudgetTrans ? 'text-danger' : 'text-accent' }}">
+                                ({{ $persenSisa }}%) {{ $statusAnggaran }}
+                            </span>
+                            <p class="text-left sm:text-right">Rp {{ number_format($Sisa, 2, ',', '.') }}</p>
+                        </div>
                     </div>
 
-                </div>
-                <div class="flex justify-between items-center">
-                    <p class="lightspace-nowrap font-semibold">Rata-rata Harian</p>
-                    <p class="text-right">Rp {{ number_format($rataRataHarianOutcome, 2, ',', '.') }}</p>
-                </div>
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                        <p class="whitespace-nowrap font-semibold">Rata-rata Harian</p>
+                        <p class="text-left sm:text-right mt-1 sm:mt-0">Rp {{ number_format($rataRataHarianOutcome, 2, ',', '.') }}</p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -217,40 +225,41 @@
         <!-- Diagram (Bar Chart) -->
         <section class="flex flex-col rounded-2xl bg-light shadow-lg p-6">
             <!-- atas -->
-            <div class="flex justify-between items-center mb-4">
+            <div class="flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center mb-4">
 
-                <a href="{{ route('budgets') }}" class="flex items-center gap-2 rounded-full bg-base border-2 border-primary p-2 hover:bg-accent transition">
+                <a href="{{ route('budgets') }}" class="flex items-center gap-2 rounded-full bg-base border-2 border-primary p-2 hover:bg-accent transition w-fit">
                     <x-secondary-button
-                    class="flex justify-center items-center h-8 w-8 rounded-full"
+                        class="flex justify-center items-center h-8 w-8 rounded-full"
                     >
-                    <i class="fa-solid fa-chart-simple fa-md"></i>
+                        <i class="fa-solid fa-chart-simple fa-md"></i>
                     </x-secondary-button>
-                    <h2 class="text-lg font-semibold">Diagram Transaksi</h2>
+                    <h2 class="text-md lg:text-lg font-semibold whitespace-nowrap">Diagram Transaksi</h2>
                 </a>
 
                 <!-- Dropdown -->
-                <x-dropdown align="right" width="auto">
+                <div class="flex justify-end">
+                    <x-dropdown align="right" width="auto">
                         <x-slot name="trigger">
                             <x-secondary-button class="text-sm rounded-lg px-1 py-[1px] gap-1">
-                        {{ ucfirst($filter ?? 'bulan') }}
-                        <i class="fa-solid fa-chevron-down"></i>
-                    </x-secondary-button>
+                                {{ ucfirst($filter ?? 'bulan') }}
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </x-secondary-button>
                         </x-slot>
 
                         <x-slot name="content">
                             <div class="space-y-1 p-1 rounded-lg text-sm text-dark">
                                 @foreach(['tahun', 'bulan', 'minggu', 'hari'] as $option)
-                                <button
-                                    type="button"
-                                    data-filter="{{ $option }}"
-                                    class="w-full text-left px-3 py-1.5 hover:bg-gray-100 {{ ($filter ?? 'bulan') === $option ? 'font-bold bg-gray-200 rounded' : '' }}">
-                                    {{ ucfirst($option) }}
-                                </button>
-                            @endforeach
-
+                                    <button
+                                        type="button"
+                                        data-filter="{{ $option }}"
+                                        class="w-full text-left px-3 py-1.5 hover:bg-gray-100 {{ ($filter ?? 'bulan') === $option ? 'font-bold bg-gray-200 rounded' : '' }}">
+                                        {{ ucfirst($option) }}
+                                    </button>
+                                @endforeach
                             </div>
                         </x-slot>
-                </x-dropdown>
+                    </x-dropdown>
+                </div>
             </div>
 
             <!-- body Diagram -->
