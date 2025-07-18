@@ -40,7 +40,6 @@ class BudgetTransactionController extends Controller
             $request->validate([
             'budget_id' => 'required|exists:budgets,id',
             'category_id' => 'required|exists:categories,id',
-            // 'transaction_id' => 'required|exists:transactions,id',
             'used_amount' => 'required|numeric|min:0',
         ]);
 
@@ -63,19 +62,16 @@ class BudgetTransactionController extends Controller
 
     public function update(Request $request, BudgetTransaction $budgetTransaction)
     {
-        // dd($request->all());
 
         $request->validate([
             'budget_id' => 'required|exists:budgets,id',
             'category_id' => 'required|exists:categories,id',
-            // 'transaction_id' => 'required|exists:transactions,id',
             'used_amount' => 'required|numeric|min:0',
         ]);
 
         $budgetTransaction->update([
             'budget_id'         => $request->budget_id,
             'category_id'       => $request->category_id,
-            // 'transaction_id'    => $request->transaction_id,
             'used_amount'       => $request->used_amount,
         ]);
 
@@ -89,5 +85,5 @@ class BudgetTransactionController extends Controller
         return redirect()->route('budgets')->with('success', 'Transaksi anggaran berhasil dihapus!');
     }
 
-     
+
 }

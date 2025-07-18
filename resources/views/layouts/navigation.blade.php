@@ -139,19 +139,19 @@
                     <option value="" disabled selected>Kategori</option>
 
                     <optgroup label="Pengeluaran">
-                    @foreach ($categories->where('type', 'outcome') as $category)
-                        <option value="{{ $category->id }}">
-                        {{ $category->name }}
-                        </option>
-                    @endforeach
+                        @foreach ($categories->where('type', 'outcome') as $category)
+                            <option value="{{ $category->id }}">
+                            {{ $category->name }}
+                            </option>
+                        @endforeach
                     </optgroup>
 
                     <optgroup label="Pemasukkan">
-                    @foreach ($categories->where('type', 'income') as $category)
-                        <option value="{{ $category->id }}">
-                        {{ $category->name }}
-                        </option>
-                    @endforeach
+                        @foreach ($categories->where('type', 'income') as $category)
+                            <option value="{{ $category->id }}">
+                            {{ $category->name }}
+                            </option>
+                        @endforeach
                     </optgroup>
                 </select>
             </div>
