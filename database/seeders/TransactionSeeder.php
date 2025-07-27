@@ -19,13 +19,15 @@ class TransactionSeeder extends Seeder
         foreach (User::all() as $user) {
             $categories = $user->categories;
 
-            foreach ($categories->random(5) as $category) {
+            for ($i = 0; $i < 1500; $i++) {
+                $category = $categories->random();
+                
                 Transaction::create([
                     'user_id' => $user->id,
                     'category_id' => $category->id,
                     'amount' => rand(1, 20) * 50000,
                     'description' => 'Pengeluaran untuk ' . $category->name,
-                    'date' => Carbon::now()->subDays(rand(1, 20)),
+                    'date' => Carbon::now()->subDays(rand(0, 365)),
                 ]);
             }
         }

@@ -23,15 +23,15 @@ class CategorySeeder extends Seeder
                 ['name' => 'Belanja', 'type' => 'outcome'],
             ];
 
-            $users = User::all();
-
-            foreach ($users as $user) {
-                foreach ($categories as $cat) {
-                    Category::create([
-                        'user_id' => $user->id,
-                        'name' => $cat['name'],
-                        'type' => $cat['type'],
-                    ]);
+            foreach (User::all() as $user) {
+                if ($user->categories()->count() == 0) {
+                    foreach ($categories as $cat) {
+                        Category::create([
+                            'user_id' => $user->id,
+                            'name' => $cat['name'],
+                            'type' => $cat['type'],
+                        ]);
+                    }
                 }
             }
         }
