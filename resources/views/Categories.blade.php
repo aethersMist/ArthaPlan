@@ -54,7 +54,7 @@
                     </x-secondary-button>
                   </td>
                 </tr>
-@empty
+      @empty
           <tr>
             <td colspan="4" class="w-full text-center py-4 text-md text-dark font-medium bg-light">
               Tidak ada data Kategori.

@@ -29,7 +29,7 @@
             </span>
             </div>
         </div>
-<div class="h-10 w-10 rounded-full bg-light flex items-center justify-center
+        <div class="h-10 w-10 rounded-full bg-light flex items-center justify-center
                 hidden
                 xs:flex
                 md:hidden
@@ -49,7 +49,7 @@
             </span>
             </div>
         </div>
-<div class="h-10 w-10 rounded-full bg-light flex items-center justify-center
+        <div class="h-10 w-10 rounded-full bg-light flex items-center justify-center
                 hidden
                 xs:flex
                 md:hidden
@@ -66,7 +66,7 @@
             <p class="text-2xl">{{ number_format($totalBalance, 2, ',', '.') }}</p>
             </div>
         </div>
-<div class="h-10 w-10 rounded-full bg-light flex items-center justify-center
+        <div class="h-10 w-10 rounded-full bg-light flex items-center justify-center
                 hidden
                 xs:flex
                 md:hidden

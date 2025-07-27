@@ -11,18 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-    Schema::create('transactions', function (Blueprint $table) {
-    $table->id();
-    $table->unsignedBigInteger('user_id');
-    $table->foreignId('category_id')->constrained()->onDelete('restrict');
-    $table->decimal('amount', 15, 2);
-    $table->date('date');
-    $table->text('description')->nullable();
-    $table->timestamps();
-
-    $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-
-});
+        Schema::create('transactions', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->foreignId('category_id')->constrained()->onDelete('restrict');
+            $table->decimal('amount', 15, 2);
+            $table->date('date');
+            $table->text('description')->nullable();
+            $table->timestamps();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+        });
     }
 
 

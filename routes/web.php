@@ -22,13 +22,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/chart-data', [DashboardController::class, 'getChartDataApi'])->name('dashboard.chart-data');
 
-
     Route::resource('/transactions', TransactionController::class);
 
     Route::get('/reports/export-csv', [ReportController::class, 'exportAll'])->name('reports.export.all');
     Route::resource('/reports', ReportController::class)->except(['show']);
 
-    // Route::resource('/reports', ReportController::class);
     Route::resource('/budgets', BudgetController::class);
     Route::resource('/categories', CategoryController::class);
 
@@ -83,16 +81,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
 });
 
-// Routing profil user
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-
-
-
-
-
 
 require __DIR__.'/auth.php';

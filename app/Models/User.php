@@ -53,13 +53,13 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     public function sendPasswordResetNotification($token)
-{
-    $this->notify(new ResetPasswordNotification($token));
-}
-public function sendEmailVerificationNotification()
-{
-    $this->notify(new VerifyEmailNotification);
-}
+    {
+        $this->notify(new ResetPasswordNotification($token));
+    }
+    public function sendEmailVerificationNotification()
+    {
+        $this->notify(new VerifyEmailNotification);
+    }
 
 
     public function budgets()
